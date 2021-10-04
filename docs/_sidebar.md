@@ -13,3 +13,4 @@
 - 渲染器
   - 渲染器实现原理
   - 开发一个angular渲染器
+- [参与贡献](contribution.md)
