@@ -2,7 +2,7 @@
 
 <h1 align="left"><a href="https://formast.js.org/">Formast</a></h1>
 
-📝 复杂业务场景下的企业级动态表单框架
+复杂业务场景下的企业级动态表单框架
 
 ## :hear_no_evil: 什么是 Formast?
 
@@ -43,7 +43,7 @@ npm i formast
 
 更多使用详情请 [阅读文档](https://formast.js.org)。
 
-## 参与贡献
+## :camel: 参与贡献
 
 我们欢迎社区中所有同学参与贡献，无论是发现了某些代码层面的 bug，还是文档中的错别字，抑或功能上的缺陷，都可以向我们提 PR。如果你希望 Formast 在功能上进行扩展，或想到一些不错的想法，也可以在社区中向我们提出，一起探讨。
 
