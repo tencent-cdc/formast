@@ -1,0 +1,44 @@
+.formast-layout-editor {
+  padding: 0 15px;
+  display: flex;
+  overflow: hidden;
+
+  &__main-area {
+    flex: 1;
+    overflow-y: hidden;
+    margin-right: 10px;
+  }
+
+  &__main-area .formast-layout-editor__component-view--empty:first-of-type {
+    height: calc(~'100% - 4px');
+  }
+
+  &__main-area .formast-layout-editor__component-view:first-of-type > .formast-layout-editor__drop-box:not(.formast-layout-editor__drop-box--over) {
+    background-color: transparent;
+  }
+
+  &__main-area > .formast-layout-editor__drag-box--outer > .formast-layout-editor__component-view:first-of-type > .formast-layout-editor__component-view__actions > .formast-layout-editor__component-view__actions__move {
+    display: none;
+  }
+
+  .formast-layout-editor__component-view--empty > .formast-layout-editor__drop-box::after {
+    content: '请从左侧拖入组件';
+    display: flex;
+    width:  100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+    font-size: 40px;
+  }
+
+  .formast-layout-editor__drag-box--outer {
+    height: 100%;
+  }
+
+  .formast__label {
+    display: flex;
+    line-height: 36px;
+    justify-content: flex-end;
+  }
+}

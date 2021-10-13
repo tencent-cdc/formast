@@ -1,0 +1,44 @@
+@import "../_vars.less";
+
+.formast-layout-editor__tools-sidebar {
+  width: 260px;
+
+  &__group {
+    margin-bottom: 24px;
+  }
+
+  &__group-title h4 {
+    font-size: 1.2em;
+    font-weight: 700;
+  }
+
+  &__items {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__item {
+    border: @primary-color-light solid 1px;
+    border-radius: 3px;
+    width: 110px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    padding: 3px 5px;
+    transition: border-color .2s;
+
+    &:hover {
+      border-color: @primary-color;
+    }
+  }
+
+  // &__items::after {
+  //   content: '';
+  //   display: block;
+  //   clear: both;
+  // }
+
+  // &__item {
+  //   width: 50%;
+  //   float: left;
+  // }
+}

@@ -1,0 +1,68 @@
+@import "../_vars.less";
+
+.formast-layout-editor__settings-sidebar {
+  width: 280px;
+
+  &__edit-item {
+    margin-bottom: 40px;
+  }
+
+  &__edit-item__info {
+    max-width: 300px;
+  }
+
+  &__edit-item__title {
+    display: flex;
+    align-items: center;
+  }
+
+  &__edit-item__title h4 {
+    flex: 1;
+    font-size: 1.2em;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+  }
+
+  &__edit-item__title &__edit-item__icon {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &__edit-item__title span,
+  &__edit-item__title button {
+    margin-right: 5px;
+  }
+
+  &__edit-item__types {
+    font-size: .8em;
+  }
+
+  &__edit-item__content > * {
+    margin-bottom: 5px;
+  }
+
+  &__edit-item__data-types {
+    min-width: 200px;
+  }
+
+  &__header {
+    border-bottom: @primary-color-light solid 1px;
+    margin-bottom: 10px;
+  }
+
+  &__header h2 {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+
+  &__header__actions span {
+    cursor: pointer;
+  }
+
+  .ant-select {
+    width: 100%;
+  }
+}

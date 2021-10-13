@@ -1,0 +1,108 @@
+.formast-model-editor {
+  &__title {
+    font-weight: bold;
+  }
+  &__sub-editor {
+    margin: 20px;
+  }
+  &__sub-editor > & + & {
+    margin-top: 40px;
+  }
+  &__typings {
+    color: #bbb;
+    cursor: pointer;
+  }
+
+  &__field-name {
+    font-weight: bold;
+  }
+
+  &__field-name-operators {
+    opacity: 0;
+    transition: opacity .2s;
+    float: right;
+  }
+
+  &__field-column:hover &__field-name-operators {
+    opacity: 1;
+  }
+
+  &__field-message {
+    color: #999;
+    margin-left: 5px;
+  }
+
+  &__field-edit-icon {
+    cursor: pointer;
+  }
+
+  &__edit-icon {
+    color: #000;
+    float: right;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .2s;
+    margin-right: 5px;
+  }
+
+  &__editable-cell:hover &__edit-icon {
+    opacity: 1;
+  }
+
+  &__editable-cell::after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+
+  &__buttons {
+    margin: 10px;
+    display: flex;
+  }
+  &__add-attr-input {
+    width: 320px;
+  }
+
+  &__field-title {
+    position: relative;
+  }
+  &__field-add-icon {
+    float: right;
+    cursor: pointer;
+  }
+
+  .ant-table-cell {
+    text-align: left !important;
+    vertical-align: top !important;
+  }
+
+  .t-icon {
+    display: inline-block;
+    vertical-align: middle;
+    width: 1em;
+    height: 1em;
+  }
+  .t-icon::before {
+    font-family: unset;
+  }
+  .t-icon-loading {
+    -webkit-animation: t-spin 1s linear infinite;
+            animation: t-spin 1s linear infinite;
+  }
+  .t-icon {
+    fill: currentColor;
+  }
+  .t-icon.t-size-s {
+    font-size: 14px;
+  }
+  .t-icon.t-size-m {
+    font-size: 16px;
+  }
+  .t-icon.t-size-l {
+    font-size: 18px;
+  }
+
+  svg.icon {
+    vertical-align:middle;
+  }
+}

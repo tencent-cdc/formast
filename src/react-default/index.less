@@ -1,0 +1,123 @@
+.formast {
+  @PRIMARY_COLOR: #1756d1;
+  @PRIMARY_COLOR_DARK: #0944ba;
+
+  .no-wrap() {
+    white-space: nowrap;
+    word-break: keep-all;
+  }
+
+  &__element {
+    display: flex;
+    align-items: center;
+    min-height: 30px;
+    border: #dedede solid 1px;
+    padding: 5px;
+  }
+
+  &__element--disabled {
+    background: rgb(245, 245, 245, .8);
+
+    input,
+    textarea,
+    select {
+      background: rgb(245, 245, 245, .8);
+    }
+  }
+
+  &__element--highlight {
+    border-color: #ff0000;
+  }
+
+  &__element__content {
+    flex: 1;
+    border: 0;
+    background-color: transparent;
+    min-width: 200px;
+    outline: none;
+  }
+
+  &__textarea textarea {
+    min-height: 40px;
+  }
+
+  &__select select.select--pending {
+    color: #999;
+  }
+  &__select select.select--pending option {
+    color: initial;
+  }
+
+  &__checkboxes,
+  &__radios {
+    display: block;
+    border: 0;
+
+    &__content {
+      margin-right: 10px;
+    }
+
+    &__content input {
+      margin-right: 5px;
+      cursor: pointer;
+      position: relative;
+      top: 1px;
+    }
+  }
+
+  &__radios__content,
+  &__checkboxes__content {
+    .no-wrap()
+  }
+
+  &__group {
+    &__title {
+      font-size: 12px;
+      font-weight: bold;
+      padding: 5px 0;
+    }
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+
+    &__content {
+      flex: 1;
+    }
+  }
+
+  &__button {
+    border: 0;
+    border-radius: 3px;
+    padding: 5px 15px;
+    outline: none;
+    cursor: pointer;
+    transition: background-color .2s;
+    background: @PRIMARY_COLOR;
+    color: #fff;
+
+    &:hover {
+      background: @PRIMARY_COLOR_DARK;
+    }
+
+    &:disabled {
+      opacity: .7;
+      cursor: default;
+    }
+  }
+
+  &__text {
+    display: inline-block;
+    line-height: 30px;
+  }
+
+  &__label,
+  &__item__label {
+    margin-right: 5px;
+    font-weight: 700;
+    min-width: 60px;
+    text-align: right;
+    .no-wrap();
+  }
+}

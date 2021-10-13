@@ -1,0 +1,74 @@
+@import "../_vars.less";
+
+.formast-layout-editor__component-view {
+  min-height: 20px;
+  min-width: 100px;
+  border: transparent solid 1px;
+  position: relative;
+
+  &--selected {
+    border-color: @primary-color;
+  }
+
+  &--empty .formast-layout-editor__drop-box {
+    flex: 1;
+    height: 100%;
+  }
+
+  .formast__horizontal-box > .formast-layout-editor__children-view,
+  .formast-layout-editor__children-view--h {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .formast-layout-editor__drag-box--outer {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .formast__horizontal-box > .formast-layout-editor__children-view > .formast-layout-editor__drop-box,
+  .formast-layout-editor__children-view--h > .formast-layout-editor__drop-box {
+    min-width: 10px;
+    margin: 0 5px;
+    transition: min-width .2s;
+    min-height: 36px;
+  }
+
+  .formast__horizontal-box > .formast-layout-editor__children-view > .formast-layout-editor__drop-box:first-child,
+  .formast-layout-editor__children-view--h > .formast-layout-editor__drop-box:first-child  {
+    margin-left: 0;
+  }
+
+  .formast__horizontal-box > .formast-layout-editor__children-view > .formast-layout-editor__drop-box:last-child,
+  .formast-layout-editor__children-view--h > .formast-layout-editor__drop-box:last-child {
+    margin-right: 0;
+    flex: 1;
+  }
+
+  .formast__horizontal-box > .formast-layout-editor__children-view > .formast-layout-editor__drop-box--over,
+  .formast-layout-editor__children-view--h > .formast-layout-editor__drop-box--over {
+    min-width: 40px;
+  }
+
+  &__actions {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: @primary-color;
+    color: #fff;
+    padding: 8px 5px 0 5px;
+    border-top-left-radius: 100%;
+    padding-left: 20px;
+    opacity: 0;
+    transition: opacity .2s;
+
+    &__move {
+      cursor: move;
+    }
+  }
+
+  &--selected:hover > &__actions {
+    opacity: 1;
+  }
+}

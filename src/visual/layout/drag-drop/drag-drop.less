@@ -1,0 +1,22 @@
+@import "../../_vars.less";
+
+.formast-layout-editor__drag-box {
+  cursor: move;
+
+  &--outer {
+    height: 100%;
+  }
+}
+
+.formast-layout-editor__drop-box {
+  min-height: 10px;
+  border: @primary-color-light dashed 1px;
+  margin: 5px 0;
+  transition: min-height .2s, background-color .2s;
+
+  &--over {
+    background-color: @primary-color-light;
+    border: @primary-color dashed 1px;
+    min-height: 40px;
+  }
+}
