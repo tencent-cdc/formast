@@ -1,0 +1,16 @@
+node_modules/
+.cache/
+/dist/
+/*.js
+/*.jsx
+.egwrc
+/designer/
+/react/
+/core/
+/resources/
+/visual/
+/antd/
+/react-default/
+jsonlint.js
+/vue/
+/.reports/
