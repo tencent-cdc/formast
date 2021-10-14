@@ -34,4 +34,4 @@ Formast 从表单的原子逻辑出发，抽象出一门独特的描述语言，
 
 ## :bread: 开源协同
 
-MIT & Copy; Tencent Inc.
+MIT &copy; Tencent Inc.
