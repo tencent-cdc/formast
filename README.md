@@ -1,15 +1,8 @@
-<br />
+<img src="docs/logo.png" alt="Formast" width="auto" height="120" align="right" />
 
-<h1 align="center" style="border:0">
-  <img src="docs/logo.png" alt="Formast" width="auto" height="120"/>
-</h1>
-<p align="center">复杂业务场景下的企业级动态表单框架</p>
+<h1 align="left"><a href="https://formast.js.org/">Formast</a></h1>
 
-<br />
-<br />
-<br />
-
----
+📝 复杂业务场景下的企业级动态表单框架
 
 ## :hear_no_evil: 什么是 Formast?
 
@@ -28,10 +21,10 @@ Formast 从表单的原子逻辑出发，抽象出一门独特的描述语言，
 - 与现有框架无缝对接，支持 React、Vue，只提供核心驱动，其他全由开发者自由实现
 - 分层理念：表单分为视图层、模型层、控制层（由 Formast 实现），在特定场景下这将大大提升表单的可靠性
 
-## :blue_book: 文档
+## :book: 文档
 
-[点击阅读](https://formast.js.org)
+更多使用详情请 [阅读文档](https://formast.js.org)
 
-## :bread: 开源许可
+## :balance_scale: 开源许可
 
-MIT.
+MIT
