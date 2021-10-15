@@ -21,7 +21,106 @@ Formast 从表单的原子逻辑出发，抽象出一门独特的描述语言，
 - 与现有框架无缝对接，支持 React、Vue，只提供核心驱动，其他全由开发者自由实现
 - 分层理念：表单分为视图层、模型层、控制层（由 Formast 实现），在特定场景下这将大大提升表单的可靠性
 
-## :book: 文档
+## :book: 使用方法
+
+你可以通过 npm 安装 formast：
+
+```
+npm i formast
+```
+
+也可以通过 CDN 直接引入 Foramst：
+
+```html
+<script src="https://unpkg.com/formast"></script>
+```
+
+它的导出方式有两种，不同的导出方式对构建工具或依赖的要求不同，你可以通过[快速上手](https://formast.js.org/#/quick-start)获得相关的使用信息。
+
+现在我们假设不考虑构建等逻辑，我们可以这样使用：
+
+创建一个后端接口，输出表单的 schema JSON：
+
+```json
+{
+  "model": {
+    "name": {
+      "type": "string",
+      "default": ""
+    },
+    "age": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "layout": {
+    "type": "form",
+    "events": {
+      "submit": "{ onSubmit }"
+    },
+    "children": [
+      {
+        "type": "input",
+        "attrs": {
+          "value": "{ name.value }",
+        },
+        "events": {
+          "change(e)": "{ name.value = e.target.value }"
+        }
+      },
+      {
+        "type": "input",
+        "attrs": {
+          "type": "number",
+          "value": "{ age.value }",
+        },
+        "events": {
+          "change(e)": "{ age.value = +e.target.value }"
+        }
+      },
+    ]
+  }
+}
+```
+
+接下来，我们在 react 组件中使用它：
+
+```js
+import { useRef } from 'react'
+import { Formast } from 'formast/react'
+
+export default function App() {
+  const fetchJson = () => fetch('http...').then(res => res.json())
+  const ref = useRef()
+
+  const onSubmit = () => {
+    if (!ref.current) {
+      console.error('模型未加载')
+      return
+    }
+
+    const { model } = ref.current
+    const errors = model.validate()
+    if (errors.length) {
+      console.error(errors.message)
+      return
+    }
+
+    const data = modal.toData()
+    fetch('http...', { mothod: 'POST', body: JSON.stringify(data) })
+  }
+
+  const onLoad = (ctx) => {
+    ref.current = ctx
+  }
+
+  return (
+    <Formast json={fetchJson} props={{ onSubmit }} onLoad={onLoad}>
+      <span>正在加载</span>
+    </Formast>
+  )
+}
+```
 
 更多使用详情请 [阅读文档](https://formast.js.org)
 
