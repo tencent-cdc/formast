@@ -37,93 +37,17 @@ npm i formast
 
 它的导出方式有两种，不同的导出方式对构建工具或依赖的要求不同，你可以通过[快速上手](https://formast.js.org/#/quick-start)获得相关的使用信息。
 
-现在我们假设不考虑构建等逻辑，我们可以这样使用：
+大多数情况下，我们会使用 react 或 vue 的引擎来在项目中使用，通过读取后端接口返回的 JSON 来创建表单。具体效果如图：
 
-创建一个后端接口，输出表单的 schema JSON：
+[![](assets/formast-demo.png)](https://codesandbox.io/s/dazzling-matan-d1c4j)
 
-```json
-{
-  "model": {
-    "name": {
-      "type": "string",
-      "default": ""
-    },
-    "age": {
-      "type": "number",
-      "default": 0
-    }
-  },
-  "layout": {
-    "type": "form",
-    "events": {
-      "submit": "{ onSubmit }"
-    },
-    "children": [
-      {
-        "type": "input",
-        "attrs": {
-          "value": "{ name.value }",
-        },
-        "events": {
-          "change(e)": "{ name.value = e.target.value }"
-        }
-      },
-      {
-        "type": "input",
-        "attrs": {
-          "type": "number",
-          "value": "{ age.value }",
-        },
-        "events": {
-          "change(e)": "{ age.value = +e.target.value }"
-        }
-      },
-    ]
-  }
-}
-```
+更多使用详情请 [阅读文档](https://formast.js.org)。
 
-接下来，我们在 react 组件中使用它：
+## 参与贡献
 
-```js
-import { useRef } from 'react'
-import { Formast } from 'formast/react'
+我们欢迎社区中所有同学参与贡献，无论是发现了某些代码层面的 bug，还是文档中的错别字，抑或功能上的缺陷，都可以向我们提 PR。如果你希望 Formast 在功能上进行扩展，或想到一些不错的想法，也可以在社区中向我们提出，一起探讨。
 
-export default function App() {
-  const fetchJson = () => fetch('http...').then(res => res.json())
-  const ref = useRef()
-
-  const onSubmit = () => {
-    if (!ref.current) {
-      console.error('模型未加载')
-      return
-    }
-
-    const { model } = ref.current
-    const errors = model.validate()
-    if (errors.length) {
-      console.error(errors.message)
-      return
-    }
-
-    const data = modal.toData()
-    fetch('http...', { mothod: 'POST', body: JSON.stringify(data) })
-  }
-
-  const onLoad = (ctx) => {
-    ref.current = ctx
-  }
-
-  return (
-    <Formast json={fetchJson} props={{ onSubmit }} onLoad={onLoad}>
-      <span>正在加载</span>
-    </Formast>
-  )
-}
-```
-
-更多使用详情请 [阅读文档](https://formast.js.org)
-
+具体的贡献手册请[阅读这里](docs/contribution.md)。
 ## :balance_scale: 开源许可
 
 MIT

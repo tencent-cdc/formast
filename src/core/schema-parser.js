@@ -169,7 +169,6 @@ export class SchemaParser {
     const { Model } = this;
     const model = new Model(data);
     this.model = model;
-    window.$model = model;
     return model;
   }
 
