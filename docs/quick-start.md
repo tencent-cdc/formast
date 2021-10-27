@@ -37,7 +37,7 @@ import { SchemaParser } from 'formast/dist'
 如果你需要在浏览器中直接使用，可以使用CDN，因为dist文件是基于UMD的，你可以在浏览器中直接使用。
 
 ```html
-<script src="https://unpkg.com/formast/latest/dist/index.js"></script>
+<script src="https://unpkg.com/formast/dist/index.js"></script>
 <script>
   const { SchemaParser } = window.formast
 </script>
@@ -58,37 +58,47 @@ import { createVueFormast } from 'formast/dist/vue'
 ```html
 <script src="https://unpkg.com/react/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/formast/latest/dist/react.js"></script>
+<script src="https://unpkg.com/formast/dist/react.js"></script>
 ```
 
 在使用CDN时需要注意，它依赖于react或vue，所以要提前加载对应的库。
 
-可视化编辑器也有dist，它依赖于react，所以，你在使用时，和上述的方案差不多，要么模块化引入，要么UMD引入，但是，还需要多一个步骤，就是引入css文件。具体可参考[visual详情](visual.md)。
-
 ## 接入 React 中使用
 
 ```js
-import { Formast } from 'formast/react';
-import * as components from './components.jsx';
+import { useRef } from 'react';
+import { Formast } from 'formast/react'; // 引入 Formast 组件
+import Options from 'formast/react-default'; // 实用内置的配置，在了解具体使用方法之后，可以替换为自己的配置对象
 
 function App() {
-  const fetchJson: Promise<JSON> = () => fetch('/api/form/123');
+  const ref = useRef();
+  const fetchJson = () => fetch('/api/form/123').then(res => res.json()); // 从接口读取 JSON
   const onSubmit = () => {
-    const data = $('#form_id').seriallize();
-    console.log(data)
+    const { model } = ref.current;
+
+    // 校验
+    const errors = model.validate();
+    if (errors.length) {
+      console.error(errors.message);
+      return;
+    }
+
+    // 提交
+    const data = model.toData();
+    console.log(data);
   };
-  const options = {
-    components,
-  }; // 和 createReactFormast 第二个参数一致
+
   return (
-    <Formast json={fetchJson} options={options} props={{
-      id: 'form_id',
-      onSubmit,
-    }}>
+    <Formast json={fetchJson} options={Options} onLoad={info => (ref.current = info)} props={{ onSubmit }}>
       <span>正在加载...</span>
     </Formast>
   )
 }
 ```
 
-以上只是一个内容不足的例子，让你可以看到接入 formast 是非常方便的一件事。想要体验完整的例子，请克隆源码仓库后查看.examples/react下的文件。通过 npm run dev:react 来启动本地服务预览效果。
+在上面这段代码中，我们通过 `fetchJson` 这个函数从后端抓取一个 JSON 回来，该 JSON 必须符合 formast schema 要求。
+我们通过 `onLoad` 这个属性，把 JSON 解析完成之后得到的信息暂存起来，在 `onSubmit` 中调出暂存的 model 进行数据校验和提交动作。有关使用的方法，你可以在 [react 引擎](react.md)中阅读详细使用方法。
+其中 `props` 属性传入的是 JSON 中需要用到的内容，你在阅读完 [schema 部分](schema.md)后可以对此比较了解。
+此外，我们直接使用了 formast/react-default 这个集成包，你也可以在学习集成包的封装方法后，自己封装自己的集成包，一般而言，一个项目都需要封装自己的集成包，大部分情况下，一个项目只需要一个集成包即可。集成包是使用 formast 的关键，前后端约定的组件及其功能，都需要在集成包中实现。Formast 之所以是一个框架，而非一个开箱即用的库，原因也在于此，它让你的项目自己去定义在实际工作中的实际需求，而非从一开始就把这些组件定死。
+
+以上是一个内容不足的例子，只是让你可以看到接入 formast 是非常方便的一件事。想要体验完整的例子，请克隆源码仓库后查看.examples/react下的文件。通过 npm run dev:react 来启动本地服务预览效果。

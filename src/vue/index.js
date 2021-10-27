@@ -102,7 +102,7 @@ const Dynamic = Vue.extend({
   },
 });
 
-function render(data, context, compute, subscribe) {
+function render(data, compute, context, subscribe) {
   return { ...data, context, compute, subscribe };
 }
 

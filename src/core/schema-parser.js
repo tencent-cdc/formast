@@ -582,7 +582,7 @@ export class SchemaParser {
       };
     };
 
-    const output = render.call(macros, { ...json, key }, context, compute, subscribe);
+    const output = render.call(macros, { ...json, key }, compute, context, subscribe);
     return output;
   }
 

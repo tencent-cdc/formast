@@ -1,8 +1,13 @@
-<img src="docs/logo.png" alt="Formast" width="auto" height="120" align="right" />
+<br />
 
-<h1 align="left"><a href="https://formast.js.org/">Formast</a></h1>
+<h1 align="center" style="border:0">
+  <img src="docs/logo.png" alt="Formast" width="auto" height="120"/>
+</h1>
+<p align="center">Formast（帆桅）复杂业务场景下的企业级动态表单框架</p>
 
-复杂业务场景下的企业级动态表单框架
+<br />
+<br />
+<br />
 
 ## :hear_no_evil: 什么是 Formast?
 
@@ -32,7 +37,7 @@ npm i formast
 也可以通过 CDN 直接引入 Foramst：
 
 ```html
-<script src="https://unpkg.com/formast"></script>
+<script src="https://unpkg.com/formast/dist/index.js"></script>
 ```
 
 它的导出方式有两种，不同的导出方式对构建工具或依赖的要求不同，你可以通过[快速上手](https://formast.js.org/#/quick-start)获得相关的使用信息。

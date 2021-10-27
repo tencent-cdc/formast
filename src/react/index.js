@@ -167,7 +167,7 @@ function Box(assets) {
 
 const Controller = memo(Box, () => true);
 
-function render(data, context, compute, subscribe) {
+function render(data, compute, context, subscribe) {
   return createElement(Controller, {
     ...data,
     compute,
