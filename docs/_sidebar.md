@@ -8,7 +8,7 @@
 - 引擎
   - [React 引擎](react.md)
   - [Vue 引擎](vue.md)
-- 内置集成
+- 集成包
   - [React 默认集成包](react-default.md)
   - [Antd 集成包](antd.md)
 - 场景实现
