@@ -21,10 +21,10 @@ import {
 } from 'antd';
 import { connectReactComponent } from '../react/index.js';
 
-const { Item: FormItem, ErrorList } = Form;
+const { Item, ErrorList } = Form;
 const { TextArea, Search, Password, Group: InputGroup } = Input;
-const { Group: Checkboxes } = Checkbox;
-const { Group: Radios } = Radio;
+const { Group: CheckboxGroup } = Checkbox;
+const { Group: RadioGroup } = Radio;
 
 export {
   Form,
@@ -32,8 +32,8 @@ export {
   Input,
   TextArea,
   InputNumber,
-  Radios,
-  Checkboxes,
+  RadioGroup,
+  CheckboxGroup,
   Select,
   Password,
   Search,
@@ -42,6 +42,8 @@ export {
   DatePicker,
   Slider,
 
+  Checkbox,
+  Radio,
   AutoComplete,
   Cascader,
   Mentions,
@@ -52,7 +54,7 @@ export {
   InputGroup,
 };
 
-export const Item = connectReactComponent((props) => {
+export const FormItem = connectReactComponent((props) => {
   const {
     bind,
     errors = bind?.errors,
@@ -62,9 +64,9 @@ export const Item = connectReactComponent((props) => {
   } = props;
 
   return (
-    <FormItem label={label} hidden={hidden} {...attrs}>
+    <Item label={label} hidden={hidden} {...attrs}>
       <ErrorList errors={errors} />
-    </FormItem>
+    </Item>
   );
 });
 
@@ -86,7 +88,7 @@ Input.formast = {
       readOnly = bind?.readonly,
       hidden = bind?.hidden,
       required = bind?.required,
-      maxLength = bind?.maxLength,
+      maxLength = bind?.maxlength,
       placeholder = bind?.placeholder,
     } = props;
     const attrs = { prefix, suffix, disabled, readOnly, hidden, required, maxLength, placeholder };
@@ -177,7 +179,7 @@ Slider.formast = {
   },
 };
 
-Radios.formast = {
+RadioGroup.formast = {
   mapToProps({ bind }, props) {
     const {
       options = bind?.options,
@@ -192,7 +194,7 @@ Radios.formast = {
   },
 };
 
-Checkboxes.formast = {
+CheckboxGroup.formast = {
   mapToProps({ bind }, props) {
     const {
       options = bind?.options,

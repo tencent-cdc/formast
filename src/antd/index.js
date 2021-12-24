@@ -1,1 +1,3 @@
-export * from './components.jsx';
+import * as components from './components.jsx';
+
+export { components };

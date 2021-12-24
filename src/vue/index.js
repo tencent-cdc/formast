@@ -166,14 +166,15 @@ export function createVueFormast(schemaJson, options = {}) {
 
 export const Formast = Vue.extend({
   name: 'formast',
-  props: ['options', 'schema', 'props', 'onLoad'],
+  props: ['options', 'schema', 'json', 'props', 'onLoad'],
   data() {
     return {
       FormastComponent: null,
     };
   },
   beforeMount() {
-    const { options, schema, onLoad } = this;
+    const { options, json, schema, onLoad } = this;
+    const getSchema = schema || json;
     const create = (schemaJson) => {
       const { Formast, ...others } = createVueFormast(schemaJson, options);
       this.FormastComponent = Formast;
@@ -181,11 +182,11 @@ export const Formast = Vue.extend({
         onLoad(others);
       }
     };
-    if (typeof schema === 'function') {
-      Promise.resolve().then(schema)
+    if (typeof getSchema === 'function') {
+      Promise.resolve().then(getSchema)
         .then(create);
     } else {
-      create(schema);
+      create(getSchema);
     }
   },
   render(h) {

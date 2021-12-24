@@ -59,7 +59,7 @@ export function createReactFormast(schemaJson, options = {}) {
 }
 
 function FormastComponent(props, ref) {
-  const { options, schema, props: passedProps = {}, onLoad, children } = props;
+  const { options, json, schema = json, props: passedProps = {}, onLoad, children } = props;
 
   const [FormastComponent, setFormastComponent] = useState(null);
 
