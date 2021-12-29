@@ -104,7 +104,7 @@ function App() {
   // ... 省略
 
   return (
-    <Formast json={...} options={Options} onLoad={...} props={...}>
+    <Formast schema={...} options={Options} onLoad={...} props={...}>
       <span>正在加载...</span>
     </Formast>
   )
@@ -140,4 +140,4 @@ export function JsonForm(props) {
 
 这样，你们项目中，全部地方只需要使用 JsonForm 这个组件。
 
-甚至，你可以把 `json` 属性也封装好，每一个表单封装出一个组件，这样，在需要的地方只需要调用对应的组件即可，不需要再写 JSON 请求的部分。当然，具体怎么封装，需要根据你们自己的使用场景。
+甚至，你可以把 `schema` 属性也封装好，每一个表单封装出一个组件，这样，在需要的地方只需要调用对应的组件即可，不需要再写 JSON 请求的部分。当然，具体怎么封装，需要根据你们自己的使用场景。

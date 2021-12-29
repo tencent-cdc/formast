@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Form as Form,
+  Form,
   Input,
   InputNumber,
   Radio,

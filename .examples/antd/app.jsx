@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { createReactFormast } from '../../src/react/index.js';
 import schemaJson from './form.json';
 import { isEmpty } from 'ts-fns';
-import { components } from '../../src/react-default';
+import { components } from '../../src/react-d';
 import { InputNumber, FormItem } from './components.jsx'
 
 const { Select, Input, Label } = components

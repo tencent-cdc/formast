@@ -1,6 +1,6 @@
 <template>
   <div>
-    <formast :json="getJson" :props="props" :onLoad="onLoad">
+    <formast :schema="getJson" :props="props" :onLoad="onLoad">
       <span>正在加载...</span>
     </formast>
     <div>

@@ -14,8 +14,8 @@ export const ALIAS_PROPS_MAPPING = {
   class: 'className',
 };
 
-export function createReactFormast(json, options = {}) {
-  if (isEmpty(json)) {
+export function createReactFormast(schemaJson, options = {}) {
+  if (isEmpty(schemaJson)) {
     return {};
   }
 
@@ -43,7 +43,7 @@ export function createReactFormast(json, options = {}) {
     },
   });
 
-  schemaParser.loadSchema(json);
+  schemaParser.loadSchema(schemaJson);
 
   const { model, Layout, declares, schema, constants } = schemaParser;
 
@@ -59,7 +59,7 @@ export function createReactFormast(json, options = {}) {
 }
 
 export function Formast(props) {
-  const { options, json, props: passedProps = {}, onLoad, children } = props;
+  const { options, schema, props: passedProps = {}, onLoad, children } = props;
 
   const [FormastComponent, setFormastComponent] = useState(null);
 
@@ -71,11 +71,11 @@ export function Formast(props) {
         onLoad(others);
       }
     };
-    if (typeof json === 'function') {
-      Promise.resolve().then(json)
+    if (typeof schema === 'function') {
+      Promise.resolve().then(schema)
         .then(create);
     } else {
-      create(json);
+      create(schema);
     }
   }, []);
 

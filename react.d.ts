@@ -1,5 +1,4 @@
-import { Model } from 'nautil';
-import { ComponentType, PropsWithChildren, ReactNode } from 'react';
+import type { ComponentType, PropsWithChildren, ReactNode } from 'react';
 
 interface AnyObj {
   [key: string]: any;
@@ -62,17 +61,17 @@ interface FormastOptions {
   fetch?: Function;
 }
 interface IContext {
-  model: Model;
+  model: any;
   Formast: ComponentType;
   schema: SchemaJson;
   declares: SchemaJson['declares'];
   settings: SchemaJson['settings'];
 }
-export declare function createReactFormast(json: SchemaJson, options?: FormastOptions): IContext;
+export declare function createReactFormast(schema: SchemaJson, options?: FormastOptions): IContext;
 
 interface FormastProps {
   options: FormastOptions;
-  json: SchemaJson | (() => Promise<SchemaJson>);
+  schema: SchemaJson | (() => Promise<SchemaJson>);
   props?: AnyObj;
   onLoad?: Function;
 }
