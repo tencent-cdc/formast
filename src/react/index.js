@@ -58,7 +58,7 @@ export function createReactFormast(schemaJson, options = {}) {
   return { model, Formast, schema, declares, constants };
 }
 
-export const Formast = forwardRef(function Formast(props, ref) {
+function FormastComponent(props, ref) {
   const { options, schema, props: passedProps = {}, onLoad, children } = props;
 
   const [FormastComponent, setFormastComponent] = useState(null);
@@ -71,6 +71,7 @@ export const Formast = forwardRef(function Formast(props, ref) {
         onLoad(others);
       }
       if (ref) {
+        // eslint-disable-next-line no-param-reassign
         ref.current = others;
       }
     };
@@ -87,7 +88,9 @@ export const Formast = forwardRef(function Formast(props, ref) {
   }
 
   return createElement(FormastComponent, passedProps);
-});
+}
+
+export const Formast = forwardRef(FormastComponent);
 
 function Box(assets) {
   const {
