@@ -78,7 +78,23 @@ function App() {
     }}>
       <span>正在加载...</span>
     </Formast>
-  )
+  );
+}
+```
+
+或者，你可以通过 `ref` 直接接收这些信息。
+
+```js
+function App() {
+  const ref = useRef({});
+
+  useEffect(() => {
+    // ...
+  }, [ref.current.model]);
+
+  return (
+    <Formast schema={fetchJson} options={Options} props={/* ... */} ref={ref}></Formast>
+  );
 }
 ```
 

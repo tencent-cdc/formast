@@ -1,4 +1,4 @@
-import { useState, useEffect, memo, Fragment, createElement, useRef } from 'react';
+import { useState, useEffect, memo, Fragment, createElement, useRef, forwardRef } from 'react';
 import { each, isEmpty, getObjectHash, isArray, isString, map, isFunction } from 'ts-fns';
 import { SchemaParser } from '../core/schema-parser.js';
 import { parseViewInModel } from '../core/utils.js';
@@ -58,7 +58,7 @@ export function createReactFormast(schemaJson, options = {}) {
   return { model, Formast, schema, declares, constants };
 }
 
-export function Formast(props) {
+export const Formast = forwardRef(function Formast(props, ref) {
   const { options, schema, props: passedProps = {}, onLoad, children } = props;
 
   const [FormastComponent, setFormastComponent] = useState(null);
@@ -69,6 +69,9 @@ export function Formast(props) {
       setFormastComponent(Formast);
       if (onLoad) {
         onLoad(others);
+      }
+      if (ref) {
+        ref.current = others;
       }
     };
     if (typeof schema === 'function') {
@@ -84,7 +87,7 @@ export function Formast(props) {
   }
 
   return createElement(FormastComponent, passedProps);
-}
+});
 
 function Box(assets) {
   const {

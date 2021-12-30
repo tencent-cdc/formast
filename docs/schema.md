@@ -63,7 +63,7 @@ Schema数据结构中，包含如下信息：
 
 ## 编辑器
 
-我们提供了可视化编辑器，帮助用户可以通过拖拽和填写的方式来实现整个表单的自定义。
+我们将提供可视化编辑器，帮助用户可以通过拖拽和填写的方式来实现整个表单的自定义。
 
 在 Schema 中，所有以 _ 开头的属性名都是为编辑器服务的，不能作为动态语法的变量被读取。在前端运行时，这些属性并不需要。这些以 _ 开头的属性，不一定在固定的一个地方，可能被分散的使用在布局、模型、组件等中。
 
@@ -397,17 +397,17 @@ layout 本身的值就是一个组件。
 在组件中使用表达式时，会去读取表达式里面变量名对应的值，它的读取链如下：
 
 ```
-函数参数 > vars > repeat污染 > model视图 > constants > props > fns > global
+函数参数 > vars > repeat 污染 > model 视图 > constants > props > fns > global
 ```
 
-- 函数参数：在JSON中使用函数语法，例如 `"fn(e)": "{ ... }"`
-- vars: 在JSON中使用vars定义，例如 `"vars": { ... }`
-- repeat污染：在JSON中使用repeat定义，例如 `"repeat": "item,index in items"`
-- model视图：在JSON中定义的model字段视图，例如 `"some_field": { ... }` 使用时读取 `some_field.value`
-- constants: 在JSON中使用constants定义
-- props: 在使用组件的代码中传入的组件props
-- fns: 在创建formast实例时传入fns
-- global: 在创建formast实例时传入fns
+- 函数参数：在 JSON 中使用函数语法，例如 `"fn(e)": "{ ... }"`
+- vars: 在 JSON 中使用 vars 定义，例如 `"vars": { ... }`
+- repeat污染：在 JSON 中使用 repeat 定义，例如 `"repeat": "item,index in items"`
+- model视图：在 JSON 中定义的 model 字段视图，例如 `"some_field": { ... }` 使用时读取 `some_field.value`
+- constants: 在 JSON 中使用 constants 定义
+- props: 在使用组件的代码中传入的组件 props
+- fns: 在创建 formast 实例时传入 fns
+- global: 在创建 formast 实例时传入 global
 
 注意，这里的 props 是指外部开发者传入给生成的组件的 props，而非组件 JSON 内的 props 描述信息。你不可能通过 props 覆盖 model 或 constants 上面描述的内容。
 
@@ -419,9 +419,9 @@ global 是你调用引擎方法创建表单时传入的 global 参数。
 
 当对变量赋新值时，例如 `{ a = a + 1 }` 会改变 vars.a，即使 vars 上不存在 a 属性，在 constants 上有 a 属性，其结果也是在 vars 上新增了一个 a 属性。因此，这种赋值是无法修改 props 和 constants 的。但是，由于我们读取的是 model 视图，我们可以修改视图上的值，例如 `{ field.value = field.value + 1}`，这样可以使 model 发生变化而触发界面更新。
 
-和 JS 的作用域不同，一个组件所在作用域只包含自己 vars 上声明的变量和全局变量，不包含父级作用域（父组件所在的作用域）的变量。但是，在其使用 vars 声明变量时，父级作用域会一次性将当前作用域 vars 上的变量传递给子作用域使用，当 vars 声明完毕时，该传递失效。修改子作用域中的变量，不会对父作用域产生任何影响。父级作用域中变量变化后，也不会再次传递新值给子作用域。
+和 JS 的作用域不同，一个组件所在作用域只包含自己 vars 上声明的变量，不包含父级作用域（父组件所在的作用域）的变量。但是，在其使用 vars 声明变量时，父级作用域会一次性将当前作用域 vars 上的变量传递给子作用域使用，当 vars 声明完毕时，该传递失效。修改子作用域中的变量，不会对父作用域产生任何影响。父级作用域中变量变化后，也不会再次传递新值给子作用域。
 
-*这和 JS 中的作用域差别非常大，一开始可能不习惯，但是随着深入使用，你会发现这一设计对表单的数据管理和性能都有非常大的好处。*
+*这和 JS 中的作用域差别非常大，和 react 中传递 state 的差异也很大，一开始可能不习惯，但是随着深入使用，你会发现这一设计对表单的数据管理和性能都有非常大的好处。*
 
 ## 模型描述
 
@@ -447,126 +447,80 @@ model: {
 
 - `field`: 普通字段
 - `<sub>`: 子模型，子模型的结构和根模型的结构一摸一样
-- `|sub|`: 对应子模型的描述，可以直接写成 `sub`，`<sub>`指定子模型本身，|sub|指定子模型其他描述信息
+- `|sub|`: 对应子模型的描述，可以直接写成 `sub`，`<sub>` 指定子模型本身，`|sub|` 指定子模型其他描述信息
 
 **Meta**
 
 Meta 是对字段元数据的描述。它包含：
 
-```ts
-interface Meta {
-  // required, any,
-  // if you need to return an object/array, you should give a function to return,
-  // i.e. default() { return { name: 'some' } }
+```
+Meta {
+  // 默认值，必须的
   default: '',
+  // 自动计算
+  compute: "{ a + '' + b }",
+  // 自动响应计算
+  reactivate: "{ a + '' + b }",
 
-  // optional, computed property, will compute at each time digest end
-  // when it is a compute property, it is not able to use `set` to update value
-  compute?() {
-    const a = this.a
-    const b = this.b
-    return a + '' + b
-  },
+  // 字段类型
+  type: "string",
+  // 赋值时字段类型不符报错的错误信息
+  message: '',
+  // 赋值时字段类型不符时，强制使用默认值赋值给当前字段值
+  force: true,
 
-  // optional, when passed, `set` action will return prev value if not pass type checking
-  // notice: `default` and result of `compute` should match type,
-  // can be rule, i.e. equal(String)
-  type?: String,
-  // optional, string, message to return when type checking fail
-  message?: '',
-  // optional, if true, when the given value does not pass type checking, the value will be replace with default value or previous value
-  force?: Boolean,
-
-  // optional
-  validators?: [
-    // read more about [Validator](validator.md)
-    validator,
-    ...
+  // 校验器列表
+  validators: [
+    // 阅读下一节了解校验器语法
   ],
 
-  // optional, function, used by `fromJSON`.
-  // `json` is the first parameter of `fromJSON`
-  create?: (value, key, json) => !!json.on_market ? json.listing : json.pending,
-  // optional, function, used by `toJSON`.
-  // use this to create an object which can be used by fromJSON to recover the model
-  save?: (value, key, data) => {
-    // notice: the return value should MUST be an object, and will be patched to output object (like `flat` do), so that you can export a complext object
-    return { [key]: newValue }
-  },
-  // optional, used by `fromJSON` and `toJSON` to read or save to property
-  // ie. asset='some', tyshemo will read property from data.some, and patch save result as json.some
-  // {
-  //   asset: 'some',
-  //   create: value => value, // value = data.some
-  //   save: value => value, // json.some = value
-  // }
-  // notice, if you want to return custom object in create or save, dont pass asset
-  asset?: String,
+  // 是否在调用 model.toData() 时丢弃当前字段
+  drop: "{ a > 10 }",
+  // 在调用 model.toData() 时把当前字段的值转化为另外一个值
+  map(value): "{ value + 'cm' }",
+  // 在调用 model.toData() 时用当前字段的值生成另外的提交数据。它在 drop 之前执行，因此如果原属属性需要丢弃，请将 drop 设置为 true。
+  flat(value): "{ { other_property: value + 'px' } }", // 在提交的数据中，将会多出 other_property 属性
+  // 在调用 model.toData() 时，把当前字段的属性名转化为另外一个属性名进行提交
+  to: 'other_name',
 
-  // optional, function, whether to not use this property when `toData`
-  drop?: (value, key, data) => Boolean,
-  // optional, function, to override the property value when `toData`, not work when `drop` is false
-  map?: (value, key, data) => newValue,
-  // optional, function, to assign this result to output data, don't forget to set `drop` to be true if you want to drop original property
-  flat?: (value, key, data) => ({ [key]: newValue }),
-  // optional, submit the key to be another name, for example: { to: 'table_1.field_1' } -> { 'table_1.field_1': value }
-  to?: String,
+  // 写入字段值前对写入的值进行处理
+  setter(value): "{ +value }",
+  // 读出字段值前对字段的值进行转化
+  getter(value): "{ value + '' }",
+  // 对字段值进行文本格式化，可通过 model.$views.field.text 读取格式化后的结果
+  formatter(value): "{ value | number | empty }", // 这里利用了过滤器来实现格式化，过滤器是由我们开发者在外部传入的
 
-  // optional, function, format this property value when set
-  setter?: (value) => value,
-  // optional, function, format this property value when get
-  getter?: (value) => newValue,
-  // optional, function, format this field to a text, you can read the text on `model.$views.field.text`
-  formatter?: (value) => text,
+  // 字段值是否允许被修改
+  readonly: "{ a < 100 }",
+  // 字段值是否禁用，禁用后：
+  // 1. readonly 被强制为 true
+  // 2. 校验器将失效，不进行校验
+  // 3. drop 被强制为 true
+  // 4. flat 失效
+  disabled: "{ age < 5 }",
+  // 字段是否要隐藏
+  hidden: "{ age < 2 }",
 
-  // optional, function or boolean or string,
-  // if `readonly` is true, you will not be able to change value by using `set` (however `assign` works)
-  readonly?: Boolean|Function,
-  // optional, function or boolean or string,
-  // if `disabled` is true, you will not be able to change value by using `set` (however `assign` works),
-  // when you invoke `validate`, the validators will be ignored,
-  // when you invoke `export`, the `drop` will be set to be `true` automaticly, `flat` will not work too
-  disabled?: Boolean|Function,
-  // optional, function or boolean or string,
-  // if `hidden` is true, it means you want to hide the field related ui component
-  hidden?: Boolean|Function,
-
-  // optional, function or boolean or string.
-  // `required` will affect validation. If `required` is false, validation will be dropped when the given value is empty. For example, schema.validate('some', null, context) -> true. Only when `required` is true, the validation will thrown out the errors when the given value is empty.
-  // `Empty` rule: null|undefined|''|NaN|[]|{}
-  required?: Boolean|Function,
-  // optional, function to determine the value is empty
-  empty?: Function,
-
-  // when this field's value changed, the `watch` function will be invoke
-  watch?({ value }) {},
-
-  // optional, return an object to be attached to model
-  state?() {
-    return {
-      some: 'default value',
-    }
-  },
-  // optional, return an object which has the same structure of a schema defs object whose node should must be Meta
-  // if depend on a existing field, the field in deps() will not work
-  deps?() {
-    return {
-      field_a: A_Meta, // A_Meta is a Meta which defined before
-      field_b: B_Meta, // if there is another field called `field_b` on Model, this will not work
-    }
-  },
-
-  // optional, when an error occurs caused by this property, what to do with the error
-  catch?: (error) => {},
-
-  // any other attr name, which can be used in Model by Model.attrs method
-  // notice, if it is a function, it will be used as a getter whose parameter is the key name and return value will be treated as the real value when called on view
-  // i.e. some(key) { return 'real_value' } -> model.$views.field.some -> 'real_value'
-  [attr]?: any,
+  // 字段是否必填
+  // 如果为 true，在校验器中如果存在 required 校验器，那么，当字段的值为空时（由下面的 empty 决定是否为空），校验不通过
+  required(value): "{ age + value > 10 }",
+  // 字段是否为空
+  // 如果不传，默认如下这些值为空：null|undefined|''|NaN|[]|{}
+  empty(value): "{ value !== 0 && !value }",
 }
 ```
 
 每一个描述被称为“属性（Attribute）”，即一个字段有多个属性。这些属性大部分是可选的。
+
+你还可以在 Meta 上定义自己的属性，例如：
+
+```
+{
+  is_avail(value): "{ value > 12 }"
+}
+```
+
+定义好之后，就会在视图上出现 `is_avail` 属性，你可以在视图中使用该属性的值。
 
 在模型定义中，当前模型的字段可以在当前模型中直接引用，例如：
 
@@ -588,6 +542,38 @@ interface Meta {
 *注：在模型定义时，使用`a`读取a字段的值，在视图定义（layout）中使用`a`读取a字段的视图，两处定义时用法不同。*
 
 *注：虽然schema中如此规定，但在 formast 中，支持完整的 model json 解析，以辅助完成某些更复杂的需求。完整 model json 请[阅读这里](https://tyshemo.js.org/#/loader?id=schema-json)。*
+
+**校验器**
+
+在 `validators` 中，你可以定义当前字段的校验器。有两种定义方式，一种是使用内置的校验器生成函数，例如：
+
+```
+{
+  validators: [
+    "required('该字段必填')"
+  ]
+}
+```
+
+其中 `required()` 就是一个必填校验器生成函数。内置的校验器生成函数还有 `integer` `decimal` `max` `min` `maxLen` `minLen` 等，[具体可以阅读这里](https://tyshemo.js.org/#/validator?id=builtin-validators-generators)。
+
+第二种是自己定义校验器的各个逻辑。例如：
+
+```
+{
+  validators: [
+    {
+      determine: "{ age > 12 }", // age > 12 时才触发该校验器，否则跳过该校验
+      validate(value): "{ value > 14 }", // 校验函数，返回 true 表示通过
+      message: "必须大于 14", // 校验失败时的提示语
+      break: true, // 如果当前这条检验器没有通过校验，是否还要用后续的校验器校验，默认情况会把全部校验器执行一遍，你可通过这里的 break 来进行调节
+      async: false, // 当前校验器是否为异步校验器，如果是异步校验器，那么调用 model.validate() 进行校验时，会跳过，只有通过 model.validateAsync() 时才会被校验
+    }
+  ]
+}
+```
+
+由于在 formast 的模型中，当前字段是可以引用其他字段的值的，因此，可非常灵活的实现字段联动关系的校验。
 
 **使用**
 

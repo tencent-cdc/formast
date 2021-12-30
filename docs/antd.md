@@ -2,8 +2,6 @@
 
 为开发者提供最简单的内置主题。
 
-> 注意：你的构建工具需支持编译 less 作为样式。
-
 ## 使用
 
 表单：
@@ -11,6 +9,7 @@
 ```js
 import { Formast } from 'formast/react';
 import * as Options from 'formast/antd';
+import 'formast/antd/index.css';
 
 function MyFormast(props) {
   return <Formast options={Options} {...props} />
