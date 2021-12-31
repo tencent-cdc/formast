@@ -53,6 +53,7 @@
     "eslint-config-tencent": "^1.0.2",
     "eslint-plugin-react": "^7.23.2",
     "husky": "^6.0.0",
+    "json-schema": "^0.4.0",
     "less": "^4.1.1",
     "less-loader": "^8.0.0",
     "mini-css-extract-plugin": "^1.4.1",
