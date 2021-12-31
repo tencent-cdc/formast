@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef } from 'react';
 import { Formast } from '../../src/react';
 import schemaJson from './form.json';
 import { isEmpty } from 'ts-fns';
-import { Select, Input, Label } from '../../src/react-default/components.jsx';
+import { Select, Input, Label } from '../../src/react-d/components.jsx';
 
 const Options = {
   components: {
@@ -40,7 +40,7 @@ export default function App() {
   return (
     <div>
       <Formast
-        json={getJson}
+        schema={getJson}
         props={{
           onSubmit: handleSubmit,
           random: random,

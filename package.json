@@ -1,6 +1,6 @@
 {
   "name": "formast",
-  "version": "1.1.13",
+  "version": "2.0.0",
   "description": "基于JSON的企业级表单低代码框架",
   "main": "index.js",
   "scripts": {
@@ -9,8 +9,8 @@
     "dev:vue": "parcel .examples/vue/index.html --out-dir .cache/.vue",
     "dev:react": "parcel .examples/react/index.html --out-dir .cache/.react",
     "build:dist": "webpack --config .build/webpack.config.js",
-    "build:cjs": "babel src -d . --keep-file-extension --copy-files",
-    "clear": "rimraf antd core dist react react-default visual",
+    "build:cjs": "babel src -d . --keep-file-extension && lessc src/antd/index.less antd/index.css && lessc src/react-d/index.less react-d/index.css",
+    "clear": "rimraf antd core dist react react-d vue",
     "build": "npm run clear && cross-env NODE_ENV=production npm run build:cjs && cross-env NODE_ENV=production npm run build:dist",
     "lint": "eslint --ext .js,.jsx src"
   },

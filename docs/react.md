@@ -59,7 +59,7 @@ function App() {
   const fetchJson: Promise<JSON> = () => {};
   const options = ...; // 和 createReactFormast 第二个参数一致
   return (
-    <Formast json={fetchJson} options={options} props={/* 其他属性传入到内部 */}>
+    <Formast schema={fetchJson} options={options} props={/* 其他属性传入到内部 */}>
       <span>正在加载...</span>
     </Formast>
   )
@@ -73,12 +73,28 @@ function App() {
   const fetchJson: Promise<JSON> = () => {};
   const options = ...; // 和 createReactFormast 第二个参数一致
   return (
-    <Formast json={fetchJson} options={options} props={/* 其他属性传入到内部 */} onLoad={({ model, schema }) => {
+    <Formast schema={fetchJson} options={options} props={/* 其他属性传入到内部 */} onLoad={({ model, schema }) => {
       // 这里将 model, schema 保存下来使用
     }}>
       <span>正在加载...</span>
     </Formast>
-  )
+  );
+}
+```
+
+或者，你可以通过 `ref` 直接接收这些信息。
+
+```js
+function App() {
+  const ref = useRef({});
+
+  useEffect(() => {
+    // ...
+  }, [ref.current.model]);
+
+  return (
+    <Formast schema={fetchJson} options={Options} props={/* ... */} ref={ref}></Formast>
+  );
 }
 ```
 

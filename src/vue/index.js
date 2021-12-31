@@ -113,8 +113,8 @@ export const SHARED_COMPONENTS = {
   }),
 };
 
-export function createVueFormast(json, options = {}) {
-  if (isEmpty(json)) {
+export function createVueFormast(schemaJson, options = {}) {
+  if (isEmpty(schemaJson)) {
     return {};
   }
 
@@ -141,7 +141,7 @@ export function createVueFormast(json, options = {}) {
     },
   });
 
-  schemaParser.loadSchema(json);
+  schemaParser.loadSchema(schemaJson);
 
   const { model, Layout, declares, schema, constants } = schemaParser;
 
@@ -166,14 +166,15 @@ export function createVueFormast(json, options = {}) {
 
 export const Formast = Vue.extend({
   name: 'formast',
-  props: ['options', 'json', 'props', 'onLoad'],
+  props: ['options', 'schema', 'json', 'props', 'onLoad'],
   data() {
     return {
       FormastComponent: null,
     };
   },
   beforeMount() {
-    const { options, json, onLoad } = this;
+    const { options, json, schema, onLoad } = this;
+    const getSchema = schema || json;
     const create = (schemaJson) => {
       const { Formast, ...others } = createVueFormast(schemaJson, options);
       this.FormastComponent = Formast;
@@ -181,11 +182,11 @@ export const Formast = Vue.extend({
         onLoad(others);
       }
     };
-    if (typeof json === 'function') {
-      Promise.resolve().then(json)
+    if (typeof getSchema === 'function') {
+      Promise.resolve().then(getSchema)
         .then(create);
     } else {
-      create(json);
+      create(getSchema);
     }
   },
   render(h) {

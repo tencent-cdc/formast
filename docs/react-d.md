@@ -1,4 +1,4 @@
-# Ant Design 集成包
+# React 集成包
 
 为开发者提供最简单的内置主题。
 
@@ -8,31 +8,30 @@
 
 ```js
 import { Formast } from 'formast/react';
-import * as Options from 'formast/antd';
+import * as Options from 'formast/react-d';
+import 'formast/react-d/index.css'; // 需要使用内置样式
 
 function MyFormast(props) {
   return <Formast options={Options} {...props} />
 }
 ```
 
-*当然，你要在你的应用中全局引入 antd 以及它的样式。*
-
 ## 表单内支持的组件
 
 - Form
+- FormGroup
 - FormItem
+- Loop
+- Text
+- Label
+- Button
+- HBox 横向盒子
+- VBox 纵向盒子
 - Input
-- TextArea
 - InputNumber
+- TextArea
 - RadioGroup
 - CheckboxGroup
-- Select
-- Password
-- Search
-- Switch
-- Rate
-- DatePicker
-- Slider
-- Button
+
 
 其他组件如有需求请在 issues 中提。

@@ -231,7 +231,7 @@ export const InputNumber = connectReactComponent((props) => {
   );
 });
 
-export const Textarea = connectReactComponent((props) => {
+export const TextArea = connectReactComponent((props) => {
   const {
     bind,
     className,
@@ -276,7 +276,7 @@ export const Textarea = connectReactComponent((props) => {
   );
 });
 
-export const Radios = connectReactComponent((props) => {
+export const RadioGroup = connectReactComponent((props) => {
   const {
     bind,
     className,
@@ -345,7 +345,7 @@ export const Radios = connectReactComponent((props) => {
   );
 });
 
-export const Checkboxes = connectReactComponent((props) => {
+export const CheckboxGroup = connectReactComponent((props) => {
   const {
     bind,
     className,
@@ -472,7 +472,7 @@ export const Form = connectReactComponent((props) => {
   requireProps: ['onSubmit'],
 });
 
-export const Group = connectReactComponent((props) => {
+export const FormGroup = connectReactComponent((props) => {
   const {
     bind,
     className,
@@ -499,7 +499,7 @@ export const Group = connectReactComponent((props) => {
   );
 });
 
-export const Item = connectReactComponent((props) => {
+export const FormItem = connectReactComponent((props) => {
   const {
     bind,
     children,

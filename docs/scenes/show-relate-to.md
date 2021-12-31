@@ -44,7 +44,7 @@
 }
 ```
 
-其中 `Input` 组件使用了 react-default 中的组件，它支持 bind 传入一个字段名，该组件会根据 remark 字段的视图上的 `hidden` 属性来决定自己是否要隐藏起来。也就是说，当 amount 字段的值在输入过程中已经大于 5000 万的时候，remark 的 hidden 就变成了 false，此时，`Input` 组件会把自己展示出来。
+其中 `Input` 组件使用了 react-d 中的组件，它支持 bind 传入一个字段名，该组件会根据 remark 字段的视图上的 `hidden` 属性来决定自己是否要隐藏起来。也就是说，当 amount 字段的值在输入过程中已经大于 5000 万的时候，remark 的 hidden 就变成了 false，此时，`Input` 组件会把自己展示出来。
 
 当然，你可以自己实现 `Input` 组件，甚至使用原生组件，例如下面这样处理：
 

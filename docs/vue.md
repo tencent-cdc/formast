@@ -60,7 +60,7 @@ import { Formast } from 'formast/vue';
 
 export default {
   template: `
-    <formast :options="options" :json="getJson" :props="props" :onLoad="onLoad">
+    <formast :options="options" :schema="getJson" :props="props" :onLoad="onLoad">
       <span>正在加载...</span>
     </formast>
   `,

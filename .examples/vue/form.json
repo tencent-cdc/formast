@@ -70,7 +70,7 @@
       }
     ]
   },
-  "declare": {
+  "declares": {
     "props": [
       "onSubmit",
       "random"

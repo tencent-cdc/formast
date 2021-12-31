@@ -1,4 +1,4 @@
-import { useState, useEffect, memo, Fragment, createElement, useRef } from 'react';
+import { useState, useEffect, memo, Fragment, createElement, useRef, forwardRef } from 'react';
 import { each, isEmpty, getObjectHash, isArray, isString, map, isFunction } from 'ts-fns';
 import { SchemaParser } from '../core/schema-parser.js';
 import { parseViewInModel } from '../core/utils.js';
@@ -14,8 +14,8 @@ export const ALIAS_PROPS_MAPPING = {
   class: 'className',
 };
 
-export function createReactFormast(json, options = {}) {
-  if (isEmpty(json)) {
+export function createReactFormast(schemaJson, options = {}) {
+  if (isEmpty(schemaJson)) {
     return {};
   }
 
@@ -43,7 +43,7 @@ export function createReactFormast(json, options = {}) {
     },
   });
 
-  schemaParser.loadSchema(json);
+  schemaParser.loadSchema(schemaJson);
 
   const { model, Layout, declares, schema, constants } = schemaParser;
 
@@ -58,8 +58,8 @@ export function createReactFormast(json, options = {}) {
   return { model, Formast, schema, declares, constants };
 }
 
-export function Formast(props) {
-  const { options, json, props: passedProps = {}, onLoad, children } = props;
+function FormastComponent(props, ref) {
+  const { options, json, schema = json, props: passedProps = {}, onLoad, children } = props;
 
   const [FormastComponent, setFormastComponent] = useState(null);
 
@@ -70,12 +70,16 @@ export function Formast(props) {
       if (onLoad) {
         onLoad(others);
       }
+      if (ref) {
+        // eslint-disable-next-line no-param-reassign
+        ref.current = others;
+      }
     };
-    if (typeof json === 'function') {
-      Promise.resolve().then(json)
+    if (typeof schema === 'function') {
+      Promise.resolve().then(schema)
         .then(create);
     } else {
-      create(json);
+      create(schema);
     }
   }, []);
 
@@ -85,6 +89,8 @@ export function Formast(props) {
 
   return createElement(FormastComponent, passedProps);
 }
+
+export const Formast = forwardRef(FormastComponent);
 
 function Box(assets) {
   const {

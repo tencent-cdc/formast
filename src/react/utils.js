@@ -2,14 +2,22 @@ import { useMemo, Component } from 'react';
 import { createRandomString, isEqual, isShallowEqual, isInheritedOf, isFunction } from 'ts-fns';
 
 export function isReactComponent(obj) {
-  if (isFunction(obj) && obj.length <= 1) {
-    return true;
+  // function MyComponent(props) {}
+  // function MyComponent() {}
+  if (isFunction(obj)) {
+    const args = obj.toString().match(/function\s.*?\(([^)]*)\)/)[1];
+    const str = args && args.trim();
+    if (str === 'props' || str === '') {
+      return true;
+    }
   }
 
+  // class MyComponent extends Component {}
   if (typeof obj === 'function' && isInheritedOf(obj, Component)) {
     return true;
   }
 
+  // const MyComponent = React.forwordRef(...)
   if (obj?.$$typeof?.toString().indexOf('Symbol(react.') === 0) {
     return true;
   }
