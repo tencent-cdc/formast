@@ -34,5 +34,6 @@ function MyFormast(props) {
 - DatePicker
 - Slider
 - Button
+- Label
 
 其他组件如有需求请在 issues 中提。

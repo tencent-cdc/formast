@@ -1,21 +1,8 @@
 import React, { useState, useCallback } from 'react';
-import { createReactFormast } from '../../src/react/index.js';
+import { Formast } from '../../src/react/index.js';
 import schemaJson from './form.json';
 import { isEmpty } from 'ts-fns';
-import { components } from '../../src/react-d';
-import { InputNumber, FormItem } from './components.jsx'
-
-const { Select, Input, Label } = components
-
-const { model, Formast } = createReactFormast(schemaJson, {
-  components: {
-    Select,
-    Input,
-    Label,
-    InputNumber,
-    FormItem,
-  },
-})
+import * as Options from '../../src/antd';
 
 export default function App() {
   const [errors, setErrors] = useState([]);
@@ -39,7 +26,10 @@ export default function App() {
 
   return (
     <div>
-      <Formast onSubmit={handleSubmit} random={random} />
+      <Formast schema={schemaJson} options={Options} props={{
+        onSubmit: handleSubmit,
+        random,
+      }} />
       <div>
         {errors.map((err, i) => {
           return <div key={i} style={{ color: 'red' }}>{err.message}</div>

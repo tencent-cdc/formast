@@ -19,7 +19,8 @@
         "min(10, '{label}必须大于10')",
         "max(100, '{label}必须小于100')"
       ],
-      "label": "年龄"
+      "label": "年龄",
+      "placeholder": "输入年龄"
     },
     "sex": {
       "label": "性别",
@@ -104,7 +105,7 @@
             ]
           },
           {
-            "type": "input",
+            "type": "Input",
             "vars": {
               "value": "{ x }"
             },
@@ -140,7 +141,7 @@
             "type": "InputNumber",
             "props": {
               "value": "{ age.value }",
-              "onChange(e)": "{ age.value = e.target.value }",
+              "onChange(value)": "{ age.value = +value }",
               "placeholder": "{ age.placeholder }",
               "required": "{ age.required }"
             }
@@ -161,7 +162,7 @@
             "props": {
               "options": "{ sex.options }",
               "value": "{ sex.value }",
-              "onChange(e)": "{ sex.value = e.target.value }",
+              "onChange(value)": "{ sex.value = value }",
               "placeholder": "{ sex.placeholder }",
               "required": "{ sex.required }",
               "disabled": "{ sex.disabled }"

@@ -1,33 +1,33 @@
 import { isArray } from 'ts-fns';
 
-/**
- * 创建一个代理事件对象，确保在读取e.target.value时，得到的时给定的原始值（而非字符串）
- * @param {*} e
- * @param {*} origin
- * @returns
- */
-export function createProxyEvent(e, origin) {
-  const event = new Proxy(e, {
-    get(_, key) {
-      const value = _[key];
-      if (key === 'target') {
-        return new Proxy(value, {
-          get(_, key) {
-            const value = _[key];
-            if (key === 'value') {
-              return origin;
-            }
+// /**
+//  * 创建一个代理事件对象，确保在读取e.target.value时，得到的时给定的原始值（而非字符串）
+//  * @param {*} e
+//  * @param {*} origin
+//  * @returns
+//  */
+// export function createProxyEvent(e, origin) {
+//   const event = new Proxy(e, {
+//     get(_, key) {
+//       const value = _[key];
+//       if (key === 'target') {
+//         return new Proxy(value, {
+//           get(_, key) {
+//             const value = _[key];
+//             if (key === 'value') {
+//               return origin;
+//             }
 
-            return typeof value === 'function' ? value.bind(_) : value;
-          },
-        });
-      }
+//             return typeof value === 'function' ? value.bind(_) : value;
+//           },
+//         });
+//       }
 
-      return typeof value === 'function' ? value.bind(_) : value;
-    },
-  });
-  return event;
-}
+//       return typeof value === 'function' ? value.bind(_) : value;
+//     },
+//   });
+//   return event;
+// }
 
 export function classnames(...items) {
   const { namespace = 'formast', module: cssModule } = classnames;

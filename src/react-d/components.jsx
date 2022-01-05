@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { isArray, createRandomString, isFunction, isUndefined } from 'ts-fns';
 import NumberInput from './input-number.jsx';
 import SelectInput from './input-select.jsx';
-import { createProxyEvent, classnames, createClassNames } from './utils.js';
+import { classnames, createClassNames } from './utils.js';
 import { connectReactComponent } from '../react/index.js';
 import { useUniqueKeys } from '../react/utils.js';
 
@@ -11,10 +11,15 @@ import { useUniqueKeys } from '../react/utils.js';
  * @param {*} props
  * @returns
  */
-export function Text(props) {
-  const { className, name, ...attrs } = props;
-  return <span className={classnames('text', name ? `text--${name}` : '')} {...attrs} />;
-}
+export const Text = connectReactComponent((props) => {
+  const {
+    bind,
+    children = bind?.text,
+    className,
+    ...attrs
+  } = props;
+  return <span className={classnames('text', className)} {...attrs}>{children}</span>;
+});
 
 /**
  * 标签
@@ -22,12 +27,12 @@ export function Text(props) {
 export const Label = connectReactComponent((props) => {
   const {
     bind,
-    children,
+    children = bind?.label,
     className,
     ...attrs
   } = props;
   return (
-    <label className={classnames('label', className)} {...attrs}>{bind ? bind.label : children}</label>
+    <label className={classnames('label', className)} {...attrs}>{children}</label>
   );
 });
 
@@ -147,7 +152,7 @@ export const Input = connectReactComponent((props) => {
 
   if (bind) {
     attrs.value = bind.value;
-    attrs.onChange = e => bind.value = e.target.value;
+    attrs.onChange = value => bind.value = value;
     attrs.placeholder = attrs.placeholder || bind.placeholder;
   }
 
@@ -170,6 +175,7 @@ export const Input = connectReactComponent((props) => {
         maxLength={maxLength}
         placeholder={placeholder}
         {...attrs}
+        onChange={e => attrs.onChange && attrs.onChange(e.target.value)}
       />
       {suffix ? <span className={classnames('element__suffix input__suffix')}>{suffix}</span> : null}
       {children}
@@ -311,8 +317,7 @@ export const RadioGroup = connectReactComponent((props) => {
       setState(origin);
     }
     if (onChange) {
-      const event = createProxyEvent(e, origin);
-      onChange(event);
+      onChange(origin, item);
     }
   };
 
@@ -380,8 +385,7 @@ export const CheckboxGroup = connectReactComponent((props) => {
       setState(next);
     }
     if (onChange) {
-      const event = createProxyEvent(e, origin);
-      onChange(event);
+      onChange(origin, item);
     }
   };
 
@@ -542,7 +546,6 @@ export const Loop = connectReactComponent((props) => {
     items = bind?.value,
     children,
     empty,
-    footer,
     ...attrs
   } = props;
 
@@ -559,7 +562,6 @@ export const Loop = connectReactComponent((props) => {
         </div>
       ) : null}
       {!items.length && empty ? <div className={classnames('loop__empty')}>{empty}</div> : null}
-      {footer ? <div className={classnames('loop__footer')}>{footer}</div> : null}
     </div>
   );
 });

@@ -60,13 +60,27 @@ export const FormItem = connectReactComponent((props) => {
     errors = bind?.errors,
     hidden = bind?.hidden,
     label = bind?.label,
+    children,
     ...attrs
   } = props;
 
   return (
     <Item label={label} hidden={hidden} {...attrs}>
+      {children}
       <ErrorList errors={errors} />
     </Item>
+  );
+});
+
+export const Label = connectReactComponent((props) => {
+  const {
+    bind,
+    children = bind?.label,
+    ...attrs
+  } = props;
+
+  return (
+    <label {...attrs}>{children}</label>
   );
 });
 

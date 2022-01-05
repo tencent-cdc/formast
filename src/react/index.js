@@ -8,7 +8,7 @@ export const SHARED_COMPONENTS = {
   Fragment,
 };
 
-export const ALIAS_PROPS_MAPPING = {
+export const ALIAS_MAPPING = {
   for: 'htmlFor',
   readonly: 'readOnly',
   class: 'className',
@@ -59,7 +59,7 @@ export function createReactFormast(schemaJson, options = {}) {
 }
 
 function FormastComponent(props, ref) {
-  const { options, json, schema = json, props: passedProps = {}, onLoad, children } = props;
+  const { options, json, schema = json, props: passedProps = {}, onLoad, children = null } = props;
 
   const [FormastComponent, setFormastComponent] = useState(null);
 
@@ -134,19 +134,19 @@ function Box(assets) {
   const info = {};
   if (props) {
     each(props, (value, key) => {
-      const attr = ALIAS_PROPS_MAPPING[key] || key;
+      const attr = ALIAS_MAPPING[key] || key;
       info[attr] = value;
     });
   }
   if (attrs) {
     each(attrs, (value, key) => {
-      const attr = ALIAS_PROPS_MAPPING[key] || key;
+      const attr = ALIAS_MAPPING[key] || key;
       info[attr] = value;
     });
   }
   if (events) {
     each(events, (value, key) => {
-      const event = ALIAS_PROPS_MAPPING[key] || key;
+      const event = ALIAS_MAPPING[key] || key;
       const attr = `on${key.replace(event[0], event[0].toUpperCase())}`;
       info[attr] = value;
     });
