@@ -61,11 +61,11 @@ export function createClassNames(name, props) {
   const {
     bind,
     className,
-    disabled = bind && bind.disabled,
-    readonly = bind && bind.readonly,
-    hidden = bind && bind.hidden,
-    required = bind && bind.required,
-    highlight = bind && bind.highlight,
+    disabled = bind?.disabled,
+    readonly = bind?.readonly,
+    hidden = bind?.hidden,
+    required = bind?.required,
+    highlight = bind?.highlight || bind?.errors.length,
   } = props;
   const classList = classnames(
     'element',
