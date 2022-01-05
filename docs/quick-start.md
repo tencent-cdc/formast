@@ -8,7 +8,7 @@ npm i formast
 
 ## 使用
 
-如果你在模块化体系下使用，你可以直接引入该包，它默认expose commonjs，你可以在大部分模块话系统中使用：
+如果你在模块化体系下使用，你可以直接引入该包，它默认expose commonjs，你可以在大部分模块化系统中使用：
 
 ```js
 import { SchemaParser } from 'formast'
