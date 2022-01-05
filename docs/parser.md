@@ -82,14 +82,14 @@ visit(node: JSON, parentNode: JSON): JSON;
 
 **loadSchema(schemaJson, data)**
 
+- schemaJson: 即符合 schema 的 JSON 对象
+- data: 用于实例化模型的数据
+
 加载并解析 schema JSON，返回实例本身，加载后实例上将得到 Layout, model 等信息。
 
 ```js
 const { model, Layout } = schemaParser.loadSchema({ ... }, { ... })
 ```
-
-- schemaJson: 即符合 schema 的 JSON 对象
-- data: 用于实例化模型的数据
 
 注意，如果你执行完 loadSchema，那么，就不可以再执行下面的任意方法。
 
