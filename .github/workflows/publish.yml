@@ -19,7 +19,9 @@ jobs:
         run: npm ci --verbose || npm i --verbose
       - name: Update_Version
         run: git clean -df
+      - name: Update Version
         run: npx standard-version
+      - name: Publish to NPM
         run: npx can-npm-publish
       - name: Publish_NPM
         uses: JS-DevTools/npm-publish@v1
