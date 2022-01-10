@@ -140,7 +140,7 @@
               "placeholder": "无模型支持的vars使用，vars.value 是从父级作用域传入进来生成的"
             },
             "events": {
-              "change(v)": "{ debug(v); value = v }"
+              "change(v)": "{ value = v }"
             }
           }
         ]
@@ -272,7 +272,7 @@
               "type": "button"
             },
             "events": {
-              "click()": "{ books.value.push({}); debug(books.value);  }"
+              "click()": "{ books.value.push({})  }"
             },
             "children": "添加"
           }
