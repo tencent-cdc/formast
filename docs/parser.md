@@ -18,6 +18,7 @@ const parser = new SchemaParser({
   fns: {},
   context: {
     components: {},
+    types: {},
   },
 })
 ```
@@ -77,6 +78,9 @@ visit(node: JSON, parentNode: JSON): JSON;
 **context**
 
 一个寄存对象，你可以在这个对象内提供一些数据，这个对象可在渲染器内被读取，从而可以共享这些数据。例如内置的 react 渲染器，就使用了 context 传递 components 这个参数。
+
+- components: 键值对，规定在 JSON 中的组件名将使用哪一个真实的组件
+- types: 键值对，其值和 JSON 中的 model 中的 component 形式一样，用以根据字段的 type 来决定使用什么组件
 
 ### API
 

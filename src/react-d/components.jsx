@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { isArray, createRandomString, isFunction, isUndefined } from 'ts-fns';
+import { isArray, createRandomString, isFunction, isUndefined, isNumeric, isNumber } from 'ts-fns';
 import NumberInput from './input-number.jsx';
 import SelectInput from './input-select.jsx';
 import { classnames, createClassNames } from './utils.js';
@@ -139,7 +139,6 @@ export const Input = connectReactComponent((props) => {
     hidden = bind?.hidden,
     required = bind?.required,
     maxLength = bind?.maxLength,
-    placeholder = bind?.placeholder,
     highlight,
     keepAlive,
     children,
@@ -173,7 +172,6 @@ export const Input = connectReactComponent((props) => {
         readOnly={readonly}
         required={required}
         maxLength={maxLength}
-        placeholder={placeholder}
         {...attrs}
         onChange={e => attrs.onChange && attrs.onChange(e.target.value)}
       />
@@ -201,7 +199,6 @@ export const InputNumber = connectReactComponent((props) => {
     required = bind?.required,
     max = bind?.max,
     min = bind?.min,
-    placeholder = bind?.placeholder,
     highlight,
     keepAlive,
     children,
@@ -212,9 +209,14 @@ export const InputNumber = connectReactComponent((props) => {
     return null;
   }
 
-  // 传入null作为value
-  if (attrs.value === null) {
-    attrs.value = '';
+  if (bind) {
+    attrs.value = bind.value;
+    attrs.onChange = value => bind.value = value;
+    attrs.placeholder = attrs.placeholder || bind.placeholder;
+  }
+
+  if (!isNumber(attrs.value) && !isNumeric(attrs.value)) {
+    attrs.value = null;
   }
 
   // 仅支持输入类型
@@ -228,7 +230,6 @@ export const InputNumber = connectReactComponent((props) => {
         required={required}
         max={max}
         min={min}
-        placeholder={placeholder}
         {...attrs}
       />
       {suffix ? <span className={classnames('element__suffix input-number__suffix')}>{suffix}</span> : null}
@@ -248,7 +249,6 @@ export const TextArea = connectReactComponent((props) => {
     hidden = bind?.hidden,
     required = bind?.required,
     maxLength = bind?.maxLength,
-    placeholder = bind?.placeholder,
     highlight,
     keepAlive,
     children,
@@ -257,6 +257,12 @@ export const TextArea = connectReactComponent((props) => {
 
   if (hidden && !keepAlive) {
     return null;
+  }
+
+  if (bind) {
+    attrs.value = bind.value;
+    attrs.onChange = value => bind.value = value;
+    attrs.placeholder = attrs.placeholder || bind.placeholder;
   }
 
   // 传入null作为value
@@ -273,8 +279,8 @@ export const TextArea = connectReactComponent((props) => {
         readOnly={readonly}
         required={required}
         maxLength={maxLength}
-        placeholder={placeholder}
         {...attrs}
+        onChange={e => attrs.onChange && attrs.onChange(e.target.value)}
       />
       {suffix ? <span className={classnames('element__suffix textarea__suffix')}>{suffix}</span> : null}
       {children}
@@ -289,13 +295,13 @@ export const RadioGroup = connectReactComponent((props) => {
     options = bind?.options,
     valueKey = 'value',
     labelKey = 'label',
+    value = bind?.value,
     prefix = bind?.prefix,
     suffix = bind?.suffix,
     disabled = bind?.disabled,
     readonly = bind?.readonly,
     hidden = bind?.hidden,
     required,
-    value,
     highlight,
     keepAlive,
     children,
@@ -310,14 +316,18 @@ export const RadioGroup = connectReactComponent((props) => {
   }
 
   const name = createRandomString(8);
-  const handleChange = (e, item) => {
+  const handleChange = (item) => {
     const origin = item[valueKey];
-    // 非受控
-    if (isUndefined(value)) {
+
+    if (bind) { // 绑定字段
+      bind.value = origin;
+    } else if (isUndefined(value)) { // 非受控
       setState(origin);
     }
+    // 受控，无需处理
+
     if (onChange) {
-      onChange(origin, item);
+      onChange(origin, origin, item);
     }
   };
 
@@ -338,10 +348,10 @@ export const RadioGroup = connectReactComponent((props) => {
             checked={`${item[valueKey]}` === `${val}`}
             readOnly={readonly}
             disabled={disabled || item.disabled}
-            onChange={e => handleChange(e, item)}
+            onChange={() => handleChange(item)}
             {...attrs}
           />
-          <span>{item[labelKey]}</span>
+          <span>{isUndefined(item[labelKey]) ? item[valueKey] : item[labelKey]}</span>
         </label>
       ))}
       {suffix ? <span className={classnames('element__suffix radios__suffix')}>{suffix}</span> : null}
@@ -357,7 +367,7 @@ export const CheckboxGroup = connectReactComponent((props) => {
     options = bind?.options,
     valueKey = 'value',
     labelKey = 'label',
-    values,
+    value = bind?.value,
     prefix = bind?.prefix,
     suffix = bind?.suffix,
     disabled = bind?.disabled,
@@ -371,25 +381,37 @@ export const CheckboxGroup = connectReactComponent((props) => {
     ...attrs
   } = props;
 
-  const [state, setState] = useState(values || []);
+  const [state, setState] = useState(value || []);
 
   if (hidden && !keepAlive) {
     return null;
   }
 
-  const handleChange = (e, item) => {
+  const handleChange = (item) => {
     const origin = item[valueKey];
-    // 非受控
-    if (!isArray(values)) {
-      const next = state.some(one => `${one}` === `${origin}`) ? state.filter(one => `${one}` !== `${origin}`) : state.concat([origin]);
+
+    const createNext = selected => (selected.some(one => `${one}` === `${origin}`) ? selected.filter(one => `${one}` !== `${origin}`) : selected.concat([origin]));
+
+    let values = [];
+    if (bind) { // 绑定字段
+      const value = isArray(bind.value) ? bind.value : [];
+      const next = createNext(value);
+      bind.value = next;
+      values = next;
+    } else if (!isArray(value)) { // 非受控
+      const next = createNext(state);
       setState(next);
+      values = next;
+    } else { // 受控
+      values = createNext(value);
     }
+
     if (onChange) {
-      onChange(origin, item);
+      onChange(values, origin, item);
     }
   };
 
-  const selected = isArray(values) ? values : state;
+  const selected = isArray(value) ? value : state;
 
   return (
     <span className={createClassNames('checkboxes', props)}>
@@ -405,7 +427,7 @@ export const CheckboxGroup = connectReactComponent((props) => {
             checked={selected.map(item => `${item}`).includes(`${item[valueKey]}`)}
             readOnly={readonly}
             disabled={disabled || item.disabled}
-            onChange={e => handleChange(e, item)}
+            onChange={() => handleChange(item)}
             {...attrs}
           />
           <span>{item[labelKey]}</span>
@@ -423,6 +445,7 @@ export const Select = connectReactComponent((props) => {
     options = bind?.options,
     valueKey = 'value',
     labelKey = 'label',
+    value = bind?.value,
     prefix = bind?.prefix,
     suffix = bind?.suffix,
     disabled = bind?.disabled,
@@ -434,16 +457,26 @@ export const Select = connectReactComponent((props) => {
     className,
     highlight,
     keepAlive,
+    onChange,
     ...attrs
   } = props;
-
-  if ('value' in attrs) {
-    attrs.value = `${attrs.value}`;
-  }
 
   if (hidden && !keepAlive) {
     return null;
   }
+
+  if (!isUndefined(value)) {
+    attrs.value = `${value}`;
+  }
+
+  const handleChange = (origin, item) => {
+    if (bind) {
+      bind.value = origin;
+    }
+    if (onChange) {
+      onChange(origin, origin, item);
+    }
+  };
 
   return (
     <label className={createClassNames('select', props)}>
@@ -458,6 +491,7 @@ export const Select = connectReactComponent((props) => {
         required={required}
         placeholder={placeholder}
         {...attrs}
+        onChange={handleChange}
       />
       {suffix ? <span className={classnames('element__suffix select__suffix')}>{suffix}</span> : null}
       {children}

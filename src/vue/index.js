@@ -118,7 +118,7 @@ export function createVueFormast(schemaJson, options = {}) {
     return {};
   }
 
-  const { macros = {}, components: passedComponents = {}, ...others } = options;
+  const { macros = {}, components: passedComponents = {}, types, ...others } = options;
   const mappedComponents = map(passedComponents, (component) => {
     if (component.formast && typeof component.formast === 'object' && !component.$$connectedByFormast) {
       return connectVueComponent(component, component.formast);
@@ -138,6 +138,7 @@ export function createVueFormast(schemaJson, options = {}) {
     },
     context: {
       components,
+      types,
     },
   });
 
