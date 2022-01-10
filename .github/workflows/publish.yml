@@ -17,7 +17,7 @@ jobs:
       - run: npm set config loglevel=info
       - name: Install
         run: npm ci --verbose || npm i --verbose
-      - name: Update_Version
+      - name: Git clean
         run: git clean -df
       - name: Update Version
         run: npx standard-version
