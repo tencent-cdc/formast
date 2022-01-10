@@ -469,6 +469,13 @@ Meta {
   // 赋值时字段类型不符时，强制使用默认值赋值给当前字段值
   force: true,
 
+  // 在 layout 中 bind 当前字段时，默认使用什么组件
+  // 此时，需要在 declares 中声明该组件，以确保该组件已经被传入
+  // 可以设置默认 props ，形式为数组 ['Input', { type: 'passwod' }]
+  // 注意，此时，不支持原生组件在这里使用，因为无法传递 attrs 和 events
+  // 同时，由于处于 model 中，也不支持 layout 内的局部作用域，因此要谨慎使用
+  component: 'Input',
+
   // 校验器列表
   validators: [
     // 阅读下一节了解校验器语法
