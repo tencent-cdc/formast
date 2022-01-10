@@ -20,6 +20,9 @@ export const Text = connectReactComponent((props) => {
   return <span className={classnames('text', className)} {...attrs}>{children}</span>;
 }, {
   mapToProps({ bind }) {
+    if (!bind) {
+      return;
+    }
     const { text } = bind;
     return { children: text };
   },
@@ -40,6 +43,9 @@ export const Label = connectReactComponent((props) => {
   );
 }, {
   mapToProps({ bind }) {
+    if (!bind) {
+      return;
+    }
     const { label } = bind;
     return { children: label };
   },
@@ -67,6 +73,9 @@ export const Button = connectReactComponent((props) => {
   );
 }, {
   mapToProps({ bind }) {
+    if (!bind) {
+      return;
+    }
     const { disabled } = bind;
     return { disabled };
   },
@@ -104,6 +113,9 @@ export const HBox = connectReactComponent((props) => {
   );
 }, {
   mapToProps({ bind }) {
+    if (!bind) {
+      return;
+    }
     const { hidden } = bind;
     return { hidden };
   },
@@ -141,6 +153,9 @@ export const VBox = connectReactComponent((props) => {
   );
 }, {
   mapToProps({ bind }) {
+    if (!bind) {
+      return;
+    }
     const { hidden } = bind;
     return { hidden };
   },
@@ -210,6 +225,9 @@ export const Input = connectReactComponent((props) => {
   );
 }, {
   mapToProps({ bind }, props) {
+    if (!bind) {
+      return;
+    }
     const { prefix, suffix, disabled, readonly, hidden, required, maxLength, value } = bind;
     // eslint-disable-next-line no-param-reassign
     const onChange = value => bind.value = value;
@@ -268,6 +286,9 @@ export const InputNumber = connectReactComponent((props) => {
   );
 }, {
   mapToProps({ bind }, props) {
+    if (!bind) {
+      return;
+    }
     const { prefix, suffix, disabled, readonly, hidden, required, max, min, value } = bind;
     // eslint-disable-next-line no-param-reassign
     const onChange = value => bind.value = value;
@@ -319,6 +340,9 @@ export const TextArea = connectReactComponent((props) => {
   );
 }, {
   mapToProps({ bind }, props) {
+    if (!bind) {
+      return;
+    }
     const { prefix, suffix, disabled, readonly, hidden, required, maxLength, value } = bind;
     // eslint-disable-next-line no-param-reassign
     const onChange = value => bind.value = value;
@@ -395,6 +419,9 @@ export const RadioGroup = connectReactComponent((props) => {
   );
 }, {
   mapToProps({ bind }, props) {
+    if (!bind) {
+      return;
+    }
     const { options, prefix, suffix, disabled, readonly, hidden, value } = bind;
     const onChange = (value, selectedValue, selectedItem) => {
       // eslint-disable-next-line no-param-reassign
@@ -478,6 +505,9 @@ export const CheckboxGroup = connectReactComponent((props) => {
   );
 }, {
   mapToProps({ bind }, props) {
+    if (!bind) {
+      return;
+    }
     const { options, prefix, suffix, disabled, readonly, hidden, value } = bind;
     const onChange = (value, selectedValue, selectedItem) => {
       // eslint-disable-next-line no-param-reassign
@@ -549,6 +579,9 @@ export const Select = connectReactComponent((props) => {
   );
 }, {
   mapToProps({ bind }, props) {
+    if (!bind) {
+      return;
+    }
     const { options, prefix, suffix, disabled, readonly, hidden, value } = bind;
     const onChange = (value, selectedValue, selectedItem) => {
       // eslint-disable-next-line no-param-reassign
@@ -596,6 +629,9 @@ export const FormGroup = connectReactComponent((props) => {
   );
 }, {
   mapToProps({ bind }) {
+    if (!bind) {
+      return;
+    }
     const { hidden } = bind;
     return { hidden };
   },
@@ -637,6 +673,9 @@ export const FormItem = connectReactComponent((props) => {
   );
 }, {
   mapToProps({ bind }) {
+    if (!bind) {
+      return;
+    }
     const { errors, hidden, highlight, label } = bind;
     return { errors, hidden, highlight, label };
   },
@@ -667,6 +706,9 @@ export const Loop = connectReactComponent((props) => {
   );
 }, {
   mapToProps({ bind }) {
+    if (!bind) {
+      return;
+    }
     const { value } = bind;
     return { items: value };
   },

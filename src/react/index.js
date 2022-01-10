@@ -223,21 +223,23 @@ export function connectReactComponent(C, options) {
           const view = parseViewInModel(model, bind);
           if (view) {
             compiledProps.bind = view;
+            const { requireBind } = options;
+            if (isString(requireBind)) {
+              compiledProps[requireBind] = view;
+            }
           }
           if (deps && deps.length) {
-            const obj = {};
             deps.forEach((key) => {
               const view = parseViewInModel(model, bind);
               if (view) {
-                obj[key] = view;
+                compiledProps[key] = view;
               }
             });
-            compiledProps.deps = obj;
           }
         }
 
-        if (bind && options && options.mapToProps && isFunction(options.mapToProps)) {
-          finalProps = options.mapToProps(compiledProps, originProps, $$formast);
+        if (options && options.mapToProps && isFunction(options.mapToProps)) {
+          finalProps = options.mapToProps(compiledProps, originProps, $$formast) || {};
           finalProps = { ...originProps, ...finalProps };
         } else {
           finalProps = { ...originProps };

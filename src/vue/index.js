@@ -227,6 +227,8 @@ export function connectVueComponent(C, options) {
         const { bind, deps, model, key } = $$formast;
         finalProps = {};
 
+        model?.collect({ views: true, fields: true });
+
         if (options) {
           const { requireBind, requireDeps = [], requireProps } = options;
           if (requireBind) {
@@ -273,6 +275,32 @@ export function connectVueComponent(C, options) {
 
         if (key) {
           data.key = key;
+        }
+
+        const collection = model?.collect(true) || [];
+        const hash = getObjectHash(collection);
+        if ((this.latest && this.latest.hash !== hash) || !this.latest) {
+          if (this.latest) {
+            this.latest.unsubscribe();
+          }
+          const dispatch = () => {
+            this.$forceUpdate();
+          };
+
+          collection.forEach((key) => {
+            model.watch(key, dispatch, true);
+          });
+
+          const unsubscribe = () => {
+            collection.forEach((key) => {
+              model.unwatch(key, dispatch);
+            });
+          };
+
+          this.latest = {
+            hash,
+            unsubscribe,
+          };
         }
       }
 

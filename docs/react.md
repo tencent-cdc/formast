@@ -126,10 +126,12 @@ function TheComponent(props) {
 export const SomeComponent = connectReactComponent(TheComponent, {
   requireBind: 'name',
   requireDeps: ['age', 'sex'],
-  mapToProps(compiledProps, originProps, otherInfo) {
-    const { bind, deps } = compiledProps; // bind 指向 name 的视图，之所以叫 `bind` 而不是使用 `name`，是为了方便统一读取
+  mapToProps({ bind, ...deps }, originProps, otherInfo) {
+    // bind 指向 name 的视图，之所以叫 `bind` 而不是使用 `name`，是为了方便统一读取
     const { required, hidden, readonly, disabled, errors } = bind;
-    const { age, sex } = deps; // age, sex 指向对应的视图
+
+    // age, sex 指向对应的视图
+    const { age, sex } = deps;
 
     // ...
 
@@ -144,11 +146,11 @@ export const SomeComponent = connectReactComponent(TheComponent, {
 });
 ```
 
-经过 connectReactComponent 之后的组件可以在内部读取模型上的信息。`mapToProps` 的返回结果将和原始的 props 合并后作为被 connect 组件的 props 传入。如果没有给 mapToProps，那么会在原始 props 上加上 bind, deps 两个属性后传入给组件。
+经过 connectReactComponent 之后的组件可以在内部读取模型上的信息。`mapToProps` 的返回结果将和原始的 props 合并后作为被 connect 组件的 props 传入。
 
 **便捷模式**
 
-如果你在组件上增加一个静态属性 `TheComponent.formast = { requiredBind, requiredDeps }`，那么， createReactFormast 会自动帮你完成 connect ，而不需要主动用 connectReactComponent 去再 connect 一次。
+如果你在组件上增加一个静态属性 `TheComponent.formast = { requiredBind, requiredDeps, mapToProps }`，那么， createReactFormast 会自动帮你完成 connect ，而不需要主动用 connectReactComponent 去再 connect 一次。
 
 这在对一些原有的组件进行改造时非常有用，例如我们想在 formast 中使用 antd 的组件，可以这样：
 
@@ -165,3 +167,7 @@ Input.formast = {
 ```
 
 通过这一改造，我们就可以让 antd 的组件在 formast 中使用时，自动拥有绑定字段的能力。
+
+**响应式设计**
+
+`requireBind` 和 `requireDeps` 对 `mapToProps` 有重要的影响。
