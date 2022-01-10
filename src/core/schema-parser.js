@@ -310,7 +310,7 @@ export class SchemaParser {
     } = json;
     const { render } = macros;
 
-    let sign = ''
+    let sign = '';
     const createSign = () => {
       if (sign) {
         return sign;
@@ -321,7 +321,7 @@ export class SchemaParser {
       }
       sign = JSON.stringify(info);
       return sign;
-    }
+    };
 
     // 循环体 -------------------------------
 
@@ -443,15 +443,14 @@ export class SchemaParser {
           const props = { ...attrs, ...passedProps };
           return { type, props };
         }
-        else if (bind && model && model.$views[bind].type && context && context.types) {
-          const info = context.types[model.$views[bind].type]
+        if (bind && model && model.$views[bind].type && context && context.types) {
+          const info = context.types[model.$views[bind].type];
           const [type, attrs = {}] = [].concat(info);
           const props = { ...attrs, ...passedProps };
           return { type, props };
         }
-        else {
-          throw new Error(`在 JSON 文件中 ${id ? `#${id}` : createSign()} 没有指定type，且无法从bind中找到可用的组件信息`)
-        }
+
+        throw new Error(`在 JSON 文件中 ${id ? `#${id}` : createSign()} 没有指定type，且无法从bind中找到可用的组件信息`);
       }
 
       return json;

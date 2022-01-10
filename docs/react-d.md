@@ -223,7 +223,7 @@ function MyFormast(props) {
 - value
 - hidden
 - events:
-  - change(value, item)
+  - change(value:string|number, selectedValue:string|number, selectedItem:object)
 
 ### CheckboxGroup
 
@@ -238,14 +238,14 @@ function MyFormast(props) {
   - prefix
   - suffix
   - placeholder
-- value: any[] 注意，此处比较特殊，ChecboxGroup 用于选中多个值，因此是一个数组
+- value: (string|number)[] 注意，此处比较特殊，ChecboxGroup 用于选中多个值，因此是一个数组
 - hidden
 - events:
-  - change(value, item)
+  - change(value:string|number, selectedValue:string|number, selectedItem:object)
 
 ### Select
 
-下拉列表。
+下拉列表（单选）。
 
 - props:
   - options: Array<{ label: string, value: any, disabled: boolean }>
@@ -259,4 +259,10 @@ function MyFormast(props) {
 - value
 - hidden
 - events:
-  - change(value, item)
+  - change(value:string|number, selectedValue:string|number, selectedItem:object)
+
+`Select` 和 `RadioGroup` 可以无缝替换。
+
+## 对齐
+
+开发者们自己开发的集成包应该对齐本文档中的组件接口设计，这样就可以做到将来切换其他 UI 组件库时无缝切换。
