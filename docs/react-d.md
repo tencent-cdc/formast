@@ -238,7 +238,7 @@ function MyFormast(props) {
   - prefix
   - suffix
   - placeholder
-- values: any[] 注意，此处比较特殊，ChecboxGroup 用于选中多个值
+- value: any[] 注意，此处比较特殊，ChecboxGroup 用于选中多个值，因此是一个数组
 - hidden
 - events:
   - change(value, item)

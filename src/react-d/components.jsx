@@ -357,7 +357,7 @@ export const CheckboxGroup = connectReactComponent((props) => {
     options = bind?.options,
     valueKey = 'value',
     labelKey = 'label',
-    values,
+    value,
     prefix = bind?.prefix,
     suffix = bind?.suffix,
     disabled = bind?.disabled,
@@ -371,7 +371,7 @@ export const CheckboxGroup = connectReactComponent((props) => {
     ...attrs
   } = props;
 
-  const [state, setState] = useState(values || []);
+  const [state, setState] = useState(value || []);
 
   if (hidden && !keepAlive) {
     return null;
@@ -380,7 +380,7 @@ export const CheckboxGroup = connectReactComponent((props) => {
   const handleChange = (e, item) => {
     const origin = item[valueKey];
     // 非受控
-    if (!isArray(values)) {
+    if (!isArray(value)) {
       const next = state.some(one => `${one}` === `${origin}`) ? state.filter(one => `${one}` !== `${origin}`) : state.concat([origin]);
       setState(next);
     }
@@ -389,7 +389,7 @@ export const CheckboxGroup = connectReactComponent((props) => {
     }
   };
 
-  const selected = isArray(values) ? values : state;
+  const selected = isArray(value) ? value : state;
 
   return (
     <span className={createClassNames('checkboxes', props)}>
