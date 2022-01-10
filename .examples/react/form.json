@@ -40,6 +40,28 @@
         "required('{label}必填')"
       ]
     },
+    "hobbies": {
+      "default": [],
+      "label": "爱好",
+      "options": [
+        { "label": "足球", "value": "football" },
+        { "label": "篮球", "value": "basketball" },
+        { "label": "乒乓球", "value": "pingpong" }
+      ],
+      "component": "CheckboxGroup"
+    },
+    "birth": {
+      "default": "",
+      "label": "出生",
+      "options": [
+        { "value": "1980" },
+        { "value": "1990" },
+        { "value": "2000" },
+        { "value": "2010" },
+        { "value": "2020" }
+      ],
+      "component": "RadioGroup"
+    },
     "height": {
       "default": 0,
       "compute": "{ age * 5 }"
@@ -179,6 +201,30 @@
             "events": {
               "change(e)": "{ sex.value = e.target.value }"
             }
+          }
+        ]
+      },
+      {
+        "type": "div",
+        "children": [
+          {
+            "type": "Label",
+            "bind": "hobbies"
+          },
+          {
+            "bind": "hobbies"
+          }
+        ]
+      },
+      {
+        "type": "div",
+        "children": [
+          {
+            "type": "Label",
+            "bind": "birth"
+          },
+          {
+            "bind": "birth"
           }
         ]
       },

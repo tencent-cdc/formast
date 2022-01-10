@@ -1,8 +1,9 @@
 import React, { useRef, useEffect, useCallback, useState, forwardRef } from 'react';
+import { isUndefined } from 'ts-fns';
 
 // eslint-disable-next-line react/display-name
 export const InputSelect = forwardRef((props, inputRef) => {
-  const { onChange, options, className, valueKey, labelKey, children, ...attrs } = props;
+  const { onChange, options, className, valueKey = 'value', labelKey = 'label', children, ...attrs } = props;
   const el = useRef();
   const [changed, setChanged] = useState(false);
 
@@ -70,12 +71,12 @@ export const InputSelect = forwardRef((props, inputRef) => {
       {options
         ? options.map(option => (
             <option
-              key={valueKey ? option[valueKey] : option.value}
-              value={valueKey ? option[valueKey] : option.value}
+              key={option[valueKey]}
+              value={option[valueKey]}
               hidden={option.hidden}
               disabled={option.disabled}
             >
-              {labelKey ? option[labelKey] : option.label}
+              {isUndefined(option[labelKey]) ? option[valueKey] : option[labelKey]}
             </option>
         ))
         : children}
