@@ -24,7 +24,7 @@ jobs:
           git config --local user.name "GitHub Action"
       - name: Update Version
         run: npx standard-version
-      - name: Publish to NPM
+      - name: Check version to publish to NPM
         run: npx can-npm-publish
       - name: Publish_NPM
         uses: JS-DevTools/npm-publish@v1
