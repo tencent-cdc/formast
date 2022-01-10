@@ -457,7 +457,7 @@ export class SchemaParser {
     });
 
     // 当前作用域在实例化vars时的model需要根据配置实时调整
-    const preloadScope = globalScope.$new({ model });
+    const preloadScope = parentScope.$new({ model });
     // 一次性从父级作用域读取值之后，生成本级作用域的 vars
     // 一次性成值后，vars 动态语法失效，成立自己的值
     const state = this.parseObject(vars, preloadScope);

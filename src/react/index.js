@@ -1,8 +1,9 @@
 import { useState, useEffect, memo, Fragment, createElement, useRef, forwardRef } from 'react';
-import { each, isEmpty, getObjectHash, isArray, isString, map, isFunction } from 'ts-fns';
+import { each, isEmpty, getObjectHash, isArray, isString, map, isFunction, decideby } from 'ts-fns';
 import { SchemaParser } from '../core/schema-parser.js';
 import { parseViewInModel } from '../core/utils.js';
 import { isReactComponent } from './utils.js';
+import { useModelReactor } from './hooks.js';
 
 export const SHARED_COMPONENTS = {
   Fragment,
@@ -192,57 +193,71 @@ export function connectReactComponent(C, options) {
       ...originProps
     } = props;
 
-    let finalProps = originProps;
+    const finalProps = useModelReactor($$formast?.model, (originProps) => {
+      let finalProps = originProps;
 
-    if ($$formast) {
-      const compiledProps = {};
-      const { bind, deps, model } = $$formast;
-      finalProps = {};
+      if ($$formast) {
+        const compiledProps = {};
+        const { bind, deps, model } = $$formast;
+        finalProps = {};
 
-      if (options) {
-        const { requireBind, requireDeps = [], requireProps } = options;
-        if (requireBind) {
-          if (isString(requireBind) && requireBind !== bind) {
-            throw new Error(`${C.name} 要求使用 bind: "${requireBind}"，但在 JSON 文件中 bind 值为 "${bind || 'N/A'}"！`);
-          } else if (!bind) {
-            throw new Error(`${C.name} 要求传入 bind，但在 JSON 文件中 bind 不存在！`);
+        if (options) {
+          const { requireBind, requireDeps = [], requireProps } = options;
+          if (requireBind) {
+            if (isString(requireBind) && requireBind !== bind) {
+              throw new Error(`${C.name} 要求使用 bind: "${requireBind}"，但在 JSON 文件中 bind 值为 "${bind || 'N/A'}"！`);
+            } else if (!bind) {
+              throw new Error(`${C.name} 要求传入 bind，但在 JSON 文件中 bind 不存在！`);
+            }
+          }
+          if (requireDeps && (!deps || requireDeps.some(item => !deps.includes(item)))) {
+            throw new Error(`${C.name} 要求 deps: "${requireDeps.join(',')}"，但在 JSON 文件中 deps 值为 "${deps ? `[${deps.join(',')}]` : 'N/A'}"！`);
+          }
+          if (requireProps && requireProps.some(item => !(item in props))) {
+            const missing = requireProps.find(item => !(item in props));
+            throw new Error(`${C.name} 要求 props: "${requireProps.join(',')}"，但实际没有传入 "${missing}"！`);
           }
         }
-        if (requireDeps && (!deps || requireDeps.some(item => !deps.includes(item)))) {
-          throw new Error(`${C.name} 要求 deps: "${requireDeps.join(',')}"，但在 JSON 文件中 deps 值为 "${deps ? `[${deps.join(',')}]` : 'N/A'}"！`);
-        }
-        if (requireProps && requireProps.some(item => !(item in props))) {
-          const missing = requireProps.find(item => !(item in props));
-          throw new Error(`${C.name} 要求 props: "${requireProps.join(',')}"，但实际没有传入 "${missing}"！`);
-        }
-      }
 
-      if (bind) {
-        const view = parseViewInModel(model, bind);
-        if (view) {
-          compiledProps.bind = view;
-        }
-      }
-      if (deps && deps.length) {
-        const obj = {};
-        deps.forEach((key) => {
+        if (bind) {
           const view = parseViewInModel(model, bind);
           if (view) {
-            obj[key] = view;
+            compiledProps.bind = view;
+            const { requireBind } = options;
+            if (isString(requireBind)) {
+              compiledProps[requireBind] = view;
+            }
           }
-        });
-        compiledProps.deps = obj;
+          if (deps && deps.length) {
+            deps.forEach((key) => {
+              const view = parseViewInModel(model, bind);
+              if (view) {
+                compiledProps[key] = view;
+              }
+            });
+          }
+        }
+
+        if (options && options.mapToProps && isFunction(options.mapToProps)) {
+          finalProps = options.mapToProps(compiledProps, originProps, $$formast) || {};
+          finalProps = { ...originProps, ...finalProps };
+        } else {
+          finalProps = { ...originProps };
+        }
       }
 
-      if (options && options.mapToProps && isFunction(options.mapToProps)) {
-        finalProps = options.mapToProps(compiledProps, originProps, $$formast);
-        finalProps = { ...originProps, ...finalProps };
-      } else {
-        finalProps = { ...originProps, ...compiledProps };
-      }
-    }
+      return finalProps;
+    }, originProps);
 
-    return createElement(C, finalProps, ...(isArray(children) ? children : [children]));
+    const subs = decideby(() => {
+      if (finalProps.children) {
+        const { children } = finalProps;
+        return [].concat(children);
+      }
+      return [].concat(children);
+    });
+    const { children: _children2, ...attrs } = finalProps;
+    return createElement(C, attrs, ...subs);
   };
   CBox.formast = options; // eslint-disable-line
   CBox.$$connectedByFormast = true;
