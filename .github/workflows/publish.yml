@@ -17,9 +17,14 @@ jobs:
       - run: npm set config loglevel=info
       - name: Install
         run: npm ci --verbose || npm i --verbose
-      - name: Update_Version
-        run: git clean -df
+      - name: Prepare Git
+        run: |
+          git clean -df
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+      - name: Update Version
         run: npx standard-version
+      - name: Publish to NPM
         run: npx can-npm-publish
       - name: Publish_NPM
         uses: JS-DevTools/npm-publish@v1
