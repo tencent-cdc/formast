@@ -2,15 +2,7 @@ import React, { useState, useCallback, useRef } from 'react';
 import { Formast } from '../../src/react';
 import schemaJson from './form.json';
 import { isEmpty } from 'ts-fns';
-import { Select, Input, Label } from '../../src/react-d/components.jsx';
-
-const Options = {
-  components: {
-    Select,
-    Input,
-    Label,
-  },
-}
+import * as Options from '../../src/react-d/index.js';
 
 export default function App() {
   const [errors, setErrors] = useState([]);

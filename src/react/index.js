@@ -19,7 +19,7 @@ export function createReactFormast(schemaJson, options = {}) {
     return {};
   }
 
-  const { macros = {}, components: passedComponents = {}, ...others } = options;
+  const { macros = {}, components: passedComponents = {}, types, ...others } = options;
 
   const mappedComponents = map(passedComponents, (component) => {
     if (component.formast && typeof component.formast === 'object' && !component.$$connectedByFormast) {
@@ -40,6 +40,7 @@ export function createReactFormast(schemaJson, options = {}) {
     },
     context: {
       components,
+      types,
     },
   });
 
@@ -165,6 +166,7 @@ function Box(assets) {
       bind,
       deps,
       model,
+      context,
     };
   }
 
