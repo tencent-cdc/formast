@@ -33,7 +33,7 @@
     "react": "^17.0.2",
     "scopex": "^4.3.2",
     "ts-fns": "^10.7.1",
-    "tyshemo": "^11.12.2",
+    "tyshemo": "^11.22.0",
     "vue": "^2.6.14"
   },
   "devDependencies": {
