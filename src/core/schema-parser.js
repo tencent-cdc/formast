@@ -113,9 +113,12 @@ export class SchemaParser {
       this.loadModel(model).initModel(data);
     }
 
-    if (layout) {
-      this.loadLayout(layout);
-    }
+    // 支持直接传一个数组
+    const out = isArray(layout) ? {
+      type: 'Fragment',
+      children: layout,
+    } : layout;
+    this.loadLayout(out);
 
     if (constants) {
       this.loadConstants(constants);
