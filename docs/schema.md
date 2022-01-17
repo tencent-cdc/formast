@@ -656,6 +656,20 @@ $parent 是模型的特殊字段，不是语法。通过 $parent.some 读取了�
 required: "{ $root.parent.child..a.required }" // -> 根据距离比较远的字段的 required 信息确定当前字段的 required
 ```
 
+**模型中的特殊语法**
+
+在模型中支持特殊的 AsyncGetter 语法 `[]:fetch()`，这个语法理解起来也很简单，冒号前面的是默认值，冒号后面的 fetch 触发语法识别，fetch 是你在外部传入的的 fetch 函数，通过 fetch 得到结果后，这个结果将被作为新值给当前这个属性，例如：
+
+```
+check_canbi: {
+    default: '',
+    options: "{ []:fetch('https://xxx/api/canbi?s=' + dodoit) }",
+    component: 'Select'
+}
+```
+
+上面这段 schema 中，options 使用了 AsyncGetter 语法，默认第一次加载时，它会以 [] 作为默认值给 Select 组件，同时，通过 fetch 去请求数据回来，数据回来后会使用新数据替换 options 的值，并触发 Select 的重新渲染，这样就让我们的下拉列表动态读取。同时，当被依赖的字段 dodoit 发生变化时，请求会被再次触发，再次带来下拉列表界面上的更新。
+
 ## 循环遍历
 
 对数组或对象进行遍历输出是常见操作，但在 Schema 中需要如何描述呢？
