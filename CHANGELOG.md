@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 2.1.0 (2022-01-17)
+
+
+### Features
+
+* 支持layout直接传数组 ([1d9ce0d](https://github.com/tencent-cdc/formast/commit/1d9ce0d89c271e3372994fd94d726464b7decf58))
+
 ### 2.0.3 (2022-01-11)
 
 
