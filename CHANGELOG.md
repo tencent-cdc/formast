@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 2.1.2 (2022-03-02)
+
+
+### Bug Fixes
+
+* 解决微信屏蔽问题 ([d4a11ca](https://github.com/tencent-cdc/formast/commit/d4a11cac4db8fa65f889b006a84948feed7ca3e8))
+
 ### 2.1.1 (2022-01-17)
 
 ## 2.1.0 (2022-01-17)
