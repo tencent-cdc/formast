@@ -110,7 +110,7 @@ export class SchemaParser {
     }
 
     if (model) {
-      this.loadModel(model).initModel(data);
+      this.loadModel(model).initModel(data ? data : {});
     }
 
     // 支持直接传一个数组

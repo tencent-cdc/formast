@@ -15,12 +15,12 @@ export const ALIAS_MAPPING = {
   class: 'className',
 };
 
-export function createReactFormast(schemaJson, options = {}) {
+export function createReactFormast(schemaJson, options, data) {
   if (isEmpty(schemaJson)) {
     return {};
   }
 
-  const { macros = {}, components: passedComponents = {}, types, ...others } = options;
+  const { macros = {}, components: passedComponents = {}, types, ...others } = options || {};
 
   const mappedComponents = map(passedComponents, (component) => {
     if (component.formast && typeof component.formast === 'object' && !component.$$connectedByFormast) {
@@ -45,7 +45,7 @@ export function createReactFormast(schemaJson, options = {}) {
     },
   });
 
-  schemaParser.loadSchema(schemaJson);
+  schemaParser.loadSchema(schemaJson, data);
 
   const { model, Layout, declares, schema, constants } = schemaParser;
 
@@ -61,28 +61,34 @@ export function createReactFormast(schemaJson, options = {}) {
 }
 
 function FormastComponent(props, ref) {
-  const { options, json, schema = json, props: passedProps = {}, onLoad, children = null } = props;
+  const { options, json, schema = json, props: passedProps = {}, onLoad, children = null, data } = props;
 
   const [FormastComponent, setFormastComponent] = useState(null);
 
   useEffect(() => {
-    const create = (schemaJson) => {
-      const { Formast, ...others } = createReactFormast(schemaJson, options);
+    const create = (schemaJson, data) => {
+      const { Formast, ...others } = createReactFormast(schemaJson, options, data);
       setFormastComponent(Formast);
-      if (onLoad) {
-        onLoad(others);
-      }
+
       if (ref) {
         // eslint-disable-next-line no-param-reassign
         ref.current = others;
       }
+
+      if (onLoad) {
+        onLoad(others);
+      }
     };
-    if (typeof schema === 'function') {
-      Promise.resolve().then(schema)
-        .then(create);
-    } else {
-      create(schema);
+
+    const promises = [
+      Promise.resolve(typeof schema === 'function' ? schema() : schema),
+    ];
+
+    if (data) {
+      promises.push(Promise.resolve(typeof data === 'function' ? data() : data));
     }
+
+    Promise.all(promises).then(([schema, data]) => create(schema, data));
   }, []);
 
   if (!FormastComponent) {

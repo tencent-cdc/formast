@@ -113,12 +113,12 @@ export const SHARED_COMPONENTS = {
   }),
 };
 
-export function createVueFormast(schemaJson, options = {}) {
+export function createVueFormast(schemaJson, options, data) {
   if (isEmpty(schemaJson)) {
     return {};
   }
 
-  const { macros = {}, components: passedComponents = {}, types, ...others } = options;
+  const { macros = {}, components: passedComponents = {}, types, ...others } = options || {};
   const mappedComponents = map(passedComponents, (component) => {
     if (component.formast && typeof component.formast === 'object' && !component.$$connectedByFormast) {
       return connectVueComponent(component, component.formast);
@@ -142,7 +142,7 @@ export function createVueFormast(schemaJson, options = {}) {
     },
   });
 
-  schemaParser.loadSchema(schemaJson);
+  schemaParser.loadSchema(schemaJson, data);
 
   const { model, Layout, declares, schema, constants } = schemaParser;
 
@@ -167,28 +167,31 @@ export function createVueFormast(schemaJson, options = {}) {
 
 export const Formast = Vue.extend({
   name: 'formast',
-  props: ['options', 'schema', 'json', 'props', 'onLoad'],
+  props: ['options', 'schema', 'json', 'props', 'onLoad', 'data'],
   data() {
     return {
       FormastComponent: null,
     };
   },
   beforeMount() {
-    const { options, json, schema, onLoad } = this;
-    const getSchema = schema || json;
-    const create = (schemaJson) => {
-      const { Formast, ...others } = createVueFormast(schemaJson, options);
+    const { options, json, schema = json, onLoad, data } = this;
+    const create = (schemaJson, data) => {
+      const { Formast, ...others } = createVueFormast(schemaJson, options, data);
       this.FormastComponent = Formast;
       if (onLoad) {
         onLoad(others);
       }
     };
-    if (typeof getSchema === 'function') {
-      Promise.resolve().then(getSchema)
-        .then(create);
-    } else {
-      create(getSchema);
+
+    const promises = [
+      Promise.resolve(typeof schema === 'function' ? schema() : schema),
+    ];
+
+    if (data) {
+      promises.push(Promise.resolve(typeof data === 'function' ? data() : data));
     }
+
+    Promise.all(promises).then(([schema, data]) => create(schema, data));
   },
   render(h) {
     const { FormastComponent, $slots } = this;

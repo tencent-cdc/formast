@@ -2,11 +2,11 @@
 
 基于 React 做渲染。
 
-## createReactFormast(schemaJson, options): { model, Formast, schema }
+## createReactFormast(schema, options, data): { model, Formast, schema }
 
 基于已有的 JSON 生成需要的 react 组件等信息。
 
-- schemaJson: 基于 Schema 协议的 JSON 对象
+- schema: 基于 Schema 协议的 JSON 对象
 - options: (基于 Schema 中的 signals 协议，这些信息会在 JSON 加载时进行检查)
   - options.macros: 自定义宏（可覆盖 render 宏）
   - options.components: 自定义组件，用于顶替 JSON 中的 type
@@ -14,9 +14,13 @@
   - options.filters: 定义动态语法中的过滤器
   - options.fns: 定义动态语法中的函数
   - options.fetch: 自定义动态语法中的 fetch 函数
-- model: 根据 Schema 协议生成好的 Model 实例
-- Formast: 基于 Schema 协议生成好的 react 组件
+- data: 表单的初始化数据，需要和 schema 中的 Model 对应，将作为 Model 的初始化数据进行 Model 实例化
 
+返回值：
+
+- Formast: 基于 Schema 协议生成好的 react 组件
+- model: 根据 Schema 协议生成好的 Model 实例
+- schema: 传入的 schema
 
 ```js
 import React from 'react';
@@ -65,6 +69,15 @@ function App() {
   )
 }
 ```
+
+Props:
+
+- schema: json|function, 传入的 Schema JSON 或用于获取 Schema JSON 的函数
+- options: 与上文 options 一致
+- data: object|function, 传入用于实例化 Model 的数据或用于获取该数据的函数
+- props: 用于传入内部的 props，这些 props 对应 schema 中 declares.props 中声明的内容
+- onLoad: function, 在完成表单渲染之后的回调函数，会接收和 createReactFormast 返回值的大部分内容
+- ref: 可代替 onLoad 利用 react 的 ref 能力，直接接住和 onLoad 一样的内容
 
 这段代码让我们的可以不需要调用 createReactFormast 以极快的速度使用 formast。但是，它有一个弊端，即我们没法在组件外部读取 model，对 model 进行一些操作。因此，我们提供了一种特殊的处理方式让你可以读取 model：
 
