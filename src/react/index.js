@@ -229,7 +229,7 @@ export function connectReactComponent(C, options) {
           const view = parseViewInModel(model, bind);
           if (view) {
             compiledProps.bind = view;
-            const { requireBind } = options;
+            const requireBind = options?.requireBind;
             if (isString(requireBind)) {
               compiledProps[requireBind] = view;
             }
