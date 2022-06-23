@@ -155,7 +155,7 @@ function Box(assets) {
   if (events) {
     each(events, (value, key) => {
       const event = ALIAS_MAPPING[key] || key;
-      const attr = `on${key.replace(event[0], event[0].toUpperCase())}`;
+      const attr = /^on[A-Z]/.test(event) ? event : `on${key.replace(event[0], event[0].toUpperCase())}`;
       info[attr] = value;
     });
   }

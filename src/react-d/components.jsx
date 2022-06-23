@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { isArray, createRandomString, isFunction, isUndefined, isNumeric, isNumber, isNone } from 'ts-fns';
 import NumberInput from './input-number.jsx';
 import SelectInput from './input-select.jsx';
-import { classnames, createClassNames } from './utils.js';
+import { classnames, createClassNames } from '../_shared/utils.js';
 import { connectReactComponent } from '../react/index.js';
 import { useUniqueKeys } from '../react/utils.js';
+import { TextConfig, LabelConfig, ButtonConfig, HBoxConfig, VBoxConfig, InputConfig, InputNumberConfig, TextAreaConfig, RadioGroupConfig, CheckboxGroupConfig, SelectConfig, FormConfig, FormGroupConfig, FormItemConfig, LoopConfig } from '../_shared/configs.js';
 
 /**
  * 文本
@@ -18,15 +19,7 @@ export const Text = connectReactComponent((props) => {
     ...attrs
   } = props;
   return <span className={classnames('text', className)} {...attrs}>{children}</span>;
-}, {
-  mapToProps({ bind }) {
-    if (!bind) {
-      return;
-    }
-    const { text } = bind;
-    return { children: text };
-  },
-});
+}, TextConfig);
 
 /**
  * 标签
@@ -41,15 +34,7 @@ export const Label = connectReactComponent((props) => {
   return (
     <label className={classnames('label', className)} {...attrs}>{children}</label>
   );
-}, {
-  mapToProps({ bind }) {
-    if (!bind) {
-      return;
-    }
-    const { label } = bind;
-    return { children: label };
-  },
-});
+}, LabelConfig);
 
 /**
  * 按钮
@@ -71,15 +56,7 @@ export const Button = connectReactComponent((props) => {
       {...attrs}
     />
   );
-}, {
-  mapToProps({ bind }) {
-    if (!bind) {
-      return;
-    }
-    const { disabled } = bind;
-    return { disabled };
-  },
-});
+}, ButtonConfig);
 
 /**
  * 横向排列盒子
@@ -111,15 +88,7 @@ export const HBox = connectReactComponent((props) => {
       {isFunction(children) ? children() : children}
     </div>
   );
-}, {
-  mapToProps({ bind }) {
-    if (!bind) {
-      return;
-    }
-    const { hidden } = bind;
-    return { hidden };
-  },
-});
+}, HBoxConfig);
 
 /**
  * 纵向排列盒子
@@ -151,15 +120,7 @@ export const VBox = connectReactComponent((props) => {
       {isFunction(children) ? children() : children}
     </div>
   );
-}, {
-  mapToProps({ bind }) {
-    if (!bind) {
-      return;
-    }
-    const { hidden } = bind;
-    return { hidden };
-  },
-});
+}, VBoxConfig);
 
 /**
  * 单行文本
@@ -224,18 +185,7 @@ export const Input = connectReactComponent((props) => {
       {children}
     </label>
   );
-}, {
-  mapToProps({ bind }, props) {
-    if (!bind) {
-      return;
-    }
-    const { prefix, suffix, disabled, readonly, hidden, required, maxLength, value } = bind;
-    // eslint-disable-next-line no-param-reassign
-    const onChange = value => bind.value = value;
-    const placeholder = props.placeholder || bind.placeholder;
-    return { prefix, suffix, disabled, readonly, hidden, required, maxLength, value, onChange, placeholder };
-  },
-});
+}, InputConfig);
 
 /**
  * 数字
@@ -293,18 +243,7 @@ export const InputNumber = connectReactComponent((props) => {
       {children}
     </label>
   );
-}, {
-  mapToProps({ bind }, props) {
-    if (!bind) {
-      return;
-    }
-    const { prefix, suffix, disabled, readonly, hidden, required, max, min, value } = bind;
-    // eslint-disable-next-line no-param-reassign
-    const onChange = value => bind.value = value;
-    const placeholder = props.placeholder || bind.placeholder;
-    return { prefix, suffix, disabled, readonly, hidden, required, max, min, value, onChange, placeholder };
-  },
-});
+}, InputNumberConfig);
 
 export const TextArea = connectReactComponent((props) => {
   const {
@@ -355,18 +294,7 @@ export const TextArea = connectReactComponent((props) => {
       {children}
     </label>
   );
-}, {
-  mapToProps({ bind }, props) {
-    if (!bind) {
-      return;
-    }
-    const { prefix, suffix, disabled, readonly, hidden, required, maxLength, value } = bind;
-    // eslint-disable-next-line no-param-reassign
-    const onChange = value => bind.value = value;
-    const placeholder = props.placeholder || bind.placeholder;
-    return { prefix, suffix, disabled, readonly, hidden, required, maxLength, value, onChange, placeholder };
-  },
-});
+}, TextAreaConfig);
 
 export const RadioGroup = connectReactComponent((props) => {
   const {
@@ -439,20 +367,7 @@ export const RadioGroup = connectReactComponent((props) => {
       {children}
     </span>
   );
-}, {
-  mapToProps({ bind }, props) {
-    if (!bind) {
-      return;
-    }
-    const { options, prefix, suffix, disabled, readonly, hidden, value } = bind;
-    const onChange = (value, selectedValue, selectedItem) => {
-      // eslint-disable-next-line no-param-reassign
-      bind.value = value;
-      props.onChange?.(value, selectedValue, selectedItem);
-    };
-    return { options, prefix, suffix, disabled, readonly, hidden, value, onChange };
-  },
-});
+}, RadioGroupConfig);
 
 export const CheckboxGroup = connectReactComponent((props) => {
   const {
@@ -532,20 +447,7 @@ export const CheckboxGroup = connectReactComponent((props) => {
       {children}
     </span>
   );
-}, {
-  mapToProps({ bind }, props) {
-    if (!bind) {
-      return;
-    }
-    const { options, prefix, suffix, disabled, readonly, hidden, value } = bind;
-    const onChange = (value, selectedValue, selectedItem) => {
-      // eslint-disable-next-line no-param-reassign
-      bind.value = value;
-      props.onChange?.(value, selectedValue, selectedItem);
-    };
-    return { options, prefix, suffix, disabled, readonly, hidden, value, onChange };
-  },
-});
+}, CheckboxGroupConfig);
 
 export const Select = connectReactComponent((props) => {
   const {
@@ -606,20 +508,7 @@ export const Select = connectReactComponent((props) => {
       {children}
     </label>
   );
-}, {
-  mapToProps({ bind }, props) {
-    if (!bind) {
-      return;
-    }
-    const { options, prefix, suffix, disabled, readonly, hidden, value } = bind;
-    const onChange = (value, selectedValue, selectedItem) => {
-      // eslint-disable-next-line no-param-reassign
-      bind.value = value;
-      props.onChange?.(value, selectedValue, selectedItem);
-    };
-    return { options, prefix, suffix, disabled, readonly, hidden, value, onChange };
-  },
-});
+}, SelectConfig);
 
 export const Form = connectReactComponent((props) => {
   const { className, onSubmit, ...attrs } = props;
@@ -628,9 +517,7 @@ export const Form = connectReactComponent((props) => {
     onSubmit(e);
   };
   return <form className={classnames('form', className)} onSubmit={handleSubmit} {...attrs} />;
-}, {
-  requireProps: ['onSubmit'],
-});
+}, FormConfig);
 
 export const FormGroup = connectReactComponent((props) => {
   const {
@@ -656,15 +543,7 @@ export const FormGroup = connectReactComponent((props) => {
       {footer ? <div className={classnames('group__footer')}>{footer}</div> : null}
     </div>
   );
-}, {
-  mapToProps({ bind }) {
-    if (!bind) {
-      return;
-    }
-    const { hidden } = bind;
-    return { hidden };
-  },
-});
+}, FormGroupConfig);
 
 export const FormItem = connectReactComponent((props) => {
   const {
@@ -700,15 +579,7 @@ export const FormItem = connectReactComponent((props) => {
       {suffix ? <div className={classnames('item__suffix')}>{suffix}</div> : null}
     </div>
   );
-}, {
-  mapToProps({ bind }) {
-    if (!bind) {
-      return;
-    }
-    const { errors, hidden, highlight, label } = bind;
-    return { errors, hidden, highlight, label };
-  },
-});
+}, FormItemConfig);
 
 export const Loop = connectReactComponent((props) => {
   const {
@@ -733,12 +604,4 @@ export const Loop = connectReactComponent((props) => {
       {!items.length && empty ? <div className={classnames('loop__empty')}>{empty}</div> : null}
     </div>
   );
-}, {
-  mapToProps({ bind }) {
-    if (!bind) {
-      return;
-    }
-    const { value } = bind;
-    return { items: value };
-  },
-});
+}, LoopConfig);

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <formast :schema="getJson" :props="props" :onLoad="onLoad">
+    <formast :schema="getJson" :props="props" :onLoad="onLoad" :options="options">
       <span>正在加载...</span>
     </formast>
     <div>
@@ -16,9 +16,6 @@ import formJson from './form.json'
 import { Formast } from '../../src/vue'
 
 export default {
-  components: {
-    Formast,
-  },
   data() {
     return {
       data: null,
@@ -28,6 +25,13 @@ export default {
         random: Math.random(),
         onSubmit: this.handleSubmit,
       },
+      options: {
+        components: {
+          Input: 'input',
+          Select: 'select',
+          Label: 'label',
+        }
+      }
     }
   },
   methods: {
@@ -55,6 +59,7 @@ export default {
     },
     onLoad({ model }) {
       this.model = model;
+      console.log(model);
     },
   },
   components: {

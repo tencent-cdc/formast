@@ -40,6 +40,28 @@
         "required('{label}必填')"
       ]
     },
+    "hobbies": {
+      "default": [],
+      "label": "爱好",
+      "options": [
+        { "label": "足球", "value": "football" },
+        { "label": "篮球", "value": "basketball" },
+        { "label": "乒乓球", "value": "pingpong" }
+      ],
+      "component": "CheckboxGroup"
+    },
+    "birth": {
+      "default": "",
+      "label": "出生",
+      "options": [
+        { "value": "1980" },
+        { "value": "1990" },
+        { "value": "2000" },
+        { "value": "2010" },
+        { "value": "2020" }
+      ],
+      "component": "RadioGroup"
+    },
     "height": {
       "default": 0,
       "compute": "{ age * 5 }"
@@ -68,7 +90,10 @@
           "label": "价格"
         }
       }
-    ]
+    ],
+    "books": {
+      "default": [{}]
+    }
   },
   "declares": {
     "props": [
@@ -78,17 +103,19 @@
     "components": [
       "Input",
       "Select",
-      "Label"
+      "Label",
+      "CheckboxGroup",
+      "RadioGroup"
     ]
   },
   "layout": {
     "type": "form",
+    "class": "form",
     "props": {
       "target": "some-iframe",
       "action": "/",
       "method": "post"
     },
-    "class": "form",
     "events": {
       "submit(e)": "{ onSubmit(e) }"
     },
@@ -106,16 +133,16 @@
             ]
           },
           {
-            "type": "input",
+            "type": "Input",
             "vars": {
-              "value": "{ x }"
+              "value": "{ x + 'cm' }"
             },
-            "attrs": {
+            "props": {
               "value": "{ value }",
               "placeholder": "无模型支持的vars使用，vars.value 是从父级作用域传入进来生成的"
             },
             "events": {
-              "input(e)": "{ value = e.target.value }"
+              "change(v)": "{ value = v }"
             }
           }
         ]
@@ -124,18 +151,12 @@
         "type": "div",
         "children": [
           {
-            "type": "label",
-            "children": "{ name.label }"
+            "type": "Label",
+            "bind": "name"
           },
           {
-            "type": "input",
-            "attrs": {
-              "value": "{ name.value }",
-              "placeholder": "{ name.placeholder }"
-            },
-            "events": {
-              "input(e)": "{ name.value = e.target.value }"
-            }
+            "type": "Input",
+            "bind": "name"
           }
         ]
       },
@@ -150,14 +171,14 @@
           },
           {
             "type": "input",
-            "attrs": {
+            "props": {
               "type": "number",
               "value": "{ age.value }",
               "placeholder": "{ age.placeholder }",
               "required": "{ age.required }"
             },
             "events": {
-              "input(e)": "{ age.value = e.target.value }"
+              "change(e)": "{ age.value = e.target.value }"
             }
           }
         ]
@@ -173,24 +194,41 @@
             ]
           },
           {
-            "type": "select",
+            "type": "Select",
             "props": {
-              "value": "{ sex.value }"
+              "options": "{ sex.options }",
+              "value": "{ sex.value }",
+              "placeholder": "{ sex.placeholder }",
+              "required": "{ sex.required }",
+              "disabled": "{ sex.disabled }"
             },
-            "children": [
-              {
-                "type": "option",
-                "repeat": "item in {sex.options}",
-                "attrs": {
-                  "selected": "{ sex.value === item.value }",
-                  "value": "{ item.value }"
-                },
-                "children": "{ item.label }"
-              }
-            ],
             "events": {
-              "input(e)": "{ sex.value = e.target.value }"
+              "change(v)": "{ sex.value = v }"
             }
+          }
+        ]
+      },
+      {
+        "type": "div",
+        "children": [
+          {
+            "type": "Label",
+            "bind": "hobbies"
+          },
+          {
+            "bind": "hobbies"
+          }
+        ]
+      },
+      {
+        "type": "div",
+        "children": [
+          {
+            "type": "Label",
+            "bind": "birth"
+          },
+          {
+            "bind": "birth"
           }
         ]
       },
@@ -202,37 +240,27 @@
         "type": "div",
         "children": [
           {
-            "type": "label",
-            "children": "{ pet.value..kind.label }"
+            "type": "Label",
+            "bind": "pet.kind"
           },
           {
-            "type": "input",
-            "attrs": {
-              "value": "{ pet.value..kind.value }"
-            },
-            "events": {
-              "input(e)": "{ pet.value..kind.value = e.target.value }"
-            }
+            "type": "Input",
+            "bind": "pet.kind"
           }
         ]
       },
       {
         "type": "div",
-        "model": "pet",
         "children": [
           {
-            "type": "label",
-            "children": "{ name.label }"
+            "type": "Label",
+            "model": "{ pet.value }",
+            "bind": "name"
           },
           {
-            "type": "input",
-            "attrs": {
-              "value": "{ name.value }",
-              "placeholder": "请输入宠物名字"
-            },
-            "events": {
-              "input(e)": "{ name.value = e.target.value }"
-            }
+            "type": "Input",
+            "model": "pet",
+            "bind": "name"
           }
         ]
       },
@@ -246,7 +274,7 @@
               "type": "button"
             },
             "events": {
-              "click()": "{ books.value.push({}) }"
+              "click()": "{ books.value.push({})  }"
             },
             "children": "添加"
           }
@@ -259,38 +287,33 @@
         "children": [
           {
             "type": "div",
+            "model": true,
             "children": [
               {
-                "type": "label",
-                "children": "{ title.label }"
+                "type": "Label",
+                "model": true,
+                "bind": "title"
               },
               {
-                "type": "input",
-                "attrs": {
-                  "value": "{ title.value }"
-                },
-                "events": {
-                  "input(e)": "{ title.value = e.target.value }"
-                }
+                "type": "Input",
+                "model": true,
+                "bind": "title"
               }
             ]
           },
           {
             "type": "div",
+            "model": true,
             "children": [
               {
-                "type": "label",
-                "children": "{ price.label }"
+                "type": "Label",
+                "model": true,
+                "bind": "price"
               },
               {
-                "type": "input",
-                "attrs": {
-                  "type": "number",
-                  "value": "{ price.value }"
-                },
-                "events": {
-                  "input(e)": "{ price.value = e.target.value }"
-                }
+                "type": "Input",
+                "model": true,
+                "bind": "price"
               }
             ]
           },
@@ -317,7 +340,7 @@
         "children": [
           {
             "type": "button",
-            "props": {
+            "attrs": {
               "type": "submit"
             },
             "children": "查看结果"

@@ -10,7 +10,7 @@
     "dev:react": "parcel .examples/react/index.html --out-dir .cache/.react",
     "build:dist": "webpack --config .build/webpack.config.js",
     "build:cjs": "babel src -d . --keep-file-extension && lessc src/react-d/index.less react-d/index.css",
-    "clear": "rimraf index.js antd core dist react react-d vue",
+    "clear": "rimraf index.js antd core dist react react-d vue vue-d _shared",
     "build": "npm run clear && cross-env NODE_ENV=production npm run build:cjs && cross-env NODE_ENV=production npm run build:dist",
     "lint": "eslint --ext .js,.jsx src"
   },

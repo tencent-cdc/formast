@@ -14,3 +14,5 @@ node_modules/
 jsonlint.js
 /vue/
 /.reports/
+/vue-d/
+/_shared/
