@@ -38,7 +38,10 @@ export default function App() {
           random: random,
         }}
         options={Options}
-        onLoad={({ model }) => ref.current = model}
+        onLoad={({ model }) => {
+          ref.current = model;
+          window.__model = model;
+        }}
       >
         <span>正在加载...</span>
       </Formast>

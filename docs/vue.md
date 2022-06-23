@@ -2,7 +2,7 @@
 
 基于 Vue (2.x版本) 做渲染。
 
-## createVueFormast(schemaJson, options): { model, Formast, schema }
+## createVueFormast(schemaJson, options, data): { model, Formast, schema }
 
 基于已有的 JSON 生成需要的 vue 组件等信息。
 
@@ -14,8 +14,13 @@
   - options.filters: 定义动态语法中的过滤器
   - options.fns: 定义动态语法中的函数
   - options.fetch: 自定义动态语法中的 fetch 函数
+- data: 表单的初始化数据，需要和 schema 中的 Model 对应，将作为 Model 的初始化数据进行 Model 实例化
+
+返回值：
+
+- Formast: 基于 Schema 协议生成好的 react 组件
 - model: 根据 Schema 协议生成好的 Model 实例
-- Formast: 基于 Schema 协议生成好的 vue 组件
+- schema: 传入的 schema
 
 
 ```js
@@ -60,9 +65,9 @@ import { Formast } from 'formast/vue';
 
 export default {
   template: `
-    <formast :options="options" :schema="getJson" :props="props" :onLoad="onLoad">
+    <Formast :options="options" :schema="getJson" :props="props" :onLoad="onLoad">
       <span>正在加载...</span>
-    </formast>
+    </Formast>
   `,
   components: {
     Formast,
@@ -84,6 +89,14 @@ export default {
   },
 }
 ```
+
+Props:
+
+- schema: json|function, 传入的 Schema JSON 或用于获取 Schema JSON 的函数
+- options: 与上文 options 一致
+- data: object|function, 传入用于实例化 Model 的数据或用于获取该数据的函数
+- props: 用于传入内部的 props，这些 props 对应 schema 中 declares.props 中声明的内容
+- onLoad: function, 在完成表单渲染之后的回调函数，会接收和 createReactFormast 返回值的大部分内容
 
 ## connectVueComponent(Component, options): CBoxComponent
 

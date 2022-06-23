@@ -1,6 +1,6 @@
 {
   "name": "formast",
-  "version": "1.2.0",
+  "version": "2.1.3",
   "description": "基于JSON的企业级表单低代码框架",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "dev:vue": "parcel .examples/vue/index.html --out-dir .cache/.vue",
     "dev:react": "parcel .examples/react/index.html --out-dir .cache/.react",
     "build:dist": "webpack --config .build/webpack.config.js",
-    "build:cjs": "babel src -d . --keep-file-extension && lessc src/antd/index.less antd/index.css && lessc src/react-d/index.less react-d/index.css",
+    "build:cjs": "babel src -d . --keep-file-extension && lessc src/react-d/index.less react-d/index.css",
     "clear": "rimraf index.js antd core dist react react-d vue",
     "build": "npm run clear && cross-env NODE_ENV=production npm run build:cjs && cross-env NODE_ENV=production npm run build:dist",
     "lint": "eslint --ext .js,.jsx src"
@@ -32,8 +32,8 @@
     "antd": "^4.16.8",
     "react": "^17.0.2",
     "scopex": "^4.3.2",
-    "ts-fns": "^10.5.1",
-    "tyshemo": "^11.12.2",
+    "ts-fns": "^10.7.1",
+    "tyshemo": "^11.23.1",
     "vue": "^2.6.14"
   },
   "devDependencies": {
@@ -57,6 +57,7 @@
     "less": "^4.1.1",
     "less-loader": "^8.0.0",
     "mini-css-extract-plugin": "^1.4.1",
+    "node-forge": "^1.2.0",
     "parcel-bundler": "^1.12.4",
     "prettier-eslint": "^12.0.0",
     "react-dom": "^17.0.2",

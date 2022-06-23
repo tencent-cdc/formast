@@ -17,21 +17,28 @@ jobs:
       - run: npm set config loglevel=info
       - name: Install
         run: npm ci --verbose || npm i --verbose
-      - name: Prepare Git
+      - name: Lint
+        run: npm run lint
+      - name: Update Version
         run: |
           git clean -df
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-      - name: Update Version
-        run: npx standard-version
-      - name: Publish to NPM
-        run: npx can-npm-publish
-      - name: Publish_NPM
+          npx standard-version
+          npx can-npm-publish
+      - name: Build
+        run: npm run build
+      - name: Publish NPM
         uses: JS-DevTools/npm-publish@v1
         with:
           token: "${{ secrets.NPM_AUTH_TOKEN }}"
-      - name: Git_Tag
+      - name: Git Tag
         uses: butlerlogic/action-autotag@stable
         with:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           tag_prefix: "v"
+      - name: Git Push Changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
