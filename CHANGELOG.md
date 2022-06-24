@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 2.1.4 (2022-06-23)
+
+
+### Bug Fixes
+
+* 修复一些特殊情况下读值报错 ([bfc6de7](https://github.com/tencent-cdc/formast/commit/bfc6de7031d83c435a84a3fb0ef2dbd123301766))
+
 ### 2.1.3 (2022-03-06)
 
 ### 2.1.2 (2022-03-02)
