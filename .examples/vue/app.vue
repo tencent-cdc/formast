@@ -7,7 +7,6 @@
       <div v-for="err,i in errors" :key="i" style="color:red">{{err.message}}</div>
     </div>
     <pre>{{data}}</pre>
-    <button type="button" @click="handleRadom">Random</button>
   </div>
 </template>
 
@@ -25,6 +24,7 @@ export default {
       props: {
         random: Math.random(),
         onSubmit: this.handleSubmit,
+        onSetRandom: this.handleRadom,
       },
       options: Options,
     }

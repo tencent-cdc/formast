@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import Vue from 'vue';
 import { SchemaParser } from '../core/schema-parser.js';
 import { each, map, isEmpty, getObjectHash, isArray, isUndefined, decideby, isObject, isString, isInheritedOf, isFunction } from 'ts-fns';
@@ -159,7 +160,6 @@ export function createVueFormast(schemaJson, options, data) {
       const { key, context, compute, subscribe } = Layout(ctx.props);
       return h(Dynamic, { key, props: { context, compute, subscribe } });
     },
-    components,
   });
 
   return { model, Formast, schema, declares, constants };
@@ -282,9 +282,9 @@ export function connectVueComponent(C, options) {
 
         const collection = model?.collect(true) || [];
         const hash = getObjectHash(collection);
-        if ((this.latest && this.latest.hash !== hash) || !this.latest) {
-          if (this.latest) {
-            this.latest.unsubscribe();
+        if ((ctx._latest && ctx._latest.hash !== hash) || !ctx._latest) {
+          if (ctx._latest) {
+            ctx._latest.unsubscribe();
           }
           const dispatch = () => {
             this.$forceUpdate();
@@ -300,7 +300,7 @@ export function connectVueComponent(C, options) {
             });
           };
 
-          this.latest = {
+          ctx._latest = {
             hash,
             unsubscribe,
           };

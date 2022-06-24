@@ -74,6 +74,10 @@
   },
   "resolutions": {
     "react": "./node_modules/react",
-    "react-dom": "./node_modules/react-dom"
+    "react-dom": "./node_modules/react-dom",
+    "vue": "./node_modules/vue/dist/vue.min.js"
+  },
+  "alias": {
+    "vue": "./node_modules/vue/dist/vue.min.js"
   }
 }

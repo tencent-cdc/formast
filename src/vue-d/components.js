@@ -72,8 +72,8 @@ export const RadioGroup = connectVueComponent({
   template: `
     <span v-if="!hidden || keepAlive" :class="createClassNames('radios', $props)">
       <span v-if="prefix" :class="classnames('element__prefix radios__prefix')">{{prefix}}</span>
-      <label :class="classnames('element__content radios__content')" v-repeat="option in options" :key="option[valueKey]">
-        <input type="radio" :name="name" :disabled="disabled || item.disabled" :checked="isChecked(option)" :readonly="readonly" :required="required" :value="value" @change="$emit('change', $event, option)" />
+      <label :class="classnames('element__content radios__content')" v-for="option in options" :key="option[valueKey]">
+        <input type="radio" :name="name" :disabled="disabled || option.disabled" :checked="isChecked(option)" :readonly="readonly" :required="required" :value="value" @change="$emit('change', $event, option)" />
         <span>{{option[labelKey || valueKey]}}</span>
       </label>
       <span v-if="suffix" :class="classnames('element__suffix radios__suffix')">{{suffix}}</span>
@@ -102,8 +102,8 @@ export const CheckboxGroup = connectVueComponent({
   template: `
     <span v-if="!hidden || keepAlive" :class="createClassNames('radios', $props)">
       <span v-if="prefix" :class="classnames('element__prefix radios__prefix')">{{prefix}}</span>
-      <label :class="classnames('element__content radios__content')" v-repeat="option in options" :key="option[valueKey]">
-        <input type="checkbox" :name="name" :disabled="disabled || item.disabled" :checked="isChecked(option)" :readonly="readonly" :required="required" :value="value" @change="$emit('change', $event, option)" />
+      <label :class="classnames('element__content radios__content')" v-for="option in options" :key="option[valueKey]">
+        <input type="checkbox" :name="name" :disabled="disabled || option.disabled" :checked="isChecked(option)" :readonly="readonly" :required="required" :value="value" @change="$emit('change', $event, option)" />
         <span>{{option[labelKey || valueKey]}}</span>
       </label>
       <span v-if="suffix" :class="classnames('element__suffix radios__suffix')">{{suffix}}</span>
@@ -135,7 +135,7 @@ export const Select = connectVueComponent({
     <span v-if="!hidden || keepAlive" :class="createClassNames('radios', $props)">
       <span v-if="prefix" :class="classnames('element__prefix radios__prefix')">{{prefix}}</span>
       <select :class="classnames('element__content radios__content')">
-        <option v-repeat="option in options" :key="option[valueKey]" :disabled="disabled || item.disabled" :checked="isChecked(option)" :readonly="readonly" :required="required" :value="value" @change="$emit('change', $event, option)">{{option[labelKey || valueKey]}}</option>
+        <option v-for="option in options" :key="option[valueKey]" :disabled="disabled || option.disabled" :checked="isChecked(option)" :readonly="readonly" :required="required" :value="value" @change="$emit('change', $event, option)">{{option[labelKey || valueKey]}}</option>
       </select>
       <span v-if="suffix" :class="classnames('element__suffix radios__suffix')">{{suffix}}</span>
     </span>
