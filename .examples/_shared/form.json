@@ -98,6 +98,7 @@
   "declares": {
     "props": [
       "onSubmit",
+      "onSetRandom",
       "random"
     ],
     "components": [
@@ -335,6 +336,20 @@
       },
       {
         "type": "div",
+        "children": "{ random }"
+      },
+      {
+        "type": "button",
+        "attrs": {
+          "type": "button"
+        },
+        "events": {
+          "click": "{ onSetRandom }"
+        },
+        "children": "Random"
+      },
+      {
+        "type": "p",
         "children": [
           {
             "type": "button",
@@ -344,10 +359,6 @@
             "children": "查看结果"
           }
         ]
-      },
-      {
-        "type": "div",
-        "children": "{ random }"
       }
     ]
   }

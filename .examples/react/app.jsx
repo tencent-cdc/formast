@@ -29,12 +29,17 @@ export default function App() {
     setTimeout(() => r(schemaJson), 2000);
   });
 
+  const onSetRandom = () => {
+    setRandom(Math.random());
+  };
+
   return (
     <div>
       <Formast
         schema={getJson}
         props={{
           onSubmit: handleSubmit,
+          onSetRandom: onSetRandom,
           random: random,
         }}
         options={Options}
@@ -53,7 +58,6 @@ export default function App() {
       <pre>
         {isEmpty(data) ? null : JSON.stringify(data, null, 4)}
       </pre>
-      <button onClick={() => setRandom(Math.random())}>Random</button>
     </div>
   );
 }
