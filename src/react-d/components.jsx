@@ -5,7 +5,7 @@ import SelectInput from './input-select.jsx';
 import { classnames, createClassNames } from '../_shared/utils.js';
 import { connectReactComponent } from '../react/index.js';
 import { useUniqueKeys } from '../react/utils.js';
-import { TextConfig, LabelConfig, ButtonConfig, HBoxConfig, VBoxConfig, InputConfig, InputNumberConfig, TextAreaConfig, RadioGroupConfig, CheckboxGroupConfig, SelectConfig, FormConfig, FormGroupConfig, FormItemConfig, LoopConfig } from '../_shared/configs.js';
+import { TextConfig, LabelConfig, ButtonConfig, HBoxConfig, VBoxConfig, InputConfig, InputNumberConfig, TextAreaConfig, RadioGroupConfig, CheckboxGroupConfig, SelectConfig, FormConfig, FormGroupConfig, FormItemConfig, LoopConfig } from '../_shared/component-configs.js';
 
 /**
  * 文本

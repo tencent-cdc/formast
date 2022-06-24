@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { Formast } from '../../src/react';
-import schemaJson from './form.json';
+import schemaJson from '../_shared/form.json';
 import { isEmpty } from 'ts-fns';
 import * as Options from '../../src/react-d/index.js';
 

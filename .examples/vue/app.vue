@@ -12,8 +12,9 @@
 </template>
 
 <script>
-import formJson from './form.json'
-import { Formast } from '../../src/vue'
+import schemaJson from '../_shared/form.json';
+import { Formast } from '../../src/vue';
+import * as Options from '../../src/vue-d/index.js';
 
 export default {
   data() {
@@ -25,13 +26,7 @@ export default {
         random: Math.random(),
         onSubmit: this.handleSubmit,
       },
-      options: {
-        components: {
-          Input: 'input',
-          Select: 'select',
-          Label: 'label',
-        }
-      }
+      options: Options,
     }
   },
   methods: {
@@ -54,12 +49,11 @@ export default {
     },
     getJson() {
       return new Promise((r) => {
-        setTimeout(() => r(formJson), 2000)
+        setTimeout(() => r(schemaJson), 2000)
       })
     },
     onLoad({ model }) {
       this.model = model;
-      console.log(model);
     },
   },
   components: {
