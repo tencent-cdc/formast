@@ -1,8 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import Vue from 'vue';
-import { SchemaParser } from '../core/schema-parser.js';
-import { each, map, isEmpty, getObjectHash, isArray, isUndefined, decideby, isObject, isString, isInheritedOf, isFunction } from 'ts-fns';
-import { parseViewInModel } from '../core/utils.js';
+import { each, getObjectHash, isArray, isUndefined, decideby, isObject, isInheritedOf } from 'ts-fns';
+import { createFormastContext, createConnectProps } from '../_shared/index.js';
 
 const Dynamic = Vue.extend({
   props: ['context', 'compute', 'subscribe'],
@@ -115,45 +114,17 @@ export const SHARED_COMPONENTS = {
 };
 
 export function createVueFormast(schemaJson, options, data) {
-  if (isEmpty(schemaJson)) {
+  const context = createFormastContext(schemaJson, options, data, {
+    connectComponent: connectVueComponent,
+    sharedComponents: SHARED_COMPONENTS,
+    render,
+  });
+
+  if (context === null) {
     return {};
   }
 
-  const { macros = {}, components: passedComponents = {}, types, ...others } = options || {};
-  const mappedComponents = map(passedComponents, (component) => {
-    if (component.formast && typeof component.formast === 'object' && !component.$$connectedByFormast) {
-      return connectVueComponent(component, component.formast);
-    }
-    return component;
-  });
-  const components = {
-    ...SHARED_COMPONENTS,
-    ...mappedComponents,
-  };
-
-  const schemaParser = new SchemaParser({
-    ...others,
-    macros: {
-      ...macros,
-      render,
-    },
-    context: {
-      components,
-      types,
-    },
-  });
-
-  schemaParser.loadSchema(schemaJson, data);
-
-  const { model, Layout, declares, schema, constants } = schemaParser;
-
-  if (declares && declares.components) {
-    const missing = declares.components.filter(item => !components[item]);
-    if (missing.length) {
-      throw new Error(`JSON 文件要求传入 "${missing.join(',')}" 这些组件，但它们缺失了`);
-    }
-  }
-
+  const { model, Layout, declares, schema, constants } = context;
   const Formast = Vue.extend({
     functional: true,
     render(h, ctx) {
@@ -161,7 +132,6 @@ export function createVueFormast(schemaJson, options, data) {
       return h(Dynamic, { key, props: { context, compute, subscribe } });
     },
   });
-
   return { model, Formast, schema, declares, constants };
 }
 
@@ -215,67 +185,21 @@ export function connectVueComponent(C, options) {
   const CBox = Vue.extend({
     functional: true,
     render(h, ctx) {
-      const { props } = ctx;
+      const { props, children } = ctx;
       const {
         $$formast,
-        children,
+        children: propChildren,
         ...originProps
       } = props;
 
-      let finalProps = originProps;
       const data = { props: originProps };
 
       if ($$formast) {
-        const compiledProps = {};
-        const { bind, deps, model, key } = $$formast;
-        finalProps = {};
+        const { model, key } = $$formast;
 
         model?.collect({ views: true, fields: true });
 
-        if (options) {
-          const { requireBind, requireDeps = [], requireProps } = options;
-          if (requireBind) {
-            if (isString(requireBind) && requireBind !== bind) {
-              throw new Error(`${C.name} 要求使用 bind: "${requireBind}"，但在 JSON 文件中 bind 值为 "${bind || 'N/A'}"！`);
-            } else if (!bind) {
-              throw new Error(`${C.name} 要求传入 bind，但在 JSON 文件中 bind 不存在！`);
-            }
-          }
-          if (requireDeps && (!deps || requireDeps.some(item => !deps.includes(item)))) {
-            throw new Error(`${C.name} 要求 deps: "${requireDeps.join(',')}"，但在 JSON 文件中 deps 值为 "${deps ? `[${deps.join(',')}]` : 'N/A'}"！`);
-          }
-          if (requireProps && requireProps.some(item => !(item in props))) {
-            const missing = requireProps.find(item => !(item in props));
-            throw new Error(`${C.name} 要求 props: "${requireProps.join(',')}"，但实际没有传入 "${missing}"！`);
-          }
-        }
-
-        if (bind) {
-          const view = parseViewInModel(model, bind);
-          if (view) {
-            compiledProps.bind = view;
-          }
-        }
-        if (deps && deps.length) {
-          const obj = {};
-          deps.forEach((key) => {
-            const view = parseViewInModel(model, bind);
-            if (view) {
-              obj[key] = view;
-            }
-          });
-          compiledProps.deps = obj;
-        }
-
-        if (options && options.mapToProps && isFunction(options.mapToProps)) {
-          finalProps = options.mapToProps(compiledProps, originProps, $$formast);
-          finalProps = { ...originProps, ...finalProps };
-        } else {
-          finalProps = { ...originProps, ...compiledProps };
-        }
-
-        data.props = finalProps;
-
+        data.props = createConnectProps(C, props, options);
         if (key) {
           data.key = key;
         }
@@ -308,6 +232,9 @@ export function connectVueComponent(C, options) {
       }
 
       const subs = decideby(() => {
+        if (propChildren) {
+          return propChildren;
+        }
         if (isUndefined(children)) {
           return;
         }

@@ -92,13 +92,13 @@ export const RadioGroupConfig = {
     if (!bind) {
       return;
     }
-    const { options, prefix, suffix, disabled, readonly, hidden, value } = bind;
+    const { options, prefix, suffix, disabled, readonly, hidden, value, key } = bind;
     const onChange = (value, selectedValue, selectedItem) => {
       // eslint-disable-next-line no-param-reassign
       bind.value = value;
       props.onChange?.(value, selectedValue, selectedItem);
     };
-    return { options, prefix, suffix, disabled, readonly, hidden, value, onChange };
+    return { name: props.name || key, options, prefix, suffix, disabled, readonly, hidden, value, onChange };
   },
 };
 
