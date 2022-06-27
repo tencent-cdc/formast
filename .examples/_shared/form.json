@@ -272,7 +272,7 @@
           {
             "type": "Button",
             "events": {
-              "click()": "{ books.value.push({})  }"
+              "click()": "{ books.value.push({}) }"
             },
             "children": "添加"
           }

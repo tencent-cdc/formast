@@ -346,6 +346,8 @@ export class SchemaParser {
 
       const repeats = ref.repeats || [];
       ref.repeats = repeats; // eslint-disable-line
+      ref.field = repeatItemsExp; // eslint-disable-line
+      ref.model = parentModel; // eslint-disable-line
 
       // 将不在本次得到结果中的记录删掉
       repeats.forEach(({ data }, i) => {
@@ -593,6 +595,10 @@ export class SchemaParser {
 
       const varsDeps = varsObserver.commit();
       const outsideDeps = outsideObserver.commit();
+
+      if (ref?.model === model && ref.field && !fields.includes(ref.field)) {
+        fields.push(ref.field);
+      }
 
       return {
         id,

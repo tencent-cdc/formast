@@ -192,42 +192,29 @@ export function connectVueComponent(C, options) {
         ...originProps
       } = props;
 
-      const data = { props: originProps };
+      const data = { ...ctx.data, props: originProps };
+      const events = ctx.data.on || {};
 
       if ($$formast) {
         const { model, key } = $$formast;
 
         model?.collect({ views: true, fields: true });
 
-        data.props = createConnectProps(C, props, options);
+        const modifiedProps = { ...props };
+        const eventNames = [];
+        each(events, (value, key) => {
+          const eventName = `on${key.replace(key[0], key[0].toUpperCase())}`;
+          modifiedProps[eventName] = value;
+          eventNames.push(eventName);
+        });
+        const finalProps = createConnectProps(C, modifiedProps, options);
+        eventNames.forEach((event) => {
+          delete finalProps[event];
+        });
+        data.props = finalProps;
+
         if (key) {
           data.key = key;
-        }
-
-        const collection = model?.collect(true) || [];
-        const hash = getObjectHash(collection);
-        if ((ctx._latest && ctx._latest.hash !== hash) || !ctx._latest) {
-          if (ctx._latest) {
-            ctx._latest.unsubscribe();
-          }
-          const dispatch = () => {
-            this.$forceUpdate();
-          };
-
-          collection.forEach((key) => {
-            model.watch(key, dispatch, true);
-          });
-
-          const unsubscribe = () => {
-            collection.forEach((key) => {
-              model.unwatch(key, dispatch);
-            });
-          };
-
-          ctx._latest = {
-            hash,
-            unsubscribe,
-          };
         }
       }
 

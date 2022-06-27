@@ -29,15 +29,15 @@ function genData(
     ...ctx.data,
     class: [ctx.data.class, ...classes, ...penddingClasses],
     props: {
-      ...ctx.props,
+      ...(ctx.data.props || {}),
       ...props,
     },
     attrs: {
-      ...ctx.attrs,
+      ...(ctx.data.attrs || {}),
       ...attrs,
     },
     on: {
-      ...ctx.on,
+      ...(ctx.data.on || {}),
       ...events,
     },
   };
@@ -87,11 +87,11 @@ export const VBox = connectVueComponent({
 }, VBoxConfig);
 
 export const Input = connectVueComponent({
-  props: ['type', 'prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'maxLength', 'highlight', 'keepAlive', 'value'],
+  props: ['type', 'prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'maxLength', 'highlight', 'keepAlive', 'value', 'onChange'],
   template: `
     <label v-if="!hidden || keepAlive" :class="createClassNames('input', $props)">
       <span v-if="prefix" :class="classnames('element__prefix input__prefix')">{{prefix}}</span>
-      <input :class="classnames('element__content input__content')" :type="type" :disabled="disabled" :readonly="readonly" :required="required" :maxLength="maxLength" :value="value" @input="$emit('change', $event)" />
+      <input :class="classnames('element__content input__content')" :type="type" :disabled="disabled" :readonly="readonly" :required="required" :maxLength="maxLength" :value="value" @input="handleInput" />
       <span v-if="suffix" :class="classnames('element__suffix input__suffix')">{{suffix}}</span>
       <slot />
     </label>
@@ -99,15 +99,19 @@ export const Input = connectVueComponent({
   methods: {
     classnames,
     createClassNames,
+    handleInput(e) {
+      this.$emit('change', e);
+      this.onChange?.(e.target.value);
+    },
   },
 }, InputConfig);
 
 export const InputNumber = connectVueComponent({
-  props: ['prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'maxLength', 'highlight', 'keepAlive', 'value'],
+  props: ['prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'maxLength', 'highlight', 'keepAlive', 'value', 'onChange'],
   template: `
     <label v-if="!hidden || keepAlive" :class="createClassNames('input', $props)">
       <span v-if="prefix" :class="classnames('element__prefix input__prefix')">{{prefix}}</span>
-      <input type="number" :class="classnames('element__content input__content')" :disabled="disabled" :readonly="readonly" :required="required" :maxLength="maxLength" :value="value" @input="$emit('change', $event)" />
+      <input type="number" :class="classnames('element__content input__content')" :disabled="disabled" :readonly="readonly" :required="required" :maxLength="maxLength" :value="value" @input="handleInput" />
       <span v-if="suffix" :class="classnames('element__suffix input__suffix')">{{suffix}}</span>
       <slot />
     </label>
@@ -115,6 +119,10 @@ export const InputNumber = connectVueComponent({
   methods: {
     classnames,
     createClassNames,
+    handleInput(e) {
+      this.$emit('change', e);
+      this.onChange?.(+e.target.value);
+    },
   },
 }, InputNumberConfig);
 

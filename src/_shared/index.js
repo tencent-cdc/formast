@@ -1,7 +1,6 @@
 import { isEmpty, map, isString, isFunction } from 'ts-fns';
 import { SchemaParser } from '../core/schema-parser.js';
 import { parseViewInModel } from '../core/utils.js';
-import { isReactComponent } from '../react/utils.js';
 
 export function createFormastContext(schemaJson, options, data, {
   connectComponent,
@@ -71,13 +70,13 @@ export function createConnectProps(C, props, options) {
         if (isString(requireBind) && requireBind !== bind) {
           throw new Error(`组件 ${C.name} 要求使用 bind: "${requireBind}"，但在 JSON 文件中 bind 值为 "${bind || 'N/A'}"！`);
         } else if (!bind) {
-          throw new Error(`${C.name} 要求传入 bind，但在 JSON 文件中 bind 不存在！`);
+          throw new Error(`组件 ${C.name} 要求传入 bind，但在 JSON 文件中 bind 不存在！`);
         }
       }
       if (requireDeps && (!deps || requireDeps.some(item => !deps.includes(item)))) {
         throw new Error(`组件 ${C.name} 要求 deps: "${requireDeps.join(',')}"，但在 JSON 文件中 deps 值为 "${deps ? `[${deps.join(',')}]` : 'N/A'}"！`);
       }
-      if (requireProps && requireProps.some(item => ((/^on[A-Z]/.test(item) && isReactComponent(C)) || !/^on[A-Z]/.test(item)) && !(item in props))) {
+      if (requireProps && requireProps.some(item => !(item in props))) {
         const missing = requireProps.find(item => !(item in props));
         throw new Error(`组件 ${C.name} 要求 props: "${requireProps.join(',')}"，但实际没有传入 "${missing}"！`);
       }
