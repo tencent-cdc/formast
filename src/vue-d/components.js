@@ -1,7 +1,7 @@
 import { connectVueComponent } from '../vue/index.js';
 import { TextConfig, LabelConfig, ButtonConfig, HBoxConfig, VBoxConfig, InputConfig, InputNumberConfig, TextAreaConfig, RadioGroupConfig, CheckboxGroupConfig, SelectConfig, FormConfig, FormGroupConfig, FormItemConfig, LoopConfig } from '../_shared/component-configs.js';
 import { classnames, createClassNames } from '../_shared/utils.js';
-import { isNumber, isUndefined, isArray } from 'ts-fns';
+import { isNumber, isUndefined, isArray, isFunction } from 'ts-fns';
 
 function genChildren(ctx) {
   const { children, props } = ctx;
@@ -24,10 +24,15 @@ function genData(
     props = {},
     events = {},
     classes: penddingClasses = [],
-  } = fn?.(ctx) || {};
+    directives = [],
+  } = isFunction(fn) ? fn(ctx) : fn || {};
   const res = {
     ...ctx.data,
-    class: [ctx.data.class, ...classes, ...penddingClasses],
+    class: [
+      ctx.data.class,
+      ...classes,
+      ...penddingClasses,
+    ],
     props: {
       ...(ctx.data.props || {}),
       ...props,
@@ -40,6 +45,10 @@ function genData(
       ...(ctx.data.on || {}),
       ...events,
     },
+    directives: [
+      ...(ctx.data.directives || []),
+      ...directives,
+    ],
   };
   return res;
 }
@@ -75,35 +84,88 @@ export const Button = connectVueComponent({
 }, ButtonConfig);
 
 export const HBox = connectVueComponent({
-  props: ['hidden', 'keepAlive'],
-  template: '<div v-if="!hidden || keepAlive" :class="classnames(\'horizontal-box\', hidden ? \'horizontal-box--hidden\' : \'\')"><slot /></div>',
-  methods: { classnames },
+  functional: true,
+  render: genRender('div', 'horizontal-box', ctx => ({
+    classes: [ctx.props.hidden ? classnames('horizontal-box--hidden') : ''],
+    directives: [
+      {
+        name: 'v-if',
+        expression: '!hidden || keepAlive',
+        value: !ctx.props.hidden || ctx.props.keepAlive,
+      },
+    ],
+  })),
 }, HBoxConfig);
 
 export const VBox = connectVueComponent({
-  props: ['hidden', 'keepAlive'],
-  template: '<div v-if="!hidden || keepAlive" :class="classnames(\'vertical-box\', hidden ? \'vertical-box--hidden\' : \'\')"><slot /></div>',
-  methods: { classnames },
+  functional: true,
+  render: genRender('div', 'vertical-box', ctx => ({
+    classes: [ctx.props.hidden ? classnames('vertical-box--hidden') : ''],
+    directives: [
+      {
+        name: 'v-if',
+        expression: '!hidden || keepAlive',
+        value: !ctx.props.hidden || ctx.props.keepAlive,
+      },
+    ],
+  })),
 }, VBoxConfig);
 
 export const Input = connectVueComponent({
-  props: ['type', 'prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'maxLength', 'highlight', 'keepAlive', 'value', 'onChange'],
-  template: `
-    <label v-if="!hidden || keepAlive" :class="createClassNames('input', $props)">
-      <span v-if="prefix" :class="classnames('element__prefix input__prefix')">{{prefix}}</span>
-      <input :class="classnames('element__content input__content')" :type="type" :disabled="disabled" :readonly="readonly" :required="required" :maxLength="maxLength" :value="value" @input="handleInput" />
-      <span v-if="suffix" :class="classnames('element__suffix input__suffix')">{{suffix}}</span>
-      <slot />
-    </label>
-  `,
-  methods: {
-    classnames,
-    createClassNames,
-    handleInput(e) {
-      this.$emit('change', e);
-      this.onChange?.(e.target.value);
-    },
+  functional: true,
+  render(h, ctx) {
+    return h('label', genData(ctx, [createClassNames('input', ctx.data.props)], {
+      directives: [
+        {
+          name: 'v-if',
+          expression: '!hidden || keepAlive',
+          value: !ctx.props.hidden || ctx.props.keepAlive,
+        },
+      ],
+    }), [
+      h('span', {
+        class: classnames('element__prefix input__prefix'),
+        directives: [
+          {
+            name: 'v-if',
+            expression: 'prefix',
+            value: ctx.props.prefix,
+          },
+        ],
+      }, ctx.props.prefix),
+      h('input', {
+        class: classnames('element__content input__content'),
+        attrs: {
+          type: ctx.props.type,
+          'max-length': ctx.props.maxLength,
+          value: ctx.props.value,
+        },
+        props: {
+          disabled: ctx.props.disabled,
+          readonly: ctx.props.readonly,
+          required: ctx.props.required,
+        },
+        on: {
+          input(e) {
+            ctx.data.on.change?.(e.target.value);
+          },
+        },
+      }),
+      h('span', {
+        class: classnames('element__suffix input__suffix'),
+        directives: [
+          {
+            name: 'v-if',
+            expression: 'suffix',
+            value: ctx.props.suffix,
+          },
+        ],
+      }, ctx.props.suffix),
+      ...(ctx.children || []),
+    ]);
   },
+  // eslint-disable-next-line max-len
+  // props: ['type', 'prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'maxLength', 'highlight', 'keepAlive', 'value', 'onChange'],
 }, InputConfig);
 
 export const InputNumber = connectVueComponent({
