@@ -1,13 +1,15 @@
-import React, { useRef, useEffect, useCallback, useState } from 'react';
-import { createProxyEvent } from './utils.js';
+import React, { useRef, useEffect, useCallback, useState, forwardRef } from 'react';
+import { isUndefined } from 'ts-fns';
 
-export function InputSelect(props) {
-  const { onChange, inputRef, options, className, valueKey, labelKey, children, ...attrs } = props;
+// eslint-disable-next-line react/display-name
+export const InputSelect = forwardRef((props, inputRef) => {
+  const { onChange, options, className, valueKey = 'value', labelKey = 'label', children, ...attrs } = props;
   const el = useRef();
   const [changed, setChanged] = useState(false);
 
   useEffect(() => {
     if (el.current && inputRef) {
+      // eslint-disable-next-line no-param-reassign
       inputRef.current = el.current;
     }
   }, [el.current]);
@@ -18,8 +20,7 @@ export function InputSelect(props) {
         const { value } = e.target;
         const item = options.find(item => `${valueKey ? item[valueKey] : item.value}` === value);
         const origin = valueKey ? item[valueKey] : item.value;
-        const event = createProxyEvent(e, origin);
-        onChange(event);
+        onChange(origin, item);
       }
       setChanged(true);
     },
@@ -70,16 +71,16 @@ export function InputSelect(props) {
       {options
         ? options.map(option => (
             <option
-              key={valueKey ? option[valueKey] : option.value}
-              value={valueKey ? option[valueKey] : option.value}
+              key={option[valueKey]}
+              value={option[valueKey]}
               hidden={option.hidden}
               disabled={option.disabled}
             >
-              {labelKey ? option[labelKey] : option.label}
+              {isUndefined(option[labelKey]) ? option[valueKey] : option[labelKey]}
             </option>
         ))
         : children}
     </select>
   );
-}
+});
 export default InputSelect;

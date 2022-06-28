@@ -40,6 +40,28 @@
         "required('{label}必填')"
       ]
     },
+    "hobbies": {
+      "default": [],
+      "label": "爱好",
+      "options": [
+        { "label": "足球", "value": "football" },
+        { "label": "篮球", "value": "basketball" },
+        { "label": "乒乓球", "value": "pingpong" }
+      ],
+      "component": "CheckboxGroup"
+    },
+    "birth": {
+      "default": "",
+      "label": "出生",
+      "options": [
+        { "value": "1980" },
+        { "value": "1990" },
+        { "value": "2000" },
+        { "value": "2010" },
+        { "value": "2020" }
+      ],
+      "component": "RadioGroup"
+    },
     "height": {
       "default": 0,
       "compute": "{ age * 5 }"
@@ -68,11 +90,15 @@
           "label": "价格"
         }
       }
-    ]
+    ],
+    "books": {
+      "default": [{}]
+    }
   },
-  "declare": {
+  "declares": {
     "props": [
       "onSubmit",
+      "onSetRandom",
       "random"
     ],
     "components": [
@@ -106,22 +132,21 @@
             ]
           },
           {
-            "type": "input",
+            "type": "Input",
             "vars": {
-              "value": "{ x }"
+              "value": "{ x + 'cm' }"
             },
             "props": {
               "value": "{ value }",
               "placeholder": "无模型支持的vars使用，vars.value 是从父级作用域传入进来生成的"
             },
             "events": {
-              "change(e)": "{ value = e.target.value }"
+              "change(v)": "{ value = v }"
             }
           }
         ]
       },
       {
-        "#comment": "关注这里，没有传入 props，自动绑定到了 name 字段，必须使用一个经过 connect 之后的组件",
         "type": "div",
         "children": [
           {
@@ -177,8 +202,32 @@
               "disabled": "{ sex.disabled }"
             },
             "events": {
-              "change(e)": "{ sex.value = e.target.value }"
+              "change(v)": "{ sex.value = v }"
             }
+          }
+        ]
+      },
+      {
+        "type": "div",
+        "children": [
+          {
+            "type": "Label",
+            "bind": "hobbies"
+          },
+          {
+            "bind": "hobbies"
+          }
+        ]
+      },
+      {
+        "type": "div",
+        "children": [
+          {
+            "type": "Label",
+            "bind": "birth"
+          },
+          {
+            "bind": "birth"
           }
         ]
       },
@@ -224,7 +273,7 @@
               "type": "button"
             },
             "events": {
-              "click()": "{ books.value.push({}) }"
+              "click()": "{ books.value.push({})  }"
             },
             "children": "添加"
           }
@@ -287,6 +336,20 @@
       },
       {
         "type": "div",
+        "children": "{ random }"
+      },
+      {
+        "type": "button",
+        "attrs": {
+          "type": "button"
+        },
+        "events": {
+          "click": "{ onSetRandom }"
+        },
+        "children": "Random"
+      },
+      {
+        "type": "p",
         "children": [
           {
             "type": "button",
@@ -296,10 +359,6 @@
             "children": "查看结果"
           }
         ]
-      },
-      {
-        "type": "div",
-        "children": "{ random }"
       }
     ]
   }

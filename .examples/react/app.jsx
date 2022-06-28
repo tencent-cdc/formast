@@ -1,16 +1,8 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { Formast } from '../../src/react';
-import schemaJson from './form.json';
+import schemaJson from '../_shared/form.json';
 import { isEmpty } from 'ts-fns';
-import { Select, Input, Label } from '../../src/react-default/components.jsx';
-
-const Options = {
-  components: {
-    Select,
-    Input,
-    Label,
-  },
-}
+import * as Options from '../../src/react-d/index.js';
 
 export default function App() {
   const [errors, setErrors] = useState([]);
@@ -37,16 +29,24 @@ export default function App() {
     setTimeout(() => r(schemaJson), 2000);
   });
 
+  const onSetRandom = () => {
+    setRandom(Math.random());
+  };
+
   return (
     <div>
       <Formast
-        json={getJson}
+        schema={getJson}
         props={{
           onSubmit: handleSubmit,
+          onSetRandom: onSetRandom,
           random: random,
         }}
         options={Options}
-        onLoad={({ model }) => ref.current = model}
+        onLoad={({ model }) => {
+          ref.current = model;
+          window.__model = model;
+        }}
       >
         <span>正在加载...</span>
       </Formast>
@@ -58,7 +58,6 @@ export default function App() {
       <pre>
         {isEmpty(data) ? null : JSON.stringify(data, null, 4)}
       </pre>
-      <button onClick={() => setRandom(Math.random())}>Random</button>
     </div>
   );
 }

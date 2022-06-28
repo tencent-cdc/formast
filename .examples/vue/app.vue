@@ -1,24 +1,21 @@
 <template>
   <div>
-    <formast :json="getJson" :props="props" :onLoad="onLoad">
+    <formast :schema="getJson" :props="props" :onLoad="onLoad" :options="options">
       <span>正在加载...</span>
     </formast>
     <div>
       <div v-for="err,i in errors" :key="i" style="color:red">{{err.message}}</div>
     </div>
     <pre>{{data}}</pre>
-    <button type="button" @click="handleRadom">Random</button>
   </div>
 </template>
 
 <script>
-import formJson from './form.json'
-import { Formast } from '../../src/vue'
+import schemaJson from '../_shared/form.json';
+import { Formast } from '../../src/vue';
+import * as Options from '../../src/vue-d/index.js';
 
 export default {
-  components: {
-    Formast,
-  },
   data() {
     return {
       data: null,
@@ -27,7 +24,9 @@ export default {
       props: {
         random: Math.random(),
         onSubmit: this.handleSubmit,
+        onSetRandom: this.handleRadom,
       },
+      options: Options,
     }
   },
   methods: {
@@ -50,7 +49,7 @@ export default {
     },
     getJson() {
       return new Promise((r) => {
-        setTimeout(() => r(formJson), 2000)
+        setTimeout(() => r(schemaJson), 2000)
       })
     },
     onLoad({ model }) {

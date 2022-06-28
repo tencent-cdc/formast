@@ -110,12 +110,15 @@ export class SchemaParser {
     }
 
     if (model) {
-      this.loadModel(model).initModel(data);
+      this.loadModel(model).initModel(data ? data : {});
     }
 
-    if (layout) {
-      this.loadLayout(layout);
-    }
+    // 支持直接传一个数组
+    const out = isArray(layout) ? {
+      type: 'Fragment',
+      children: layout,
+    } : layout;
+    this.loadLayout(out);
 
     if (constants) {
       this.loadConstants(constants);
@@ -295,11 +298,9 @@ export class SchemaParser {
       children: _children,
 
       id,
-      type,
       bind,
       deps = [],
       vars = {},
-      props = {},
       attrs = {},
       events = {},
       visible,
@@ -312,12 +313,25 @@ export class SchemaParser {
     } = json;
     const { render } = macros;
 
+    let sign = '';
+    const createSign = () => {
+      if (sign) {
+        return sign;
+      }
+      const { children, ...info } = json;
+      if (children) {
+        info.children = '{ ... }';
+      }
+      sign = JSON.stringify(info);
+      return sign;
+    };
+
     // 循环体 -------------------------------
 
     if (repeat) {
       const [repeatItemsExp, repeatItemExp, repeatIndexExp, repeatAliasExp] = parseRepeat(repeat);
       if (!repeatItemExp || !repeatItemsExp) {
-        throw new Error(`在 JSON 文件中 ${type}${id ? `:${id}` : ''} 提供的 repeat 为 "${repeat}" 不符合语法结构，请使用 "item,index,items in list" 这样的语法结构，注意空格必须严格遵守`);
+        throw new Error(`在 JSON 文件中 ${id ? `#${id}` : createSign()} 提供的 repeat 为 "${repeat}" 不符合语法结构，请使用 "item,index,items in list" 这样的语法结构，注意空格必须严格遵守`);
       }
 
       const parentModel = parentScope.vars.model || this.model;
@@ -327,7 +341,7 @@ export class SchemaParser {
 
       if (!isArray(repeatItems)) {
         console.error(repeatItemsExp, repeatItems);
-        throw new Error(`在 JSON 文件中 ${type}${id ? `:${id}` : ''} 规定了 repeat 为 "${repeat}", 但 ${repeatItemsExp} 解析结果不为数组，无法完成遍历`);
+        throw new Error(`在 JSON 文件中 ${id ? `#${id}` : createSign()} 规定了 repeat 为 "${repeat}", 但 ${repeatItemsExp} 解析结果不为数组，无法完成遍历`);
       }
 
       const repeats = ref.repeats || [];
@@ -353,7 +367,7 @@ export class SchemaParser {
         const repeatScope = parentScope.$new({ repeat: repeatVars });
         const repeatGlobalScope = globalScope.$new({ repeat: repeatVars });
         const latest = repeats.find(record => record.data === item);
-        const key = latest ? latest.key : `${type}-repeat-${createRandomString(8)}`;
+        const key = latest ? latest.key : `repeat-${createRandomString(8)}`;
         if (!latest) {
           repeats.push({ data: item, key });
         }
@@ -377,7 +391,7 @@ export class SchemaParser {
       if (id) {
         return id;
       }
-      return `${type}-${getObjectHash(componentJson)}-${getObjectHash(parentJson || {})}`;
+      return `node-${getObjectHash(componentJson)}-${getObjectHash(parentJson || {})}`;
     });
 
     const model = decideby(() => {
@@ -394,21 +408,21 @@ export class SchemaParser {
       if (isExp(modelExp)) {
         const res = this.parse(modelExp, parentScope);
         if (!isInstanceOf(res, Model)) {
-          throw new Error(`在 JSON 文件中 ${type}${id ? `:${id}` : ''} 规定了 model 为 "${modelExp}"，但无法从该表达式解析出正确的模型实例`);
+          throw new Error(`在 JSON 文件中 ${id ? `#${id}` : createSign()} 规定了 model 为 "${modelExp}"，但无法从该表达式解析出正确的模型实例`);
         }
         return res;
       }
 
       const res = parseSubInModel(parentModel, modelExp);
       if (!isInstanceOf(res, Model)) {
-        throw new Error(`在 JSON 文件中 ${type}${id ? `:${id}` : ''} 规定了 model 为 "${modelExp}"，但无法从该路径解析出正确的模型实例`);
+        throw new Error(`在 JSON 文件中 ${id ? `#${id}` : createSign()} 规定了 model 为 "${modelExp}"，但无法从该路径解析出正确的模型实例`);
       }
       return res;
     });
 
 
     if (bind && !isFieldInModel(bind, model)) {
-      console.warn(`在 JSON 文件中 ${type}${id ? `:${id}` : ''} 规定了 bind 为 ${bind}，但当前模型上没有该字段`);
+      console.warn(`在 JSON 文件中 ${id ? `#${id}` : createSign()} 规定了 bind 为 ${bind}，但当前模型上没有该字段`);
     }
 
     if (deps && deps.length) {
@@ -419,12 +433,34 @@ export class SchemaParser {
         }
       });
       if (missing.length) {
-        console.warn(`在 JSON 文件中 ${type}${id ? `:${id}` : ''} 规定了 deps 为 "${deps.join(',')}"，但当前模型上没有找到 "${missing.join(',')}" 这些字段`);
+        console.warn(`在 JSON 文件中 ${id ? `#${id}` : createSign()} 规定了 deps 为 "${deps.join(',')}"，但当前模型上没有找到 "${missing.join(',')}" 这些字段`);
       }
     }
 
+    const { type, props = {} } = decideby(() => {
+      const { props: passedProps = {} } = json;
+      // json中没有传type，从bind的字段中去读取
+      if (!json.type) {
+        if (bind && model && model.$views[bind].component) {
+          const [type, attrs = {}] = [].concat(model.$views[bind].component);
+          const props = { ...attrs, ...passedProps };
+          return { type, props };
+        }
+        if (bind && model && model.$views[bind].type && context && context.types) {
+          const info = context.types[model.$views[bind].type];
+          const [type, attrs = {}] = [].concat(info);
+          const props = { ...attrs, ...passedProps };
+          return { type, props };
+        }
+
+        throw new Error(`在 JSON 文件中 ${id ? `#${id}` : createSign()} 没有指定type，且无法从bind中找到可用的组件信息`);
+      }
+
+      return json;
+    });
+
     // 当前作用域在实例化vars时的model需要根据配置实时调整
-    const preloadScope = globalScope.$new({ model });
+    const preloadScope = parentScope.$new({ model });
     // 一次性从父级作用域读取值之后，生成本级作用域的 vars
     // 一次性成值后，vars 动态语法失效，成立自己的值
     const state = this.parseObject(vars, preloadScope);

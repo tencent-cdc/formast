@@ -10,7 +10,9 @@ node_modules/
 /resources/
 /visual/
 /antd/
-/react-default/
+/react-d/
 jsonlint.js
 /vue/
 /.reports/
+/vue-d/
+/_shared/

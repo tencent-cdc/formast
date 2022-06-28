@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import Vue from 'vue';
 import { SchemaParser } from '../core/schema-parser.js';
 import { each, map, isEmpty, getObjectHash, isArray, isUndefined, decideby, isObject, isString, isInheritedOf, isFunction } from 'ts-fns';
@@ -113,12 +114,12 @@ export const SHARED_COMPONENTS = {
   }),
 };
 
-export function createVueFormast(json, options = {}) {
-  if (isEmpty(json)) {
+export function createVueFormast(schemaJson, options, data) {
+  if (isEmpty(schemaJson)) {
     return {};
   }
 
-  const { macros = {}, components: passedComponents = {}, ...others } = options;
+  const { macros = {}, components: passedComponents = {}, types, ...others } = options || {};
   const mappedComponents = map(passedComponents, (component) => {
     if (component.formast && typeof component.formast === 'object' && !component.$$connectedByFormast) {
       return connectVueComponent(component, component.formast);
@@ -138,10 +139,11 @@ export function createVueFormast(json, options = {}) {
     },
     context: {
       components,
+      types,
     },
   });
 
-  schemaParser.loadSchema(json);
+  schemaParser.loadSchema(schemaJson, data);
 
   const { model, Layout, declares, schema, constants } = schemaParser;
 
@@ -158,7 +160,6 @@ export function createVueFormast(json, options = {}) {
       const { key, context, compute, subscribe } = Layout(ctx.props);
       return h(Dynamic, { key, props: { context, compute, subscribe } });
     },
-    components,
   });
 
   return { model, Formast, schema, declares, constants };
@@ -166,27 +167,31 @@ export function createVueFormast(json, options = {}) {
 
 export const Formast = Vue.extend({
   name: 'formast',
-  props: ['options', 'json', 'props', 'onLoad'],
+  props: ['options', 'schema', 'json', 'props', 'onLoad', 'data'],
   data() {
     return {
       FormastComponent: null,
     };
   },
   beforeMount() {
-    const { options, json, onLoad } = this;
-    const create = (schemaJson) => {
-      const { Formast, ...others } = createVueFormast(schemaJson, options);
+    const { options, json, schema = json, onLoad, data } = this;
+    const create = (schemaJson, data) => {
+      const { Formast, ...others } = createVueFormast(schemaJson, options, data);
       this.FormastComponent = Formast;
       if (onLoad) {
         onLoad(others);
       }
     };
-    if (typeof json === 'function') {
-      Promise.resolve().then(json)
-        .then(create);
-    } else {
-      create(json);
+
+    const promises = [
+      Promise.resolve(typeof schema === 'function' ? schema() : schema),
+    ];
+
+    if (data) {
+      promises.push(Promise.resolve(typeof data === 'function' ? data() : data));
     }
+
+    Promise.all(promises).then(([schema, data]) => create(schema, data));
   },
   render(h) {
     const { FormastComponent, $slots } = this;
@@ -224,6 +229,8 @@ export function connectVueComponent(C, options) {
         const compiledProps = {};
         const { bind, deps, model, key } = $$formast;
         finalProps = {};
+
+        model?.collect({ views: true, fields: true });
 
         if (options) {
           const { requireBind, requireDeps = [], requireProps } = options;
@@ -271,6 +278,32 @@ export function connectVueComponent(C, options) {
 
         if (key) {
           data.key = key;
+        }
+
+        const collection = model?.collect(true) || [];
+        const hash = getObjectHash(collection);
+        if ((ctx._latest && ctx._latest.hash !== hash) || !ctx._latest) {
+          if (ctx._latest) {
+            ctx._latest.unsubscribe();
+          }
+          const dispatch = () => {
+            this.$forceUpdate();
+          };
+
+          collection.forEach((key) => {
+            model.watch(key, dispatch, true);
+          });
+
+          const unsubscribe = () => {
+            collection.forEach((key) => {
+              model.unwatch(key, dispatch);
+            });
+          };
+
+          ctx._latest = {
+            hash,
+            unsubscribe,
+          };
         }
       }
 

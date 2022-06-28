@@ -13,3 +13,4 @@ webpack.config.js
 CNAME
 .egwrc
 .gitignore
+.github/

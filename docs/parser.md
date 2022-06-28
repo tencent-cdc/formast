@@ -18,6 +18,7 @@ const parser = new SchemaParser({
   fns: {},
   context: {
     components: {},
+    types: {},
   },
 })
 ```
@@ -78,9 +79,12 @@ visit(node: JSON, parentNode: JSON): JSON;
 
 一个寄存对象，你可以在这个对象内提供一些数据，这个对象可在渲染器内被读取，从而可以共享这些数据。例如内置的 react 渲染器，就使用了 context 传递 components 这个参数。
 
+- components: 键值对，规定在 JSON 中的组件名将使用哪一个真实的组件
+- types: 键值对，其值和 JSON 中的 model 中的 component 形式一样，用以根据字段的 type 来决定使用什么组件
+
 ### API
 
-**loadSchema(json, data)**
+**loadSchema(schemaJson, data)**
 
 加载并解析 schema JSON，返回实例本身，加载后实例上将得到 Layout, model 等信息。
 
@@ -88,7 +92,7 @@ visit(node: JSON, parentNode: JSON): JSON;
 const { model, Layout } = schemaParser.loadSchema({ ... }, { ... })
 ```
 
-- json: 即符合 schema 的 JSON 对象
+- schemaJson: 即符合 schema 的 JSON 对象
 - data: 用于实例化模型的数据
 
 注意，如果你执行完 loadSchema，那么，就不可以再执行下面的任意方法。

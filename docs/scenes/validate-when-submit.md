@@ -6,7 +6,7 @@
 ```js
 import { useRef } from 'react';
 import { Formast } from 'formast/react'; // 引入 Formast 组件
-import Options from 'formast/react-default'; // 实用内置的配置，在了解具体使用方法之后，可以替换为自己的配置对象
+import Options from 'formast/react-d'; // 实用内置的配置，在了解具体使用方法之后，可以替换为自己的配置对象
 
 function App() {
   const ref = useRef();
@@ -27,7 +27,7 @@ function App() {
   };
 
   return (
-    <Formast json={fetchJson} options={Options} onLoad={info => (ref.current = info)} props={{ onSubmit }}>
+    <Formast schema={fetchJson} options={Options} onLoad={info => (ref.current = info)} props={{ onSubmit }}>
       <span>正在加载...</span>
     </Formast>
   )

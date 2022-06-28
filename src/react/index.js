@@ -1,25 +1,26 @@
-import { useState, useEffect, memo, Fragment, createElement, useRef } from 'react';
-import { each, isEmpty, getObjectHash, isArray, isString, map, isFunction } from 'ts-fns';
+import { useState, useEffect, memo, Fragment, createElement, useRef, forwardRef } from 'react';
+import { each, isEmpty, getObjectHash, isArray, isString, map, isFunction, decideby } from 'ts-fns';
 import { SchemaParser } from '../core/schema-parser.js';
 import { parseViewInModel } from '../core/utils.js';
 import { isReactComponent } from './utils.js';
+import { useModelReactor } from './hooks.js';
 
 export const SHARED_COMPONENTS = {
   Fragment,
 };
 
-export const ALIAS_PROPS_MAPPING = {
+export const ALIAS_MAPPING = {
   for: 'htmlFor',
   readonly: 'readOnly',
   class: 'className',
 };
 
-export function createReactFormast(json, options = {}) {
-  if (isEmpty(json)) {
+export function createReactFormast(schemaJson, options, data) {
+  if (isEmpty(schemaJson)) {
     return {};
   }
 
-  const { macros = {}, components: passedComponents = {}, ...others } = options;
+  const { macros = {}, components: passedComponents = {}, types, ...others } = options || {};
 
   const mappedComponents = map(passedComponents, (component) => {
     if (component.formast && typeof component.formast === 'object' && !component.$$connectedByFormast) {
@@ -40,10 +41,11 @@ export function createReactFormast(json, options = {}) {
     },
     context: {
       components,
+      types,
     },
   });
 
-  schemaParser.loadSchema(json);
+  schemaParser.loadSchema(schemaJson, data);
 
   const { model, Layout, declares, schema, constants } = schemaParser;
 
@@ -58,25 +60,35 @@ export function createReactFormast(json, options = {}) {
   return { model, Formast, schema, declares, constants };
 }
 
-export function Formast(props) {
-  const { options, json, props: passedProps = {}, onLoad, children } = props;
+function FormastComponent(props, ref) {
+  const { options, json, schema = json, props: passedProps = {}, onLoad, children = null, data } = props;
 
   const [FormastComponent, setFormastComponent] = useState(null);
 
   useEffect(() => {
-    const create = (schemaJson) => {
-      const { Formast, ...others } = createReactFormast(schemaJson, options);
+    const create = (schemaJson, data) => {
+      const { Formast, ...others } = createReactFormast(schemaJson, options, data);
       setFormastComponent(Formast);
+
+      if (ref) {
+        // eslint-disable-next-line no-param-reassign
+        ref.current = others;
+      }
+
       if (onLoad) {
         onLoad(others);
       }
     };
-    if (typeof json === 'function') {
-      Promise.resolve().then(json)
-        .then(create);
-    } else {
-      create(json);
+
+    const promises = [
+      Promise.resolve(typeof schema === 'function' ? schema() : schema),
+    ];
+
+    if (data) {
+      promises.push(Promise.resolve(typeof data === 'function' ? data() : data));
     }
+
+    Promise.all(promises).then(([schema, data]) => create(schema, data));
   }, []);
 
   if (!FormastComponent) {
@@ -85,6 +97,8 @@ export function Formast(props) {
 
   return createElement(FormastComponent, passedProps);
 }
+
+export const Formast = forwardRef(FormastComponent);
 
 function Box(assets) {
   const {
@@ -128,20 +142,20 @@ function Box(assets) {
   const info = {};
   if (props) {
     each(props, (value, key) => {
-      const attr = ALIAS_PROPS_MAPPING[key] || key;
+      const attr = ALIAS_MAPPING[key] || key;
       info[attr] = value;
     });
   }
   if (attrs) {
     each(attrs, (value, key) => {
-      const attr = ALIAS_PROPS_MAPPING[key] || key;
+      const attr = ALIAS_MAPPING[key] || key;
       info[attr] = value;
     });
   }
   if (events) {
     each(events, (value, key) => {
-      const event = ALIAS_PROPS_MAPPING[key] || key;
-      const attr = `on${key.replace(event[0], event[0].toUpperCase())}`;
+      const event = ALIAS_MAPPING[key] || key;
+      const attr = /^on[A-Z]/.test(event) ? event : `on${key.replace(event[0], event[0].toUpperCase())}`;
       info[attr] = value;
     });
   }
@@ -159,6 +173,7 @@ function Box(assets) {
       bind,
       deps,
       model,
+      context,
     };
   }
 
@@ -184,57 +199,71 @@ export function connectReactComponent(C, options) {
       ...originProps
     } = props;
 
-    let finalProps = originProps;
+    const finalProps = useModelReactor($$formast?.model, (originProps) => {
+      let finalProps = originProps;
 
-    if ($$formast) {
-      const compiledProps = {};
-      const { bind, deps, model } = $$formast;
-      finalProps = {};
+      if ($$formast) {
+        const compiledProps = {};
+        const { bind, deps, model } = $$formast;
+        finalProps = {};
 
-      if (options) {
-        const { requireBind, requireDeps = [], requireProps } = options;
-        if (requireBind) {
-          if (isString(requireBind) && requireBind !== bind) {
-            throw new Error(`${C.name} 要求使用 bind: "${requireBind}"，但在 JSON 文件中 bind 值为 "${bind || 'N/A'}"！`);
-          } else if (!bind) {
-            throw new Error(`${C.name} 要求传入 bind，但在 JSON 文件中 bind 不存在！`);
+        if (options) {
+          const { requireBind, requireDeps = [], requireProps } = options;
+          if (requireBind) {
+            if (isString(requireBind) && requireBind !== bind) {
+              throw new Error(`${C.name} 要求使用 bind: "${requireBind}"，但在 JSON 文件中 bind 值为 "${bind || 'N/A'}"！`);
+            } else if (!bind) {
+              throw new Error(`${C.name} 要求传入 bind，但在 JSON 文件中 bind 不存在！`);
+            }
+          }
+          if (requireDeps && (!deps || requireDeps.some(item => !deps.includes(item)))) {
+            throw new Error(`${C.name} 要求 deps: "${requireDeps.join(',')}"，但在 JSON 文件中 deps 值为 "${deps ? `[${deps.join(',')}]` : 'N/A'}"！`);
+          }
+          if (requireProps && requireProps.some(item => !(item in props))) {
+            const missing = requireProps.find(item => !(item in props));
+            throw new Error(`${C.name} 要求 props: "${requireProps.join(',')}"，但实际没有传入 "${missing}"！`);
           }
         }
-        if (requireDeps && (!deps || requireDeps.some(item => !deps.includes(item)))) {
-          throw new Error(`${C.name} 要求 deps: "${requireDeps.join(',')}"，但在 JSON 文件中 deps 值为 "${deps ? `[${deps.join(',')}]` : 'N/A'}"！`);
-        }
-        if (requireProps && requireProps.some(item => !(item in props))) {
-          const missing = requireProps.find(item => !(item in props));
-          throw new Error(`${C.name} 要求 props: "${requireProps.join(',')}"，但实际没有传入 "${missing}"！`);
-        }
-      }
 
-      if (bind) {
-        const view = parseViewInModel(model, bind);
-        if (view) {
-          compiledProps.bind = view;
-        }
-      }
-      if (deps && deps.length) {
-        const obj = {};
-        deps.forEach((key) => {
+        if (bind) {
           const view = parseViewInModel(model, bind);
           if (view) {
-            obj[key] = view;
+            compiledProps.bind = view;
+            const requireBind = options?.requireBind;
+            if (isString(requireBind)) {
+              compiledProps[requireBind] = view;
+            }
           }
-        });
-        compiledProps.deps = obj;
+          if (deps && deps.length) {
+            deps.forEach((key) => {
+              const view = parseViewInModel(model, bind);
+              if (view) {
+                compiledProps[key] = view;
+              }
+            });
+          }
+        }
+
+        if (options && options.mapToProps && isFunction(options.mapToProps)) {
+          finalProps = options.mapToProps(compiledProps, originProps, $$formast) || {};
+          finalProps = { ...originProps, ...finalProps };
+        } else {
+          finalProps = { ...originProps };
+        }
       }
 
-      if (options && options.mapToProps && isFunction(options.mapToProps)) {
-        finalProps = options.mapToProps(compiledProps, originProps, $$formast);
-        finalProps = { ...originProps, ...finalProps };
-      } else {
-        finalProps = { ...originProps, ...compiledProps };
-      }
-    }
+      return finalProps;
+    }, originProps);
 
-    return createElement(C, finalProps, ...(isArray(children) ? children : [children]));
+    const subs = decideby(() => {
+      if (finalProps.children) {
+        const { children } = finalProps;
+        return [].concat(children);
+      }
+      return [].concat(children);
+    });
+    const { children: _children2, ...attrs } = finalProps;
+    return createElement(C, attrs, ...subs);
   };
   CBox.formast = options; // eslint-disable-line
   CBox.$$connectedByFormast = true;

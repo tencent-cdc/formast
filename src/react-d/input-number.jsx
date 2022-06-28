@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect, forwardRef } from 'react';
 import { decideby, isNumber } from 'ts-fns';
 
 function format(str) {
@@ -52,9 +52,10 @@ function toNum(text) {
   return text.replace(/,/g, '');
 }
 
-export function InputNumber(props) {
+// eslint-disable-next-line react/display-name
+export const InputNumber = forwardRef((props, inputRef) => {
   // - precise: 高精度数，用字符串代表数字，不丢失精度
-  const { value, defaultValue, onChange, max, min, inputRef, precise, ...attrs } = props;
+  const { value, defaultValue, onChange, max, min, precise, ...attrs } = props;
   const isControlled = 'value' in props; // 受控组件
 
   const el = useRef();
@@ -64,6 +65,7 @@ export function InputNumber(props) {
 
   useEffect(() => {
     if (el.current && inputRef) {
+      // eslint-disable-next-line no-param-reassign
       inputRef.current = el.current;
     }
   }, [el.current]);
@@ -134,34 +136,6 @@ export function InputNumber(props) {
       });
     };
 
-    const responseChange = (num) => {
-      const event = new Proxy(e, {
-        get(_, key) {
-          const value = _[key];
-          if (key === 'target') {
-            return new Proxy(value, {
-              get(_, key) {
-                const value = _[key];
-                if (key === 'value') {
-                  return num;
-                }
-
-                return typeof value === 'function' ? value.bind(_) : value;
-              },
-            });
-          }
-
-          return typeof value === 'function' ? value.bind(_) : value;
-        },
-      });
-      if (onChange) {
-        onChange(event);
-      }
-      if (!isControlled) {
-        changeBy(num);
-      }
-    };
-
     const response = (num) => {
       const n = useNum(num, precise);
       const res = decideby(() => {
@@ -173,7 +147,7 @@ export function InputNumber(props) {
         }
         return n;
       });
-      responseChange(res);
+      onChange(res);
     };
 
     // 先处理一些特殊情况
@@ -281,7 +255,7 @@ export function InputNumber(props) {
       resetCurr();
     } else {
       // 空
-      responseChange(null);
+      onChange(null);
     }
   };
 
@@ -310,5 +284,5 @@ export function InputNumber(props) {
   }, [text]);
 
   return <input {...attrs} value={text} onChange={handleChange} ref={el} />;
-}
+});
 export default InputNumber;
