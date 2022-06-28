@@ -25,7 +25,7 @@
       "placeholder": "请输入姓名"
     },
     "age": {
-      "default": "",
+      "default": null,
       "type": "&int",
       "required": true,
       "validators": [
@@ -179,7 +179,7 @@
               "required": "{ age.required }"
             },
             "events": {
-              "change(e)": "{ age.value = e.target.value }"
+              "change(value)": "{ age.value = value }"
             }
           }
         ]

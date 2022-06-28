@@ -55,6 +55,9 @@ function genData(
 
 function genRender(tag, classes, fn) {
   return function (h, ctx) {
+    if (!(!ctx.data.props.hidden || ctx.data.props.keepAlive)) {
+      return null;
+    }
     return h(
       tag,
       genData(ctx, isArray(classes) ? classes.map(item => classnames(item)) : [classnames(classes)], fn),
@@ -77,278 +80,317 @@ export const Button = connectVueComponent({
   functional: true,
   render: genRender('button', 'button', ctx => ({
     attrs: {
-      type: ctx.props.type || 'button',
+      type: ctx.data.props.type || 'button',
     },
-    classes: [ctx.props.disabled ? classnames('button--disabled') : ''],
+    classes: [ctx.data.props.disabled ? classnames('button--disabled') : ''],
   })),
 }, ButtonConfig);
 
 export const HBox = connectVueComponent({
   functional: true,
   render: genRender('div', 'horizontal-box', ctx => ({
-    classes: [ctx.props.hidden ? classnames('horizontal-box--hidden') : ''],
-    directives: [
-      {
-        name: 'v-if',
-        expression: '!hidden || keepAlive',
-        value: !ctx.props.hidden || ctx.props.keepAlive,
-      },
-    ],
+    classes: [ctx.data.props.hidden ? classnames('horizontal-box--hidden') : ''],
   })),
 }, HBoxConfig);
 
 export const VBox = connectVueComponent({
   functional: true,
   render: genRender('div', 'vertical-box', ctx => ({
-    classes: [ctx.props.hidden ? classnames('vertical-box--hidden') : ''],
-    directives: [
-      {
-        name: 'v-if',
-        expression: '!hidden || keepAlive',
-        value: !ctx.props.hidden || ctx.props.keepAlive,
-      },
-    ],
+    classes: [ctx.data.props.hidden ? classnames('vertical-box--hidden') : ''],
   })),
 }, VBoxConfig);
 
-export const Input = connectVueComponent({
-  functional: true,
-  render(h, ctx) {
-    return h('label', genData(ctx, [createClassNames('input', ctx.data.props)], {
-      directives: [
-        {
-          name: 'v-if',
-          expression: '!hidden || keepAlive',
-          value: !ctx.props.hidden || ctx.props.keepAlive,
-        },
-      ],
-    }), [
-      h('span', {
-        class: classnames('element__prefix input__prefix'),
-        directives: [
-          {
-            name: 'v-if',
-            expression: 'prefix',
-            value: ctx.props.prefix,
-          },
-        ],
-      }, ctx.props.prefix),
+function genInputRender(type, getAttrs, onInput) {
+  return function (h, ctx) {
+    if (!(!ctx.data.props.hidden || ctx.data.props.keepAlive)) {
+      return null;
+    }
+    return h('label', genData(ctx, [createClassNames(type, ctx.data.props)]), [
+      ctx.data.props.prefix ? h('span', {  class: classnames(`element__prefix ${type}__prefix`) }, ctx.data.props.prefix) : null,
       h('input', {
-        class: classnames('element__content input__content'),
+        class: classnames(`element__content ${type}__content`),
         attrs: {
-          type: ctx.props.type,
-          'max-length': ctx.props.maxLength,
-          value: ctx.props.value,
+          type: ctx.data.attrs.type || ctx.data.props.type,
+          value: ctx.data.attrs.value || ctx.data.props.value,
+          ...(getAttrs ? getAttrs(ctx) : {}),
         },
         props: {
-          disabled: ctx.props.disabled,
-          readonly: ctx.props.readonly,
-          required: ctx.props.required,
+          disabled: ctx.data.attrs.disabled || ctx.data.props.disabled,
+          readonly: ctx.data.attrs.readonly || ctx.data.props.readonly,
+          required: ctx.data.attrs.required || ctx.data.props.required,
         },
         on: {
           input(e) {
-            ctx.data.on.change?.(e.target.value);
+            const value = onInput ? onInput(e.target.value) : e.target.value;
+            ctx.data.props.onChange?.(value);
+            ctx.data.on.change?.(e);
           },
         },
       }),
-      h('span', {
-        class: classnames('element__suffix input__suffix'),
-        directives: [
-          {
-            name: 'v-if',
-            expression: 'suffix',
-            value: ctx.props.suffix,
-          },
-        ],
-      }, ctx.props.suffix),
-      ...(ctx.children || []),
+      ctx.data.props.suffix ? h('span', { class: classnames(`element__suffix ${type}__suffix`) }, ctx.data.props.suffix) : null,
     ]);
-  },
-  // eslint-disable-next-line max-len
-  // props: ['type', 'prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'maxLength', 'highlight', 'keepAlive', 'value', 'onChange'],
+  };
+}
+
+export const Input = connectVueComponent({
+  props: ['type', 'prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'maxLength', 'highlight', 'keepAlive', 'value', 'onChange'],
+  functional: true,
+  render: genInputRender(
+    'input',
+    ctx => ({
+      type: ctx.data.attrs.type || ctx.data.props.type,
+      'max-length': ctx.data.attrs.maxLength || ctx.data.props.maxLength,
+    }),
+  ),
 }, InputConfig);
 
 export const InputNumber = connectVueComponent({
-  props: ['prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'maxLength', 'highlight', 'keepAlive', 'value', 'onChange'],
-  template: `
-    <label v-if="!hidden || keepAlive" :class="createClassNames('input', $props)">
-      <span v-if="prefix" :class="classnames('element__prefix input__prefix')">{{prefix}}</span>
-      <input type="number" :class="classnames('element__content input__content')" :disabled="disabled" :readonly="readonly" :required="required" :maxLength="maxLength" :value="value" @input="handleInput" />
-      <span v-if="suffix" :class="classnames('element__suffix input__suffix')">{{suffix}}</span>
-      <slot />
-    </label>
-  `,
-  methods: {
-    classnames,
-    createClassNames,
-    handleInput(e) {
-      this.$emit('change', e);
-      this.onChange?.(+e.target.value);
-    },
-  },
+  props: ['prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'max', 'min', 'highlight', 'keepAlive', 'value', 'onChange'],
+  functional: true,
+  render: genInputRender(
+    'input-number',
+    ctx => ({
+      type: 'number',
+      max: ctx.data.attrs.max || ctx.data.props.max,
+      min: ctx.data.attrs.min || ctx.data.props.min,
+    }),
+    value => +value,
+  ),
 }, InputNumberConfig);
 
 export const Textarea = connectVueComponent({
-  props: ['type', 'prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'maxLength', 'highlight', 'keepAlive', 'value'],
-  template: `
-    <label v-if="!hidden || keepAlive" :class="createClassNames('textarea', $props)">
-      <span v-if="prefix" :class="classnames('element__prefix input__prefix')">{{prefix}}</span>
-      <textarea :class="classnames('element__content textarea__content')" :disabled="disabled" :readonly="readonly" :required="required" :maxLength="maxLength" :value="value" @input="$emit('change', $event)" />
-      <span v-if="suffix" :class="classnames('element__suffix input__suffix')">{{suffix}}</span>
-      <slot />
-    </label>
-  `,
-  methods: { classnames, createClassNames },
+  props: ['prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'maxLength', 'highlight', 'keepAlive', 'value', 'onChange'],
+  functional: true,
+  render: genInputRender(
+    'textarea',
+    ctx => ({
+      'max-length': ctx.data.attrs.maxLength || ctx.data.props.maxLength,
+    }),
+  ),
 }, TextAreaConfig);
 
-export const RadioGroup = connectVueComponent({
-  props: ['options', 'valueKey', 'labelKey', 'name', 'value', 'prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'highlight', 'keepAlive'],
-  template: `
-    <span v-if="!hidden || keepAlive" :class="createClassNames('radios', $props)">
-      <span v-if="prefix" :class="classnames('element__prefix radios__prefix')">{{prefix}}</span>
-      <label :class="classnames('element__content radios__content')" v-for="option in options" :key="option[vKey]">
-        <input type="radio" :name="name" :disabled="disabled || option.disabled" :checked="isChecked(option)" :readonly="readonly" :required="required" :value="value" @change="$emit('change', $event, option)" />
-        <span>{{option[labelKey || vKey]}}</span>
-      </label>
-      <span v-if="suffix" :class="classnames('element__suffix radios__suffix')">{{suffix}}</span>
-    </span>
-  `,
-  computed: {
-    vKey() {
-      return this.valueKey || 'value';
-    },
-  },
-  methods: {
-    classnames,
-    createClassNames,
-    isChecked(option) {
-      if (option === this.value) {
+function genOptionsRender(type, renderOptions) {
+  return function (h, ctx) {
+    if (!(!ctx.data.props.hidden || ctx.data.props.keepAlive)) {
+      return null;
+    }
+    let items = null;
+    return h('span', { class: createClassNames(type, ctx.data.props) }, [
+      ctx.data.props.prefix ? h('span', {  class: classnames(`element__prefix ${type}__prefix`) }, ctx.data.props.prefix) : null,
+      ...(items = renderOptions(ctx.data.props.options, h, ctx), isArray(items) ? items : [items]),
+      ctx.data.props.suffix ? h('span', { class: classnames(`element__suffix ${type}__suffix`) }, ctx.data.props.suffix) : null,
+    ]);
+  };
+}
+
+function getValueKey(ctx) {
+  return ctx.data.attrs.valueKey || ctx.data.props.valueKey || 'value';
+}
+
+function isChecked(option, ctx) {
+  const value = ctx.data.props.value || ctx.data.attrs.value; // 当前被选中项
+  const key = getValueKey(ctx);
+
+  const isEqual = (option, value) => {
+    if (option === value) {
+      return true;
+    }
+
+    const ov = option[key];
+    if (ov === value) {
+      return true;
+    }
+    if (isNumber(ov) && ov === +value) {
+      return true;
+    }
+
+    if (value && typeof vlaue === 'object') {
+      const iv = value[key];
+      if (ov === iv) {
         return true;
       }
-
-      const value = option[this.vKey];
-      if (isNumber(value)) {
-        return value === +this.value;
+      if (isNumber(ov) && ov === +iv) {
+        return true;
       }
+    }
 
-      return value === this.value;
-    },
-  },
+    return false;
+  };
+
+  if (isArray(value)) {
+    return value.some(item => isEqual(option, item));
+  }
+
+  return isEqual(option, value);
+}
+
+export const RadioGroup = connectVueComponent({
+  props: ['options', 'valueKey', 'labelKey', 'name', 'value', 'prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'highlight', 'keepAlive', 'onChange'],
+  functional: true,
+  render: genOptionsRender('radios', (options, h, ctx) => options.map((option) => {
+    const vKey = getValueKey(ctx);
+    const value = option[vKey];
+    return h(
+      'label',
+      {
+        key: option[getValueKey(ctx)],
+        class: classnames('element__content radios__content'),
+      },
+      [
+        h('input', {
+          attrs: {
+            type: 'radio',
+            name: ctx.data.attrs.name || ctx.data.props.name,
+          },
+          props: {
+            disabled: option.disabled || ctx.data.attrs.disabled || ctx.data.props.disabled,
+            checked: isChecked(option, ctx),
+          },
+          on: {
+            change(e) {
+              ctx.data.props.onChange?.(value, option);
+              ctx.data.on.change?.(e);
+            },
+          },
+        }),
+        h('span', null, option[ctx.data.attrs.labelKey || ctx.data.props.labelKey || 'label'] || value),
+      ],
+    );
+  })),
 }, RadioGroupConfig);
 
 export const CheckboxGroup = connectVueComponent({
-  props: ['options', 'valueKey', 'labelKey', 'name', 'value', 'prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'highlight', 'keepAlive'],
-  template: `
-    <span v-if="!hidden || keepAlive" :class="createClassNames('radios', $props)">
-      <span v-if="prefix" :class="classnames('element__prefix radios__prefix')">{{prefix}}</span>
-      <label :class="classnames('element__content radios__content')" v-for="option in options" :key="option[vKey]">
-        <input type="checkbox" :name="name" :disabled="disabled || option.disabled" :checked="isChecked(option)" :readonly="readonly" :required="required" :value="value" @change="$emit('change', $event, option)" />
-        <span>{{option[labelKey || vKey]}}</span>
-      </label>
-      <span v-if="suffix" :class="classnames('element__suffix radios__suffix')">{{suffix}}</span>
-    </span>
-  `,
-  computed: {
-    vKey() {
-      return this.valueKey || 'value';
-    },
-  },
-  methods: {
-    classnames,
-    createClassNames,
-    isChecked(option) {
-      return this.value.some((item) => {
-        if (item === option) {
-          return true;
-        }
+  props: ['options', 'valueKey', 'labelKey', 'name', 'value', 'prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'highlight', 'keepAlive', 'onChange'],
+  functional: true,
+  render: genOptionsRender('checkboxes', (options, h, ctx) => {
+    const mapping = {};
+    const vKey = getValueKey(ctx);
+    options.forEach((option) => {
+      const value = option[vKey];
+      mapping[value] = option;
+    });
 
-        const value = option[this.vKey];
-        if (isNumber(value)) {
-          return value === +item;
-        }
+    return options.map((option) => {
+      const value = option[vKey];
+      return h(
+        'label',
+        {
+          key: value,
+          class: classnames('element__content checkboxes__content'),
+        },
+        [
+          h('input', {
+            attrs: {
+              type: 'checkbox',
+            },
+            props: {
+              disabled: option.disabled || ctx.data.attrs.disabled || ctx.data.props.disabled,
+              checked: isChecked(option, ctx),
+            },
+            on: {
+              change(e) {
+                // 当前被选中的所有options
+                const selectedValues = ctx.data.props.value;
+                const selectedItems = selectedValues.map(value => mapping[value]);
 
-        return value === item;
-      });
-    },
-  },
+                let nextItems = [];
+                if (isChecked(option, ctx)) {
+                  nextItems = selectedItems.filter(item => item !== option);
+                } else {
+                  nextItems = [...selectedItems, option];
+                }
+
+                const nextValues = nextItems.map(item => item[vKey]);
+
+                ctx.data.props.onChange?.(nextValues, nextItems);
+                ctx.data.on.change?.(e);
+              },
+            },
+          }),
+          h('span', null, option[ctx.data.attrs.labelKey || ctx.data.props.labelKey || 'label'] || value),
+        ],
+      );
+    });
+  }),
 }, CheckboxGroupConfig);
 
 export const Select = connectVueComponent({
-  props: ['options', 'valueKey', 'labelKey', 'name', 'value', 'prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'highlight', 'keepAlive'],
-  template: `
-    <span v-if="!hidden || keepAlive" :class="createClassNames('radios', $props)">
-      <span v-if="prefix" :class="classnames('element__prefix radios__prefix')">{{prefix}}</span>
-      <select :class="classnames('element__content radios__content')">
-        <option v-for="option in options" :key="option[vKey]" :disabled="disabled || option.disabled" :checked="isSelected(option)" :readonly="readonly" :required="required" :value="value" @change="$emit('change', $event, option)">{{option[labelKey || vKey]}}</option>
-      </select>
-      <span v-if="suffix" :class="classnames('element__suffix radios__suffix')">{{suffix}}</span>
-    </span>
-  `,
-  computed: {
-    vKey() {
-      return this.valueKey || 'value';
-    },
-  },
-  methods: {
-    classnames,
-    createClassNames,
-    isSelected(option) {
-      if (this.value === option) {
-        return true;
-      }
-
-
-      const value = option[this.vKey];
-      if (isNumber(value)) {
-        return value === +this.value;
-      }
-
-      return value === this.value;
-    },
-  },
+  props: ['options', 'valueKey', 'labelKey', 'name', 'value', 'prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'highlight', 'keepAlive', 'onChange'],
+  functional: true,
+  render: genOptionsRender('select', (options, h, ctx) => {
+    const vKey = getValueKey(ctx);
+    return h(
+      'select',
+      {
+        class: classnames('element__content select__content'),
+      },
+      options.map((option) => {
+        const value = option[vKey];
+        return h(
+          'option',
+          {
+            key: value,
+            props: {
+              disabled: option.disabled || ctx.data.attrs.disabled || ctx.data.props.disabled,
+              selected: isChecked(option, ctx),
+            },
+            on: {
+              change(e) {
+                ctx.data.props.onChange?.(value, option);
+                ctx.data.on.change?.(e);
+              },
+            },
+          },
+          option[ctx.data.attrs.labelKey || ctx.data.props.labelKey || 'label'] || value,
+        );
+      }),
+    );
+  }),
 }, SelectConfig);
 
 export const Form = connectVueComponent({
   functional: true,
-  render(h, ctx) {
-    return h('form', {
-      ...ctx.data,
-      class: {
-        ...ctx.data.class,
-        [classnames('form')]: true,
-      },
-    }, ctx.children);
-  },
+  render: genRender('form', 'form'),
 }, FormConfig);
 
 export const FormGroup = connectVueComponent({
   props: ['title', 'hidden', 'keepAlive'],
-  template: `
-    <div v-if="!hidden || keepAlive" :class="classnames('group', className, hidden ? 'group--hidden' : ''">
-      <div v-if="title" :class="classnames('group__title')">{{title}}</div>
-      <slot />
-    </div>
-  `,
-  methods: { classnames },
+  functional: true,
+  render(h, ctx) {
+    if (!(!ctx.data.props.hidden || ctx.data.props.keepAlive)) {
+      return null;
+    }
+    return h('div', {
+      class: classnames('group', ctx.data.props.hidden ? 'group--hidden' : ''),
+    }, [
+      ctx.data.props.title ? h('div', { class: classnames('group__title') }, ctx.data.props.title) : null,
+      ...(ctx.children || []),
+    ]);
+  },
 }, FormGroupConfig);
 
 export const FormItem = connectVueComponent({
   props: ['hidden', 'highlight', 'errors', 'label', 'suffix'],
-  template: `
-    <div :class="classnames('item', hidden ? 'item--hidden' : '', highlight ? 'item--highlight' : '', errors.length ? 'item--error' : '', !label ? 'item--no-label' : '')">
-      <div :class="classnames('item__label')">{label}</div>
-      <div :class="classnames('item__content')"><slot /></div>
-      <div :class="classnames('item__suffix')" v-if="suffix"></div>
-    </div>
-  `,
-  methods: { classnames },
+  functional: true,
+  render(h, ctx) {
+    if (!(!ctx.data.props.hidden || ctx.data.props.keepAlive)) {
+      return null;
+    }
+    return h('div', {
+      class: classnames('item', ctx.data.props.hidden ? 'item--hidden' : '', ctx.data.props.highlight ? 'item--highlight' : '', ctx.data.props.errors.length ? 'item--error' : '', !ctx.data.props.label ? 'item--no-label' : ''),
+    }, [
+      h('div', { class: classnames('item__label') }, ctx.data.props.label),
+      h('div', { class: classnames('item__content') }, ctx.children),
+      ctx.data.props.suffix ? h('div', { class: classnames('item__suffix') }, ctx.data.props.suffix) : null,
+    ]);
+  },
 }, FormItemConfig);
 
 export const Loop = connectVueComponent({
   props: ['items'],
-  template: `
-    <div class="${classnames('loop')}">
-      // TODO
-    </div>
-  `,
+  functional: true,
+  render(h) {
+    // TODO
+    return h('div', { class: classnames('loop') });
+  },
 }, LoopConfig);
