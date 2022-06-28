@@ -5,6 +5,10 @@ import { isEmpty } from 'ts-fns';
 import * as Options from '../../src/react-d/index.js';
 
 export default function App() {
+  return <Form schemaJson={schemaJson} options={Options} />
+}
+
+export function Form(props) {
   const [errors, setErrors] = useState([]);
   const [data, setData] = useState({});
   const [random, setRandom] = useState(Math.random());
@@ -26,7 +30,7 @@ export default function App() {
   }, []);
 
   const getJson = () => new Promise((r) => {
-    setTimeout(() => r(schemaJson), 2000);
+    setTimeout(() => r(props.schemaJson), 2000);
   });
 
   const onSetRandom = () => {
@@ -42,7 +46,7 @@ export default function App() {
           onSetRandom: onSetRandom,
           random: random,
         }}
-        options={Options}
+        options={props.options}
         onLoad={({ model }) => {
           ref.current = model;
           window.__model = model;
