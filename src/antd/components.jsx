@@ -47,24 +47,70 @@ export const FormItem = connectReactComponent((props) => {
 export const Input = connectReactComponent((props) => {
   const {
     onChange,
+    readonly,
     ...attrs
   } = props;
   const hanleChange = (e) => {
     onChange?.(e.target.value);
   };
-  return <AInput {...attrs} onChange={hanleChange} />;
+  return <AInput {...attrs} readOnly={readonly} onChange={hanleChange} />;
 }, InputConfig);
 export const InputNumber = connectReactComponent((props) => {
   const {
     onChange,
+    readonly,
     ...attrs
   } = props;
   const hanleChange = (value) => {
-    onChange?.(value);
+    onChange?.(+value);
   };
-  return <AInputNumber {...attrs} onChange={hanleChange} />;
+  return <AInputNumber {...attrs} readOnly={readonly} onChange={hanleChange} />;
 }, InputNumberConfig);
-export const TextArea = connectReactComponent(ATextarea, TextAreaConfig);
-export const RadioGroup = connectReactComponent(ARadioGroup, RadioGroupConfig);
-export const CheckboxGroup = connectReactComponent(ACheckboxGroup, CheckboxGroupConfig);
+export const TextArea = connectReactComponent((props) => {
+  const { readonly, onChange, ...attrs } = props;
+  const hanleChange = (e) => {
+    onChange?.(e.target.value);
+  };
+  return <ATextarea {...attrs} readOnly={readonly} onChange={hanleChange} />;
+}, TextAreaConfig);
+export const RadioGroup = connectReactComponent((props) => {
+  const { options, onChange, readonly, valueKey = 'value', labelKey = 'label', ...attrs } = props;
+  const mappedOptions = options.map((option) => {
+    const label = option[labelKey] || option[valueKey];
+    const value = option[valueKey];
+    return { label, value };
+  });
+  const handleChange = (e) => {
+    const selectedValue = e.target.value;
+    const selectedOption = options.find(option => option[valueKey] === selectedValue
+        || `${option[valueKey]}` === selectedValue);
+    onChange?.(selectedValue, selectedOption);
+  };
+  return <ARadioGroup {...attrs} readOnly={readonly} onChange={handleChange} options={mappedOptions} />;
+}, RadioGroupConfig);
+export const CheckboxGroup = connectReactComponent((props) => {
+  const { readonly, value, onChange, options, valueKey = 'value', labelKey = 'label', ...attrs } = props;
+  const mappedOptions = options.map((option) => {
+    const label = option[labelKey] || option[valueKey];
+    const value = option[valueKey];
+    return { label, value };
+  });
+  const handleChange = (next) => {
+    const mapping = {};
+    options.forEach((option) => {
+      mapping[option[valueKey]] = option;
+    });
+    const items = next.map(value => mapping[value]);
+    onChange?.(next, items);
+  };
+  return (
+    <ACheckboxGroup
+      {...attrs}
+      readOnly={readonly}
+      options={mappedOptions}
+      onChange={handleChange}
+      value={value}
+    />
+  );
+}, CheckboxGroupConfig);
 export const Select = connectReactComponent(ASelect, SelectConfig);

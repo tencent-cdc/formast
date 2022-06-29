@@ -60,7 +60,7 @@ export const InputConfig = {
       props.onChange?.(value);
     };
     const placeholder = props.placeholder || bind.placeholder;
-    return { prefix, suffix, disabled, readOnly: readonly, hidden, required, maxLength, value, onChange, placeholder };
+    return { prefix, suffix, disabled, readonly, hidden, required, maxLength, value, onChange, placeholder };
   },
 };
 
@@ -76,7 +76,7 @@ export const InputNumberConfig = {
       props.onChange?.(+value);
     };
     const placeholder = props.placeholder || bind.placeholder;
-    return { prefix, suffix, disabled, readOnly: readonly, hidden, required, max, min, value, onChange, placeholder };
+    return { prefix, suffix, disabled, readonly, hidden, required, max, min, value, onChange, placeholder };
   },
 };
 
@@ -92,7 +92,7 @@ export const TextAreaConfig = {
       props.onChange?.(value);
     };
     const placeholder = props.placeholder || bind.placeholder;
-    return { prefix, suffix, disabled, readOnly: readonly, hidden, required, maxLength, value, onChange, placeholder };
+    return { prefix, suffix, disabled, readonly, hidden, required, maxLength, value, onChange, placeholder };
   },
 };
 
@@ -107,7 +107,7 @@ export const RadioGroupConfig = {
       bind.value = value;
       props.onChange?.(value, option);
     };
-    return { name: props.name || key, options, prefix, suffix, disabled, readOnly: readonly, hidden, value, onChange };
+    return { name: props.name || key, options, prefix, suffix, disabled, readonly, hidden, value, onChange };
   },
 };
 
@@ -122,7 +122,7 @@ export const CheckboxGroupConfig = {
       bind.value = values; // value必须是数组
       props.onChange?.(values, options);
     };
-    return { options, prefix, suffix, disabled, readOnly: readonly, hidden, value, onChange };
+    return { options, prefix, suffix, disabled, readonly, hidden, value, onChange };
   },
 };
 
@@ -137,7 +137,7 @@ export const SelectConfig = {
       bind.value = value;
       props.onChange?.(value, option);
     };
-    return { options, prefix, suffix, disabled, readOnly: readonly, hidden, value, onChange };
+    return { options, prefix, suffix, disabled, readonly, hidden, value, onChange };
   },
 };
 
