@@ -442,6 +442,7 @@ export const Select = connectReactComponent((props) => {
         valueKey={valueKey}
         labelKey={labelKey}
         readOnly={readonly}
+        onChange={onChange}
       />
       {suffix ? <span className={classnames('element__suffix select__suffix')}>{suffix}</span> : null}
       {children}

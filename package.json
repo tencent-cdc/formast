@@ -31,9 +31,9 @@
     "@babel/runtime": "^7.13.10",
     "antd": "^4.16.8",
     "react": "^17.0.2",
-    "scopex": "^4.3.2",
-    "ts-fns": "^10.7.1",
-    "tyshemo": "^11.23.1",
+    "scopex": "^4.3.3",
+    "ts-fns": "^10.9.1",
+    "tyshemo": "^12.9.11",
     "vue": "^2.6.14"
   },
   "devDependencies": {
