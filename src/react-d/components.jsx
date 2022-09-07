@@ -128,14 +128,10 @@ export const VBox = connectReactComponent((props) => {
 export const Input = connectReactComponent((props) => {
   const {
     type: _type,
-    bind,
-    prefix = bind?.prefix,
-    suffix = bind?.suffix,
-    disabled = bind?.disabled,
-    readonly = bind?.readonly,
-    hidden = bind?.hidden,
-    required = bind?.required,
-    maxLength = bind?.maxLength,
+    prefix,
+    suffix,
+    readonly,
+    hidden,
     highlight,
     keepAlive,
     value,
@@ -152,7 +148,7 @@ export const Input = connectReactComponent((props) => {
   }
 
   const handleChange = (e) => {
-    const next = e.target.value;
+    const next = e?.target?.value;
 
     if (isUndefined(value)) { // 非受控
       setState(next);
@@ -174,10 +170,7 @@ export const Input = connectReactComponent((props) => {
         type={type}
         className={classnames('element__content input__content')}
         {...attrs}
-        disabled={disabled}
         readOnly={readonly}
-        required={required}
-        maxLength={maxLength}
         value={val}
         onChange={handleChange}
       />
@@ -196,15 +189,10 @@ export const InputNumber = connectReactComponent((props) => {
   const {
     type,
     className,
-    bind,
-    prefix = bind?.prefix,
-    suffix = bind?.suffix,
-    disabled = bind?.disabled,
-    readonly = bind?.readonly,
-    hidden = bind?.hidden,
-    required = bind?.required,
-    max = bind?.max,
-    min = bind?.min,
+    prefix,
+    suffix,
+    readonly,
+    hidden,
     highlight,
     keepAlive,
     children,
@@ -213,12 +201,6 @@ export const InputNumber = connectReactComponent((props) => {
 
   if (hidden && !keepAlive) {
     return null;
-  }
-
-  if (bind) {
-    attrs.value = bind.value;
-    attrs.onChange = value => bind.value = value;
-    attrs.placeholder = attrs.placeholder || bind.placeholder;
   }
 
   if (!isNumber(attrs.value) && !isNumeric(attrs.value)) {
@@ -232,12 +214,7 @@ export const InputNumber = connectReactComponent((props) => {
       <NumberInput
         className={classnames('element__content input-number__content')}
         {...attrs}
-        disabled={disabled}
         readOnly={readonly}
-        required={required}
-        max={max}
-        min={min}
-        {...attrs}
       />
       {suffix ? <span className={classnames('element__suffix input-number__suffix')}>{suffix}</span> : null}
       {children}
@@ -248,14 +225,10 @@ export const InputNumber = connectReactComponent((props) => {
 export const TextArea = connectReactComponent((props) => {
   const {
     className,
-    bind,
-    prefix = bind?.prefix,
-    suffix = bind?.suffix,
-    disabled = bind?.disabled,
-    readonly = bind?.readonly,
-    hidden = bind?.hidden,
-    required = bind?.required,
-    maxLength = bind?.maxLength,
+    prefix,
+    suffix,
+    readonly,
+    hidden,
     highlight,
     keepAlive,
     children,
@@ -264,12 +237,6 @@ export const TextArea = connectReactComponent((props) => {
 
   if (hidden && !keepAlive) {
     return null;
-  }
-
-  if (bind) {
-    attrs.value = bind.value;
-    attrs.onChange = value => bind.value = value;
-    attrs.placeholder = attrs.placeholder || bind.placeholder;
   }
 
   // 传入null作为value
@@ -283,12 +250,7 @@ export const TextArea = connectReactComponent((props) => {
       <textarea
         className={classnames('element__content textarea__content')}
         {...attrs}
-        disabled={disabled}
         readOnly={readonly}
-        required={required}
-        maxLength={maxLength}
-        {...attrs}
-        onChange={e => attrs.onChange && attrs.onChange(e.target.value)}
       />
       {suffix ? <span className={classnames('element__suffix textarea__suffix')}>{suffix}</span> : null}
       {children}
@@ -302,13 +264,12 @@ export const RadioGroup = connectReactComponent((props) => {
     options,
     valueKey = 'value',
     labelKey = 'label',
-    bind,
-    value = bind?.value,
-    prefix = bind?.prefix,
-    suffix = bind?.suffix,
-    disabled = bind?.disabled,
-    readonly = bind?.readonly,
-    hidden = bind?.hidden,
+    value,
+    prefix,
+    suffix,
+    disabled,
+    readonly,
+    hidden,
     required,
     highlight,
     keepAlive,
@@ -327,15 +288,12 @@ export const RadioGroup = connectReactComponent((props) => {
   const handleChange = (item) => {
     const origin = item[valueKey];
 
-    if (bind) { // 绑定字段
-      bind.value = origin;
-    } else if (isUndefined(value)) { // 非受控
+    if (isUndefined(value)) { // 非受控
       setState(origin);
     }
-    // 受控，无需处理
 
     if (onChange) {
-      onChange(origin, origin, item);
+      onChange(origin, item);
     }
   };
 
@@ -358,7 +316,6 @@ export const RadioGroup = connectReactComponent((props) => {
             readOnly={readonly}
             disabled={disabled || item.disabled}
             onChange={() => handleChange(item)}
-            {...attrs}
           />
           <span>{isUndefined(item[labelKey]) ? item[valueKey] : item[labelKey]}</span>
         </label>
@@ -375,13 +332,12 @@ export const CheckboxGroup = connectReactComponent((props) => {
     options,
     valueKey = 'value',
     labelKey = 'label',
-    bind,
-    value = bind?.value,
-    prefix = bind?.prefix,
-    suffix = bind?.suffix,
-    disabled = bind?.disabled,
-    readonly = bind?.readonly,
-    hidden = bind?.hidden,
+    value,
+    prefix,
+    suffix,
+    disabled,
+    readonly,
+    hidden,
     required,
     highlight,
     keepAlive,
@@ -402,12 +358,8 @@ export const CheckboxGroup = connectReactComponent((props) => {
     const createNext = selected => (selected.some(one => `${one}` === `${origin}`) ? selected.filter(one => `${one}` !== `${origin}`) : selected.concat([origin]));
 
     let values = [];
-    if (bind) { // 绑定字段
-      const value = isArray(bind.value) ? bind.value : [];
-      const next = createNext(value);
-      bind.value = next;
-      values = next;
-    } else if (!isArray(value)) { // 非受控
+
+    if (!isArray(value)) { // 非受控
       const next = createNext(state);
       setState(next);
       values = next;
@@ -416,7 +368,14 @@ export const CheckboxGroup = connectReactComponent((props) => {
     }
 
     if (onChange) {
-      onChange(values, origin, item);
+      const mapping = options.reduce((mapping, item) => {
+        const value = item[valueKey];
+        // eslint-disable-next-line no-param-reassign
+        mapping[value] = item;
+        return mapping;
+      }, {});
+      const items = values.map(value => mapping[value]);
+      onChange(values, items);
     }
   };
 
@@ -451,18 +410,13 @@ export const CheckboxGroup = connectReactComponent((props) => {
 
 export const Select = connectReactComponent((props) => {
   const {
-    options,
     valueKey = 'value',
     labelKey = 'label',
-    bind,
-    value = bind?.value,
-    prefix = bind?.prefix,
-    suffix = bind?.suffix,
-    disabled = bind?.disabled,
-    readonly = bind?.readonly,
-    hidden = bind?.hidden,
-    required = bind?.required,
-    placeholder = bind?.placeholder,
+    value,
+    prefix,
+    suffix,
+    readonly,
+    hidden,
     children,
     className,
     highlight,
@@ -479,30 +433,16 @@ export const Select = connectReactComponent((props) => {
     attrs.value = `${value}`;
   }
 
-  const handleChange = (origin, item) => {
-    if (bind) {
-      bind.value = origin;
-    }
-    if (onChange) {
-      onChange(origin, origin, item);
-    }
-  };
-
   return (
     <label className={createClassNames('select', props)}>
       {prefix ? <span className={classnames('element__prefix select__prefix')}>{prefix}</span> : null}
       <SelectInput
         className={classnames('element__content select__content')}
         {...attrs}
-        options={options}
         valueKey={valueKey}
         labelKey={labelKey}
-        disabled={disabled}
         readOnly={readonly}
-        required={required}
-        placeholder={placeholder}
-        {...attrs}
-        onChange={handleChange}
+        onChange={onChange}
       />
       {suffix ? <span className={classnames('element__suffix select__suffix')}>{suffix}</span> : null}
       {children}

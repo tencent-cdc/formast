@@ -1,4 +1,18 @@
 {
+  "declares": {
+    "props": [
+      "onSubmit",
+      "onSetRandom",
+      "random"
+    ],
+    "components": [
+      "Form",
+      "Input",
+      "InputNumber",
+      "Select",
+      "Label"
+    ]
+  },
   "model": {
     "name": {
       "default": "",
@@ -11,7 +25,7 @@
       "placeholder": "请输入姓名"
     },
     "age": {
-      "default": "",
+      "default": null,
       "type": "&int",
       "required": true,
       "validators": [
@@ -95,20 +109,8 @@
       "default": [{}]
     }
   },
-  "declares": {
-    "props": [
-      "onSubmit",
-      "onSetRandom",
-      "random"
-    ],
-    "components": [
-      "Input",
-      "Select",
-      "Label"
-    ]
-  },
   "layout": {
-    "type": "form",
+    "type": "Form",
     "class": "form",
     "props": {
       "target": "some-iframe",
@@ -126,7 +128,7 @@
         },
         "children": [
           {
-            "type": "label",
+            "type": "Label",
             "children": [
               "变量"
             ]
@@ -163,13 +165,13 @@
         "type": "div",
         "children": [
           {
-            "type": "label",
+            "type": "Label",
             "children": [
               "{ age.label }"
             ]
           },
           {
-            "type": "input",
+            "type": "InputNumber",
             "props": {
               "type": "number",
               "value": "{ age.value }",
@@ -177,7 +179,7 @@
               "required": "{ age.required }"
             },
             "events": {
-              "change(e)": "{ age.value = e.target.value }"
+              "change(value)": "{ age.value = value }"
             }
           }
         ]
@@ -187,7 +189,7 @@
         "visible": "{ age.value > 10 }",
         "children": [
           {
-            "type": "label",
+            "type": "Label",
             "children": [
               "{ sex.label }"
             ]
@@ -268,12 +270,9 @@
         "children": [
           "书籍列表：",
           {
-            "type": "button",
-            "attrs": {
-              "type": "button"
-            },
+            "type": "Button",
             "events": {
-              "click()": "{ books.value.push({})  }"
+              "click()": "{ books.value.push({}) }"
             },
             "children": "添加"
           }
@@ -317,10 +316,7 @@
             ]
           },
           {
-            "type": "button",
-            "attrs": {
-              "type": "button"
-            },
+            "type": "Button",
             "events": {
               "click()": "{ books.remove(book) }"
             },
@@ -339,10 +335,7 @@
         "children": "{ random }"
       },
       {
-        "type": "button",
-        "attrs": {
-          "type": "button"
-        },
+        "type": "Button",
         "events": {
           "click": "{ onSetRandom }"
         },
@@ -352,7 +345,7 @@
         "type": "p",
         "children": [
           {
-            "type": "button",
+            "type": "Button",
             "attrs": {
               "type": "submit"
             },

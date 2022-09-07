@@ -54,8 +54,11 @@ export const InputConfig = {
       return;
     }
     const { prefix, suffix, disabled, readonly, hidden, required, maxLength, value } = bind;
-    // eslint-disable-next-line no-param-reassign
-    const onChange = value => bind.value = value;
+    const onChange = (value) => {
+      // eslint-disable-next-line no-param-reassign
+      bind.value = value;
+      props.onChange?.(value);
+    };
     const placeholder = props.placeholder || bind.placeholder;
     return { prefix, suffix, disabled, readonly, hidden, required, maxLength, value, onChange, placeholder };
   },
@@ -67,8 +70,11 @@ export const InputNumberConfig = {
       return;
     }
     const { prefix, suffix, disabled, readonly, hidden, required, max, min, value } = bind;
-    // eslint-disable-next-line no-param-reassign
-    const onChange = value => bind.value = value;
+    const onChange = (value) => {
+      // eslint-disable-next-line no-param-reassign
+      bind.value = +value;
+      props.onChange?.(+value);
+    };
     const placeholder = props.placeholder || bind.placeholder;
     return { prefix, suffix, disabled, readonly, hidden, required, max, min, value, onChange, placeholder };
   },
@@ -80,8 +86,11 @@ export const TextAreaConfig = {
       return;
     }
     const { prefix, suffix, disabled, readonly, hidden, required, maxLength, value } = bind;
-    // eslint-disable-next-line no-param-reassign
-    const onChange = value => bind.value = value;
+    const onChange = (value) => {
+      // eslint-disable-next-line no-param-reassign
+      bind.value = value;
+      props.onChange?.(value);
+    };
     const placeholder = props.placeholder || bind.placeholder;
     return { prefix, suffix, disabled, readonly, hidden, required, maxLength, value, onChange, placeholder };
   },
@@ -92,13 +101,13 @@ export const RadioGroupConfig = {
     if (!bind) {
       return;
     }
-    const { options, prefix, suffix, disabled, readonly, hidden, value } = bind;
-    const onChange = (value, selectedValue, selectedItem) => {
+    const { options, prefix, suffix, disabled, readonly, hidden, value, key } = bind;
+    const onChange = (value, option) => {
       // eslint-disable-next-line no-param-reassign
       bind.value = value;
-      props.onChange?.(value, selectedValue, selectedItem);
+      props.onChange?.(value, option);
     };
-    return { options, prefix, suffix, disabled, readonly, hidden, value, onChange };
+    return { name: props.name || key, options, prefix, suffix, disabled, readonly, hidden, value, onChange };
   },
 };
 
@@ -108,10 +117,10 @@ export const CheckboxGroupConfig = {
       return;
     }
     const { options, prefix, suffix, disabled, readonly, hidden, value } = bind;
-    const onChange = (value, selectedValue, selectedItem) => {
+    const onChange = (values, options) => {
       // eslint-disable-next-line no-param-reassign
-      bind.value = value;
-      props.onChange?.(value, selectedValue, selectedItem);
+      bind.value = values; // value必须是数组
+      props.onChange?.(values, options);
     };
     return { options, prefix, suffix, disabled, readonly, hidden, value, onChange };
   },
@@ -123,10 +132,10 @@ export const SelectConfig = {
       return;
     }
     const { options, prefix, suffix, disabled, readonly, hidden, value } = bind;
-    const onChange = (value, selectedValue, selectedItem) => {
+    const onChange = (value, option) => {
       // eslint-disable-next-line no-param-reassign
       bind.value = value;
-      props.onChange?.(value, selectedValue, selectedItem);
+      props.onChange?.(value, option);
     };
     return { options, prefix, suffix, disabled, readonly, hidden, value, onChange };
   },

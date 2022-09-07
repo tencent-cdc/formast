@@ -19,8 +19,8 @@ export const InputSelect = forwardRef((props, inputRef) => {
       if (onChange) {
         const { value } = e.target;
         const item = options.find(item => `${valueKey ? item[valueKey] : item.value}` === value);
-        const origin = valueKey ? item[valueKey] : item.value;
-        onChange(origin, item);
+        const originValue = valueKey ? item[valueKey] : item.value;
+        onChange(originValue, item);
       }
       setChanged(true);
     },
