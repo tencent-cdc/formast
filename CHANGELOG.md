@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 2.2.0 (2023-02-10)
+
+
+### Features
+
+* 添加了designer ([5438a7f](https://github.com/tencent-cdc/formast/commit/5438a7ffe706be81ea5bdd1df05fc698d9de4590))
+
 ### 2.1.8 (2022-09-07)
 
 ### 2.1.7 (2022-06-24)
