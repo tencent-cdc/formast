@@ -1,0 +1,67 @@
+@import "./_vars.less";
+
+@{NAMESPACE}__model-designer {
+  &__submodel {
+    padding: 5px 10px;
+    margin-left: 5px;
+    border-bottom: #f1f1f1 solid 1px;
+    cursor: pointer;
+    transition: background-color .2s;
+
+    &:hover {
+      background-color: #f9f9f9;
+    }
+
+    &--active {
+      background-color: #e4f1ff;
+    }
+
+    & + button {
+      margin-top: 20px;
+    }
+  }
+
+  &__submodel-modal @{NAMESPACE}__model-designer {
+    width: 100%;
+    margin-top: 0;
+  }
+
+  &__submodel-modal--step-1 {
+    @{NAMESPACE}__modal-container {
+      min-width: 900px;
+    }
+    @{NAMESPACE}__modal-content {
+      min-height: 400px;
+    }
+  }
+
+  &__submodel-modal--step-0 {
+    & > @{NAMESPACE}__modal-container {
+      width: 600px;
+      min-width: 600px;
+
+      & > @{NAMESPACE}__modal-content {
+        height: 300px;
+        min-height: 300px;
+      }
+    }
+  }
+
+  &__cat-item {
+    margin: 5px 0 5px 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+
+    &--active {
+      background-color: #d4ebfc;
+      color: #0d5e9b;
+    }
+  }
+
+  &__previewer {
+    padding: 20px;
+    margin: 0;
+    flex: 1;
+  }
+}

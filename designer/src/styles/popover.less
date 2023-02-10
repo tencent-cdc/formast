@@ -1,0 +1,37 @@
+@import "./_vars.less";
+
+@{NAMESPACE}__popover {
+  &--fixed {
+    position: fixed;
+    transform: translate(-50%, -100%);
+    margin-top: -10px;
+  }
+
+  &--abs {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translate(-50%, -100%);
+  }
+
+  z-index: 9999;
+  background-color: #fff;
+  border: #eee solid 1px;
+  border-radius: 4px;
+  padding: 12px 16px;
+  font-size: .9em;
+
+  &::before {
+    content: '';
+    display: block;
+    background-color: #fff;
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    border-left: #eee solid 1px;
+    border-top: #eee solid 1px;
+    transform: translateX(-50%) rotate(-135deg);
+  }
+}

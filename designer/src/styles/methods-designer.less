@@ -1,0 +1,23 @@
+@import "./_vars.less";
+
+@{NAMESPACE}__methods-designer {
+  &__item {
+    border-bottom: #f1f1f1 solid 1px;
+    padding: 15px 20px;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+
+    &-content {
+      flex: 1;
+    }
+  }
+
+  &__buttons {
+    padding: 5px 15px;
+  }
+
+  &__item + &__buttons {
+    margin-top: 20px;
+  }
+}

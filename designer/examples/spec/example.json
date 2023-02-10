@@ -1,0 +1,70 @@
+{
+    "model": {
+        "schema": {
+            "gp_name": {
+                "label": "GP名称",
+                "default": "",
+                "type": "string",
+                "placeholder": "请填写GP名称",
+                "required": true,
+                "disabled": false,
+                "validators": [
+                    "required('GP名称必须填写')",
+                    {
+                        "determine": true,
+                        "validate(v)": "v <= 50",
+                        "message": "GP名称不能超过50个字符"
+                    }
+                ]
+            },
+            "description": {
+                "label": "简介",
+                "default": "",
+                "type": "string",
+                "placeholder": "请填写GP简介",
+                "required": true,
+                "disabled": false,
+                "validators": [
+                    "required('简介必须填写')",
+                    "maxLen(1000, '简介不能超过1000字')"
+                ]
+            },
+            "website": {
+                "label": "登录网址",
+                "default": "",
+                "type": "string",
+                "placeholder": "请填写GP提供的登录网址",
+                "required": false,
+                "disabled": false,
+                "validators": [
+                    "maxLen(50, '网址长度不能超过50个字符')"
+                ]
+            },
+            "icon": {
+                "label": "LOGO",
+                "default": null,
+                "type": "file",
+                "required": false,
+                "disabled": false,
+                "drop(v)": "!v",
+                "state()": "{ icon_url: null }"
+            }
+        }
+    },
+    "items": {
+        "GPName": {
+            "fields": ["gp_name"],
+            "render($gp_name)!": [
+                "FormItem",
+                {},
+                ["FormCell", {},
+                    ["Input", {
+                        "label": "{ $gp_name.label }",
+                        "value": "{ $gp_name.value }",
+                        "onChange(e)": "{ $gp_name.value = e.target.value }"
+                    }]
+                ]
+            ]
+        }
+    }
+}

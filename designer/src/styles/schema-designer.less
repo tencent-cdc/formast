@@ -1,0 +1,35 @@
+@import "./_vars.less";
+
+@{NAMESPACE}__schema-designer {
+  &__field {
+    border-bottom: #f1f1f1 solid 1px;
+    padding: 15px 20px;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+
+    &-label {
+      font-size: 1.2em;
+      flex: 1;
+    }
+
+    &-section {
+      padding: 20px;
+    }
+  }
+
+  &__buttons {
+    padding: 5px 15px;
+  }
+  &__field + &__buttons {
+    margin-top: 20px;
+  }
+
+  &-custom-field @{NAMESPACE}-close {
+    margin-top: 7px;
+  }
+
+  &__modal @{NAMESPACE}__form-loop {
+    flex: 1;
+  }
+}

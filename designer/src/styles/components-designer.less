@@ -1,0 +1,94 @@
+@import "./_vars.less";
+
+@{NAMESPACE}__components-designer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  &__names {
+    padding: 15px 10px 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  &__name {
+    margin-right: 5px;
+    background-color: #e4f1ff;
+    color: @PRIMARY_COLOR_DARK;
+    float: left;
+    display: flex;
+    align-items: center;
+    padding: 1px 5px 1px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+
+    &--active {
+      border: @PRIMARY_COLOR solid 1px;
+    }
+  }
+
+  &__main {
+    flex: 1;
+    display: flex;
+  }
+
+  &__component-name {
+    padding: 5px 10px;
+    margin-left: 5px;
+    border-bottom: #f1f1f1 solid 1px;
+    cursor: pointer;
+    transition: background-color .2s;
+
+    &:hover {
+      background-color: #f9f9f9;
+    }
+
+    &--active {
+      background-color: #e4f1ff;
+    }
+
+    & + button {
+      margin-top: 20px;
+    }
+  }
+
+  &__settings {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    @{NAMESPACE}__label {
+      width: 80px;
+    }
+
+    &-menus {
+      display: flex;
+      align-items: flex-start;
+    }
+    &-menu {
+      margin: 10px;
+      margin-right: 0;
+      font-size: 12px;
+      cursor: pointer;
+
+      &--active {
+        color: @PRIMARY_COLOR_DARK;
+        border-bottom: @PRIMARY_COLOR_DARK solid 3px;
+      }
+    }
+  }
+  &__setting {
+    flex: 1;
+    overflow: auto;
+  }
+
+  &__empty {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4em;
+    color: #ccc;
+  }
+}

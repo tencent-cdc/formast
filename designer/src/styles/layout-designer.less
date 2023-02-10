@@ -1,0 +1,23 @@
+@import "./_vars.less";
+
+@{NAMESPACE}__layout-designer {
+  &__settings {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    &-menus {
+      border-bottom: #f1f1f1 solid 1px;
+    }
+
+    &-content {
+      flex: 1;
+      overflow: auto;
+    }
+
+    @{NAMESPACE}__label {
+      font-weight: bold;
+    }
+  }
+}

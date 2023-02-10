@@ -1,0 +1,66 @@
+@import "./_vars.less";
+
+@{NAMESPACE}__designer {
+  &__main {
+    overflow: hidden;
+    // border: dashed 1px #ccc;
+    padding: 10px;
+  }
+
+  &__buttons {
+    padding: 5px;
+    text-align: right;
+  }
+
+  &__canvas {
+    // background-image: linear-gradient(90deg, rgba(180, 180, 180, 0.15) 10%, rgba(0, 0, 0, 0) 10%),
+    //                   linear-gradient(rgba(180, 180, 180, 0.15) 10%, rgba(0, 0, 0, 0) 10%);
+    // background-size: 10px 10px;
+    // background-position: -1px 0;
+
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    display: flex;
+
+    @{NAMESPACE}__drop-designer {
+      flex: 1;
+      overflow: unset;
+    }
+  }
+
+  &__sidebar @{NAMESPACE}__drag-box {
+    width: 50%;
+    float: left;
+  }
+
+  &__empty {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4em;
+    color: #ccc;
+  }
+
+  &__settings-header {
+    display: flex;
+    border-bottom: #f1f1f1 solid 1px;
+  }
+  &__setting-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    cursor: pointer;
+    position: relative;
+  }
+  &__setting-tab--active::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    border-bottom: @PRIMARY_COLOR solid 3px;
+  }
+}

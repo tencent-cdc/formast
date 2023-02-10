@@ -1,0 +1,73 @@
+@import "./_vars.less";
+
+@{NAMESPACE}__modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+  background-color: rgba(0, 0, 0, .2);
+  color: #333;
+
+  &--show {
+    display: block;
+  }
+
+  &--hidden {
+    display: none;
+  }
+
+  &-container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    width: 600px;
+  }
+
+  &-close {
+    position: absolute;
+    top: 15px;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: #ccc solid 1px;
+    color: #999;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: color .2s;
+  }
+
+  &-title {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    border-bottom: #f1f1f1 solid 1px;
+  }
+
+  &-content {
+    padding: 20px;
+    max-height: 70vh;
+    overflow: auto;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &-footer {
+    padding: 15px 0;
+    text-align: center;
+    font-weight: normal;
+    border-bottom: 0;
+    border-top: #f1f1f1 solid 1px;
+  }
+}

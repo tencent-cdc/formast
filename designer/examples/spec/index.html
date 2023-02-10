@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  body {
+    font-size: 14px;
+  }
+  .root,
+  .editor {
+    height: 100%;
+  }
+  .root {
+    position: relative;
+  }
+  .nav {
+    position: absolute;
+    left: 5px;
+    top: 10px;
+    z-index: 999;
+  }
+  .nav a {
+    font-size: 1.4em;
+    color: #4e9cf0;
+    text-decoration: none;
+  }
+</style>
+
+<div class="root">
+  <div id="form-editor" class="editor"></div>
+</div>
+
+<script src="index.js"></script>

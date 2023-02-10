@@ -4,7 +4,6 @@ node_modules/
 /*.js
 /*.jsx
 .egwrc
-/designer/
 /react/
 /core/
 /resources/

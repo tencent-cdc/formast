@@ -1,0 +1,37 @@
+@import "./_vars.less";
+
+@{NAMESPACE}__button {
+  border: 0;
+  border-radius: 3px;
+  padding: 5px 15px;
+  outline: none;
+  cursor: pointer;
+  transition: background-color .2s;
+  background-color: #eeeeee;
+
+  &:hover {
+    background-color: #e2e2e2;
+  }
+
+  &--large {
+    padding: 10px 35px;
+  }
+
+  &-primary {
+    background: @PRIMARY_COLOR;
+    color: #fff;
+
+    &:hover {
+      background: @PRIMARY_COLOR_DARK;
+    }
+  }
+
+  &-secondary {
+    background: @SECONDARY_COLOR;
+    color: #515151;
+
+    &:hover {
+      background: @SECONDARY_COLOR_DARK;
+    }
+  }
+}
