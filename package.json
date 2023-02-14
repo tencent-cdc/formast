@@ -1,6 +1,6 @@
 {
   "name": "formast",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "基于JSON的企业级表单低代码框架",
   "main": "index.js",
   "scripts": {
