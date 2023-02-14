@@ -17,15 +17,10 @@ jobs:
       - run: npm set config loglevel=info
       - name: Install
         run: npm ci --verbose || npm i --verbose
+      - name: Can Version Publish
+        run: npx can-npm-publish
       - name: Lint
         run: npm run lint
-      - name: Update Version
-        run: |
-          git clean -df
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          npx standard-version
-          npx can-npm-publish
       - name: Build
         run: npm run build
       - name: Publish NPM
