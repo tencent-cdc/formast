@@ -6,7 +6,7 @@
 ```js
 import { useRef } from 'react';
 import { Formast } from 'formast/react'; // 引入 Formast 组件
-import Options from 'formast/react-d'; // 实用内置的配置，在了解具体使用方法之后，可以替换为自己的配置对象
+import Options from 'formast/theme-react'; // 实用内置的配置，在了解具体使用方法之后，可以替换为自己的配置对象
 
 function App() {
   const ref = useRef();

@@ -11,7 +11,7 @@ import {
 import { connectReactComponent } from '../react/index.js';
 import { ButtonConfig, InputConfig, InputNumberConfig, TextAreaConfig, RadioGroupConfig, CheckboxGroupConfig, SelectConfig, FormConfig, FormItemConfig } from '../_shared/component-configs.js';
 
-export { Text, Label, HBox, VBox, FormGroup, Loop } from '../react-d/components.jsx';
+export { Text, Label, HBox, VBox, FormGroup, Loop } from '../theme-react/components.jsx';
 
 const { Item: AFormItem, ErrorList } = AForm;
 const { TextArea: ATextarea } = AInput;

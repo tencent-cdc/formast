@@ -8,9 +8,10 @@
     "dev:antd": "parcel .examples/antd/index.html --out-dir .cache/.antd",
     "dev:vue": "parcel .examples/vue/index.html --out-dir .cache/.vue",
     "dev:react": "parcel .examples/react/index.html --out-dir .cache/.react",
+    "dev:tdesign-vue": "parcel .examples/tdesign-vue/index.html --out-dir .cache/.tdesign-vue",
     "build:dist": "webpack --config .build/webpack.config.js",
-    "build:cjs": "babel src -d . --keep-file-extension && lessc src/_shared/index.less react-d/index.css && lessc src/_shared/index.less vue-d/index.css",
-    "clear": "rimraf index.js antd core dist react react-d vue vue-d _shared",
+    "build:cjs": "babel src -d . --keep-file-extension && lessc src/_shared/index.less theme-react/index.css && lessc src/_shared/index.less theme-vue/index.css",
+    "clear": "rimraf index.js antd core dist react theme-react vue theme-vue tdesign-vue _shared",
     "build": "npm run clear && cross-env NODE_ENV=production npm run build:cjs && cross-env NODE_ENV=production npm run build:dist",
     "lint": "eslint --ext .js,.jsx src"
   },
@@ -32,6 +33,7 @@
     "antd": "^4.16.8",
     "react": "^17.0.2",
     "scopex": "^4.3.3",
+    "tdesign-vue": "^1.1.1",
     "ts-fns": "^10.9.1",
     "tyshemo": "^12.9.11",
     "vue": "^2.6.14"

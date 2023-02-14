@@ -1,7 +1,9 @@
 <template>
-  <div>
+  <div class="root">
     <formast :schema="getJson" :props="props" :onLoad="onLoad" :options="options">
-      <span>正在加载...</span>
+      <span>
+        <loading></loading>
+      </span>
     </formast>
     <div>
       <div v-for="err,i in errors" :key="i" style="color:red">{{err.message}}</div>
@@ -10,10 +12,18 @@
   </div>
 </template>
 
+<style>
+.root {
+  width: 800px;
+  margin: auto;
+}
+</style>
+
 <script>
 import schemaJson from '../_shared/form.json';
 import { Formast } from '../../src/vue';
-import * as Options from '../../src/theme-vue/index.js';
+import * as Options from '../../src/tdesign-vue/index.js';
+import { Loading } from 'tdesign-vue'
 
 export default {
   data() {
@@ -45,6 +55,7 @@ export default {
       this.data = data;
     },
     handleRadom() {
+      console.log('random')
       this.props.random = Math.random()
     },
     getJson() {
@@ -58,6 +69,7 @@ export default {
   },
   components: {
     Formast,
+    Loading,
   },
 }
 </script>

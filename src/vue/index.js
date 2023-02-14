@@ -179,6 +179,7 @@ export function connectVueComponent(C, options) {
   const Comp = isObject(C) ? Vue.extend(C) : C;
 
   if (!isInheritedOf(Comp, Vue)) {
+    console.error(C, options);
     throw new Error('connectVueComponent 接收了非法的组件');
   }
 
