@@ -8,8 +8,8 @@
 
 ```js
 import { Formast } from 'formast/react';
-import * as Options from 'formast/react-d';
-import 'formast/react-d/index.css'; // 需要使用内置样式
+import * as Options from 'formast/theme-react';
+import 'formast/theme-react/index.css'; // 需要使用内置样式
 
 function MyFormast(props) {
   return <Formast options={Options} {...props} />

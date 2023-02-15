@@ -9,8 +9,10 @@
   - [React 引擎](react.md)
   - [Vue 引擎](vue.md)
 - 集成包
-  - [React 集成包](react-d.md)
+  - [React 集成包](theme-react.md)
   - [Antd 集成包](antd.md)
+  - [Vue 集成包](theme-vue.md)
+  - [TDesign Vue 集成包](tdesign-vue.md)
 - 场景实现
   - [A字段有值才展示B字段](scenes/show-relate-to.md)
   - [A字段>10时B字段必填](scenes/required-relate-to.md)

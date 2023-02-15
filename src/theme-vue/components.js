@@ -53,7 +53,7 @@ function genData(
   return res;
 }
 
-function genRender(tag, classes, fn) {
+export function genRender(tag, classes, fn) {
   return function (h, ctx) {
     if (!(!ctx.data.props.hidden || ctx.data.props.keepAlive)) {
       return null;

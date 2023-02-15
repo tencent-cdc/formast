@@ -15,3 +15,6 @@ jsonlint.js
 /.reports/
 /vue-d/
 /_shared/
+/theme-vue/
+/theme-react/
+/tdesign-vue/
