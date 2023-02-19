@@ -158,7 +158,7 @@ export const InputNumber = connectVueComponent({
   ),
 }, InputNumberConfig);
 
-export const Textarea = connectVueComponent({
+export const TextArea = connectVueComponent({
   props: ['prefix', 'suffix', 'disabled', 'readonly', 'hidden', 'required', 'maxLength', 'highlight', 'keepAlive', 'value', 'onChange'],
   functional: true,
   render: genInputRender(

@@ -14,7 +14,7 @@ import { ButtonConfig, InputConfig, InputNumberConfig, TextAreaConfig, RadioGrou
 export { Text, Label, HBox, VBox, FormGroup, Loop } from '../theme-react/components.jsx';
 
 const { Item: AFormItem, ErrorList } = AForm;
-const { TextArea: ATextarea } = AInput;
+const { TextArea: ATextArea } = AInput;
 const { Group: ACheckboxGroup } = ACheckbox;
 const { Group: ARadioGroup } = ARadio;
 
@@ -71,7 +71,7 @@ export const TextArea = connectReactComponent((props) => {
   const hanleChange = (e) => {
     onChange?.(e.target.value);
   };
-  return <ATextarea {...attrs} readOnly={readonly} onChange={hanleChange} />;
+  return <ATextArea {...attrs} readOnly={readonly} onChange={hanleChange} />;
 }, TextAreaConfig);
 export const RadioGroup = connectReactComponent((props) => {
   const { options, onChange, readonly, valueKey = 'value', labelKey = 'label', ...attrs } = props;
