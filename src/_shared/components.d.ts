@@ -72,7 +72,7 @@ export interface InputNumber {
   placeholder?: string;
 }
 
-export interface Textarea {
+export interface TextArea {
   highlight?: boolean;
   readonly?: boolean;
   disabled?: boolean;

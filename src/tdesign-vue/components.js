@@ -15,7 +15,7 @@ import {
   Form as TForm,
   Input as TInput,
   InputNumber as TInputNumber,
-  Textarea as TTextarea,
+  TextArea as TTextArea,
   RadioGroup as TRadioGroup,
   CheckboxGroup as TCheckboxGroup,
   Select as TSelect,
@@ -34,7 +34,7 @@ export const Input = connectVueComponent(TInput, InputConfig);
 
 export const InputNumber = connectVueComponent(TInputNumber, InputNumberConfig);
 
-export const Textarea = connectVueComponent(TTextarea, TextAreaConfig);
+export const TextArea = connectVueComponent(TTextArea, TextAreaConfig);
 
 export const RadioGroup = connectVueComponent(TRadioGroup, RadioGroupConfig);
 
