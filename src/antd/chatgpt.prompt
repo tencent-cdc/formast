@@ -1,0 +1,84 @@
+JSON结构规则：
+{
+  // 模型描述
+  model: {
+    // 字段属性
+    [key: string]: {
+      // 默认值
+      // string = ""
+      // number = null
+      // 如果存在options，使用options中第一个option的value
+      default: any
+
+      // 字段文本
+      label: string
+
+      // 字段类型
+      type: string
+
+      // 隐藏逻辑，支持表达式
+      hidden?: boolean | string
+
+      // 必填逻辑，支持表达式
+      required?: boolean | string
+
+      // 只读，字段值不允许修改，支持表达式
+      readonly?: boolean | string
+
+      // 表示当前字段由给定的表达式计算获得，其值必须是表达式
+      compute?: string
+
+      // 备选项
+      options?: {
+        // 选项文本
+        label: string
+        // 选项值
+        value: string
+      }
+
+      // 其他属性
+      [key: string]: string
+    }
+  }
+
+  // 布局描述
+  // 布局有3层
+  layout: {
+    // 顶层组件，页面
+    type: 'Form'
+
+    attrs: {
+      // 表单提交的目标地址
+      action: string
+    }
+
+    // 页面内有多少行
+    children: {
+      // 一行组件
+      type: 'FormItem'
+
+      // 这一行绑定的模型上的字段，用于展示label等信息
+      // 如果这一行只有一个字段需要被输入，那么直接绑定这个字段
+      bind: string
+
+      // 行内输入组件
+      children: {
+        // 使用的组件名
+        // 组件名支持:
+        // Input 单行文本输入框
+        // InputNumber 数字输入框
+        // Select 下拉选择框
+        // InputText 多行文本输入框
+        // Radios 单选按钮组
+        // Checkboxes 多选按钮组
+        type: string
+
+        // 绑定模型字段，绑定后，字段的元数据信息会被绑定到组件上，组件不需要传入其他任何配置信息
+        bind: string
+      }[]
+    }[]
+  }
+}
+
+动态语法规则：
+使用"{ ... }"来表达该值是一个表达式，例如"{ name }"，其中name是字段名。
