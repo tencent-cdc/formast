@@ -82,3 +82,23 @@ JSON结构规则：
 
 动态语法规则：
 使用"{ ... }"来表达该值是一个表达式，例如"{ name }"，其中name是字段名。
+
+-------
+
+options的格式：(label)//(value)：//前面是label，后面是value
+
+模型:
+  name 姓名 string
+  age 年龄 number
+  sex 性别 string options=男//M，女//F
+字段逻辑：
+  当年龄大于10时，性别hidden为false
+  当年龄大于15时，性别必填
+布局:
+  姓名
+  年龄
+  性别
+提交目标地址：
+  /api/save
+
+期望格式: JSON，只返回JSON代码。
