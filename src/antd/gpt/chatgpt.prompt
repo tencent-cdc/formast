@@ -22,10 +22,16 @@ JSON结构规则：
       // 必填逻辑，支持表达式
       required?: boolean | string
 
+      // 最小值（包含）
+      min?: number
+
+      // 最大值（包含）
+      max?: number
+
       // 只读，字段值不允许修改，支持表达式
       readonly?: boolean | string
 
-      // 表示当前字段由给定的表达式计算获得，其值必须是表达式
+      // 字段由计算获得，其值必须是表达式
       compute?: string
 
       // 备选项
@@ -89,16 +95,22 @@ options的格式：(label)//(value)：//前面是label，后面是value
 
 模型:
   name 姓名 string
-  age 年龄 number
+  age 年龄 number 最小值为0，最大值为120
   sex 性别 string options=男//M，女//F
+  height 身高 number 最小值为10
+  weight 体重 compute=“年龄*身高/2”
 字段逻辑：
-  当年龄大于10时，性别hidden为false
+  当年龄大于10时，性别才展示，否则隐藏
   当年龄大于15时，性别必填
 布局:
   姓名
   年龄
   性别
+  身高
+  体重
 提交目标地址：
   /api/save
+
+-------
 
 期望格式: JSON，只返回JSON代码。

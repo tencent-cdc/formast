@@ -160,8 +160,8 @@ export const FormItemConfig = {
     if (!bind) {
       return;
     }
-    const { errors, hidden, highlight, label } = bind;
-    return { errors, hidden, highlight, label };
+    const { errors, hidden, highlight, label, required } = bind;
+    return { errors, hidden, highlight, label, required };
   },
 };
 

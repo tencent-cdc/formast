@@ -6,6 +6,7 @@
   "scripts": {
     "prepare": "husky install",
     "dev:antd": "parcel .examples/antd/index.html --out-dir .cache/.antd",
+    "dev:gpt": "parcel .examples/antd/gpt/index.html --out-dir .cache/.antd-gpt",
     "dev:vue": "parcel .examples/vue/index.html --out-dir .cache/.vue",
     "dev:react": "parcel .examples/react/index.html --out-dir .cache/.react",
     "dev:tdesign-vue": "parcel .examples/tdesign-vue/index.html --out-dir .cache/.tdesign-vue",
@@ -39,6 +40,7 @@
     "vue": "^2.6.14"
   },
   "devDependencies": {
+    "@ant-design/icons": "^5.0.1",
     "@babel/cli": "^7.14.5",
     "@babel/core": "^7.12.10",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
