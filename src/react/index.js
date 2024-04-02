@@ -1,8 +1,10 @@
-import { useState, useEffect, memo, Fragment, createElement, useRef, forwardRef } from 'react';
+import { useState, useEffect, memo, Fragment, createElement, useRef, forwardRef, createContext, useContext } from 'react';
 import { each, getObjectHash, isArray, decideby } from 'ts-fns';
 import { isReactComponent } from './utils.js';
 import { useModelReactor } from './hooks.js';
 import { createFormastContext, createConnectProps } from '../_shared/index.js';
+
+const FormastModelContext = createContext();
 
 export const SHARED_COMPONENTS = {
   Fragment,
@@ -13,6 +15,10 @@ export const ALIAS_ATTRIBUTES = {
   readonly: 'readOnly',
   class: 'className',
 };
+
+export function useFormastModelContext() {
+  return useContext(FormastModelContext);
+}
 
 export function createReactFormast(schemaJson, options, data) {
   const context = createFormastContext(schemaJson, options, data, {
@@ -26,7 +32,11 @@ export function createReactFormast(schemaJson, options, data) {
   }
 
   const { model, Layout, schema, declares, constants } = context;
-  const Formast = memo(Layout);
+  const TopComponent = (props) => {
+    const { Provider } = FormastModelContext;
+    return createElement(Provider, { value: model }, createElement(Layout, props));
+  };
+  const Formast = memo(TopComponent);
   return { model, Formast, schema, declares, constants };
 }
 

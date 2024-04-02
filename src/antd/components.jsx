@@ -27,23 +27,36 @@ export const Button = connectReactComponent((props) => {
   } = props;
   return <AButton {...attrs} type={theme} htmlType={htmlType} />;
 }, ButtonConfig);
+
 export const Form = connectReactComponent(AForm, FormConfig);
+
 export const FormItem = connectReactComponent((props) => {
   const {
     errors,
     hidden,
     label,
     children,
+    required,
     ...attrs
   } = props;
 
+  const requiredContent = required ? <span style={{
+    display: 'inline-block',
+    marginInlineEnd: 4,
+    color: '#ff4d4f',
+    fontSize: '14px',
+    fontFamily: 'SimSun,sans-serif',
+    lineHeight: 1,
+  }}>*</span> : null;
+
   return (
-    <AFormItem label={label} hidden={hidden} {...attrs}>
+    <AFormItem label={<>{requiredContent}{label}</>} hidden={hidden} {...attrs}>
       {children}
       <ErrorList errors={errors} />
     </AFormItem>
   );
 }, FormItemConfig);
+
 export const Input = connectReactComponent((props) => {
   const {
     onChange,
@@ -55,6 +68,7 @@ export const Input = connectReactComponent((props) => {
   };
   return <AInput {...attrs} readOnly={readonly} onChange={hanleChange} />;
 }, InputConfig);
+
 export const InputNumber = connectReactComponent((props) => {
   const {
     onChange,
@@ -66,6 +80,7 @@ export const InputNumber = connectReactComponent((props) => {
   };
   return <AInputNumber {...attrs} readOnly={readonly} onChange={hanleChange} />;
 }, InputNumberConfig);
+
 export const TextArea = connectReactComponent((props) => {
   const { readonly, onChange, ...attrs } = props;
   const hanleChange = (e) => {
@@ -73,6 +88,7 @@ export const TextArea = connectReactComponent((props) => {
   };
   return <ATextArea {...attrs} readOnly={readonly} onChange={hanleChange} />;
 }, TextAreaConfig);
+
 export const RadioGroup = connectReactComponent((props) => {
   const { options, onChange, readonly, valueKey = 'value', labelKey = 'label', ...attrs } = props;
   const mappedOptions = options.map((option) => {
@@ -88,6 +104,7 @@ export const RadioGroup = connectReactComponent((props) => {
   };
   return <ARadioGroup {...attrs} readOnly={readonly} onChange={handleChange} options={mappedOptions} />;
 }, RadioGroupConfig);
+
 export const CheckboxGroup = connectReactComponent((props) => {
   const { readonly, value, onChange, options, valueKey = 'value', labelKey = 'label', ...attrs } = props;
   const mappedOptions = options.map((option) => {
@@ -113,4 +130,13 @@ export const CheckboxGroup = connectReactComponent((props) => {
     />
   );
 }, CheckboxGroupConfig);
-export const Select = connectReactComponent(ASelect, SelectConfig);
+
+export const Select = connectReactComponent((props) => {
+  const { options, onChange, readonly, valueKey = 'value', labelKey = 'label', ...attrs } = props;
+  const mappedOptions = options.map((option) => {
+    const label = option[labelKey] || option[valueKey];
+    const value = option[valueKey];
+    return { label, value };
+  });
+  return <ASelect {...attrs} readOnly={readonly} onChange={onChange} options={mappedOptions} />;
+}, SelectConfig);
